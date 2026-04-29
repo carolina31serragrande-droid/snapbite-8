@@ -1,0 +1,1012 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Onde Estamos — SnapBite · SENAI RJ</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📍</text></svg>">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <link rel="stylesheet" href="js/app.js">
+  <link rel="stylesheet" href="css/global.css">
+  <style>
+    /* ═══════════════════════════════════════════
+       LOCALIZACAO.CSS — integrado inline
+    ═══════════════════════════════════════════ */
+
+    /* ── PAGE HERO ── */
+    .loc-hero {
+      background: var(--preto-mid);
+      padding: 72px 0 60px;
+      position: relative;
+      overflow: hidden;
+    }
+    .loc-hero::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background:
+        radial-gradient(ellipse 55% 90% at 80% 50%, rgba(125,29,63,0.4) 0%, transparent 70%),
+        radial-gradient(ellipse 40% 60% at 20% 80%, rgba(200,149,42,0.08) 0%, transparent 60%);
+      pointer-events: none;
+    }
+    .loc-hero-inner {
+      max-width: var(--max-w);
+      margin: 0 auto;
+      padding: 0 var(--gutter);
+      position: relative;
+      z-index: 1;
+      display: grid;
+      grid-template-columns: 1fr auto;
+      align-items: center;
+      gap: 40px;
+    }
+    .loc-hero .eyebrow { color: var(--mostarda); }
+    .loc-hero h1 {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(2.2rem, 4.5vw, 3.6rem);
+      font-weight: 900;
+      color: var(--off-white);
+      line-height: 1.08;
+      margin: 10px 0 16px;
+    }
+    .loc-hero h1 em { color: var(--mostarda); font-style: italic; }
+    .loc-hero p {
+      color: #7A6E60;
+      font-size: 1rem;
+      line-height: 1.75;
+      max-width: 480px;
+    }
+    .loc-hero-stat-block {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      flex-shrink: 0;
+    }
+    .loc-stat {
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: var(--radius);
+      padding: 18px 24px;
+      text-align: center;
+      min-width: 130px;
+    }
+    .loc-stat-val {
+      font-family: 'Playfair Display', serif;
+      font-size: 2rem;
+      font-weight: 900;
+      color: var(--mostarda);
+      line-height: 1;
+    }
+    .loc-stat-lab {
+      font-size: 0.7rem;
+      color: #5A4E48;
+      text-transform: uppercase;
+      letter-spacing: 1.5px;
+      margin-top: 5px;
+      font-weight: 600;
+    }
+
+    /* ── BREADCRUMB ── */
+
+
+    /* ── O QUE É O SENAI strip ── */
+    .strip-senai {
+      background: var(--vinho);
+      padding: 0;
+    }
+    .strip-senai-inner {
+      max-width: var(--max-w);
+      margin: 0 auto;
+      padding: 0 var(--gutter);
+      display: grid;
+      grid-template-columns: auto 1fr auto;
+      align-items: center;
+      gap: 24px;
+      min-height: 72px;
+    }
+    .strip-senai-icon { font-size: 1.8rem; }
+    .strip-senai-text {
+      font-size: 0.9rem;
+      color: rgba(255,255,255,0.85);
+      line-height: 1.5;
+    }
+    .strip-senai-text strong { color: #fff; }
+    .strip-senai-link {
+      font-size: 0.8rem;
+      font-weight: 700;
+      color: var(--mostarda-cl);
+      border: 1px solid rgba(200,149,42,0.35);
+      padding: 6px 14px;
+      border-radius: var(--radius-sm);
+      white-space: nowrap;
+      transition: background var(--t);
+      flex-shrink: 0;
+    }
+    .strip-senai-link:hover { background: rgba(200,149,42,0.15); }
+
+    /* ── BANNER MAIS LOCAIS ── */
+    .mais-locais-banner {
+      position: relative;
+      margin-top: 32px;
+      border-radius: var(--radius-xl);
+      overflow: hidden;
+      background: linear-gradient(130deg, #2D2420 0%, #1C1410 50%, #3a1828 100%);
+      border: 1.5px solid rgba(200,149,42,0.22);
+      box-shadow: 0 20px 60px rgba(28,20,16,0.22), inset 0 1px 0 rgba(255,255,255,0.05);
+      padding: 36px 40px;
+    }
+    .mais-locais-orbs { position: absolute; inset: 0; pointer-events: none; }
+    .orb { position: absolute; border-radius: 50%; filter: blur(60px); opacity: 0.55; }
+    .orb1 { width: 280px; height: 280px; background: radial-gradient(circle, rgba(125,29,63,0.9), transparent 70%); top: -80px; left: -60px; }
+    .orb2 { width: 200px; height: 200px; background: radial-gradient(circle, rgba(200,149,42,0.5), transparent 70%); bottom: -60px; right: 80px; }
+    .orb3 { width: 160px; height: 160px; background: radial-gradient(circle, rgba(125,29,63,0.5), transparent 70%); top: 10px; right: 280px; }
+    .mais-locais-grid-bg {
+      position: absolute; inset: 0; pointer-events: none;
+      background-image: linear-gradient(rgba(200,149,42,0.05) 1px, transparent 1px), linear-gradient(90deg, rgba(200,149,42,0.05) 1px, transparent 1px);
+      background-size: 32px 32px;
+    }
+    .mais-locais-inner {
+      position: relative; z-index: 2;
+      display: flex; align-items: center; justify-content: space-between;
+      gap: 32px; flex-wrap: wrap;
+    }
+    .mais-locais-text { display: flex; flex-direction: column; gap: 8px; }
+    .mais-locais-tag {
+      display: inline-flex; align-items: center; gap: 6px;
+      font-size: 0.72rem; font-weight: 700; letter-spacing: 1.8px; text-transform: uppercase;
+      color: var(--mostarda); background: rgba(200,149,42,0.12);
+      border: 1px solid rgba(200,149,42,0.25); border-radius: 999px;
+      padding: 4px 12px; width: fit-content;
+    }
+    .mais-locais-text p {
+      color: rgba(253,250,244,0.6); font-size: 0.92rem;
+      line-height: 1.5; max-width: 420px; margin: 0 !important;
+    }
+    .btn-mais-locais {
+      display: inline-flex; align-items: center; gap: 10px;
+      background: linear-gradient(135deg, var(--mostarda) 0%, #e8a820 100%);
+      color: var(--preto-mid); font-family: 'DM Sans', sans-serif;
+      font-weight: 700; font-size: 0.95rem; padding: 14px 28px;
+      border-radius: var(--radius-sm); border: none; cursor: pointer;
+      text-decoration: none; white-space: nowrap; flex-shrink: 0;
+      box-shadow: 0 4px 20px rgba(200,149,42,0.35);
+      transition: transform var(--t), box-shadow var(--t);
+      position: relative; overflow: hidden;
+    }
+    .btn-mais-locais::before {
+      content: ''; position: absolute; inset: 0;
+      background: linear-gradient(135deg, rgba(255,255,255,0.18) 0%, transparent 60%);
+      border-radius: inherit; pointer-events: none;
+    }
+    .btn-mais-locais:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 8px 30px rgba(200,149,42,0.5), 0 0 0 4px rgba(200,149,42,0.15);
+    }
+    .btn-mais-locais-arrow { font-size: 1.1rem; transition: transform var(--t); }
+    .btn-mais-locais:hover .btn-mais-locais-arrow { transform: translateX(4px); }
+    @media (max-width: 640px) {
+      .mais-locais-banner { padding: 28px 24px; }
+      .mais-locais-inner { flex-direction: column; align-items: flex-start; }
+      .btn-mais-locais { width: 100%; justify-content: center; }
+    }
+
+    /* ── MAPA + CARDS ── */
+    .sec-mapa {
+      background: var(--off-white);
+      padding: 72px 0;
+    }
+    .sec-mapa-inner {
+      max-width: var(--max-w);
+      margin: 0 auto;
+      padding: 0 var(--gutter);
+    }
+    .mapa-header {
+      text-align: center;
+      margin-bottom: 48px;
+    }
+    .mapa-header h2 {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(1.8rem, 3.5vw, 2.6rem);
+      font-weight: 900;
+      color: var(--preto-q);
+      margin-top: 8px;
+      line-height: 1.15;
+    }
+    .mapa-header p { color: var(--cinza-q); font-size: 0.96rem; margin-top: 8px; }
+
+    /* Layout: mapa em cima, cards embaixo */
+    .mapa-layout {
+      display: flex;
+      flex-direction: column;
+      gap: 28px;
+    }
+
+    /* Iframe wrapper — largura total */
+    .mapa-frame-wrap {
+      width: 100%;
+      border-radius: var(--radius-xl);
+      overflow: hidden;
+      border: 2px solid var(--creme-esc);
+      box-shadow: var(--sombra-g);
+      background: var(--creme);
+    }
+    .mapa-frame-wrap iframe {
+      display: block;
+      width: 100%;
+      height: 580px;
+      border: none;
+    }
+    .mapa-frame-caption {
+      background: var(--creme);
+      padding: 12px 18px;
+      font-size: 0.78rem;
+      color: var(--cinza-q);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      border-top: 1px solid var(--creme-esc);
+    }
+    .mapa-frame-caption a {
+      color: var(--mostarda);
+      font-weight: 700;
+      margin-left: auto;
+      white-space: nowrap;
+    }
+    .mapa-frame-caption a:hover { text-decoration: underline; }
+
+    /* Cards em grid horizontal abaixo do mapa */
+    .unidades-lista {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 16px;
+    }
+
+    .unidade-card {
+      background: #fff;
+      border: 1.5px solid var(--cinza-borda);
+      border-radius: var(--radius-xl);
+      padding: 24px;
+      cursor: pointer;
+      transition: border-color var(--t), box-shadow var(--t), transform var(--t), background var(--t);
+      position: relative;
+      overflow: hidden;
+    }
+    .unidade-card::before {
+      content: '';
+      position: absolute;
+      left: 0; top: 0; bottom: 0;
+      width: 4px;
+      background: var(--cinza-borda);
+      transition: background var(--t);
+    }
+    .unidade-card:hover {
+      border-color: rgba(200,149,42,0.5);
+      box-shadow: var(--sombra-m);
+      transform: translateX(4px);
+    }
+    .unidade-card:hover::before { background: var(--mostarda); }
+    .unidade-card.ativo {
+      border-color: var(--mostarda);
+      background: #fffef8;
+      box-shadow: var(--sombra-m), 0 0 0 2px rgba(200,149,42,0.1);
+    }
+    .unidade-card.ativo::before { background: var(--mostarda); }
+
+    .unidade-top {
+      display: flex;
+      align-items: flex-start;
+      gap: 14px;
+      margin-bottom: 14px;
+    }
+    .unidade-emoji {
+      width: 46px;
+      height: 46px;
+      border-radius: var(--radius-sm);
+      background: var(--creme);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.4rem;
+      flex-shrink: 0;
+      border: 1.5px solid var(--creme-esc);
+    }
+    .unidade-card.ativo .unidade-emoji {
+      background: rgba(200,149,42,0.12);
+      border-color: rgba(200,149,42,0.3);
+    }
+    .unidade-info { flex: 1; min-width: 0; }
+    .unidade-nome {
+      font-family: 'Playfair Display', serif;
+      font-size: 1rem;
+      font-weight: 700;
+      color: var(--preto-q);
+      margin-bottom: 4px;
+    }
+    .unidade-endereco {
+      font-size: 0.78rem;
+      color: var(--cinza-q);
+      line-height: 1.5;
+    }
+    .unidade-badges {
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+      margin-top: 4px;
+    }
+    .ubadge {
+      font-size: 0.65rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+      padding: 3px 8px;
+      border-radius: 4px;
+    }
+    .ubadge-snap { background: rgba(200,149,42,0.15); color: var(--mostarda); }
+    .ubadge-nota { background: rgba(74,82,64,0.12); color: var(--oliva); }
+
+    .unidade-meta {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 10px;
+      padding-top: 14px;
+      border-top: 1px solid var(--cinza-borda);
+    }
+    .unidade-rating {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      font-size: 0.78rem;
+      color: var(--cinza-q);
+    }
+    .rating-stars { color: var(--mostarda); font-size: 0.75rem; letter-spacing: 1px; }
+    .rating-val { font-weight: 700; color: var(--preto-q); }
+
+    .unidade-tel {
+      font-size: 0.78rem;
+      color: var(--cinza-q);
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+
+    .unidade-actions {
+      display: flex;
+      gap: 8px;
+      margin-top: 14px;
+    }
+    .btn-maps {
+      flex: 1;
+      background: var(--preto-mid);
+      color: #fff;
+      border: none;
+      border-radius: var(--radius-sm);
+      padding: 9px 14px;
+      font-size: 0.78rem;
+      font-weight: 700;
+      cursor: pointer;
+      text-align: center;
+      transition: background var(--t), transform var(--t);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 5px;
+      text-decoration: none;
+    }
+    .btn-maps:hover { background: var(--vinho); transform: translateY(-1px); }
+    .btn-rota {
+      background: transparent;
+      color: var(--oliva);
+      border: 1.5px solid var(--oliva);
+      border-radius: var(--radius-sm);
+      padding: 9px 14px;
+      font-size: 0.78rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: background var(--t), color var(--t);
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      text-decoration: none;
+    }
+    .btn-rota:hover { background: var(--oliva); color: #fff; }
+
+    /* ── O QUE É O SENAI — seção explicativa ── */
+    .sec-sobre-senai {
+      background: var(--creme);
+      border-top: 2px solid var(--creme-esc);
+      padding: 72px 0;
+    }
+    .sobre-inner {
+      max-width: var(--max-w);
+      margin: 0 auto;
+      padding: 0 var(--gutter);
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 64px;
+      align-items: center;
+    }
+    .sobre-texto .eyebrow { color: var(--terracota); }
+    .sobre-texto h2 {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(1.7rem, 3vw, 2.4rem);
+      font-weight: 900;
+      color: var(--preto-q);
+      line-height: 1.2;
+      margin: 10px 0 18px;
+    }
+    .sobre-texto p {
+      color: var(--cinza-q);
+      font-size: 0.96rem;
+      line-height: 1.8;
+      margin-bottom: 14px;
+    }
+    .sobre-cta-row {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin-top: 28px;
+    }
+    .sobre-cards {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+    }
+    .sobre-card {
+      background: var(--off-white);
+      border: 1.5px solid var(--creme-esc);
+      border-radius: var(--radius-xl);
+      padding: 24px 20px;
+      transition: border-color var(--t), transform var(--t), box-shadow var(--t);
+    }
+    .sobre-card:hover {
+      border-color: var(--mostarda);
+      transform: translateY(-4px);
+      box-shadow: var(--sombra-m);
+    }
+    .sobre-card-icon { font-size: 2rem; margin-bottom: 12px; display: block; }
+    .sobre-card h4 {
+      font-family: 'Playfair Display', serif;
+      font-size: 0.95rem;
+      font-weight: 700;
+      color: var(--preto-q);
+      margin-bottom: 6px;
+    }
+    .sobre-card p { font-size: 0.8rem; color: var(--cinza-q); line-height: 1.65; }
+
+    /* ── PERGUNTAS FREQUENTES ── */
+    .sec-faq {
+      background: var(--off-white);
+      border-top: 2px solid var(--creme-esc);
+      padding: 72px 0;
+    }
+    .faq-inner {
+      max-width: 720px;
+      margin: 0 auto;
+      padding: 0 var(--gutter);
+    }
+    .faq-header {
+      text-align: center;
+      margin-bottom: 44px;
+    }
+    .faq-header h2 {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(1.8rem, 3vw, 2.4rem);
+      font-weight: 900;
+      color: var(--preto-q);
+      margin-top: 8px;
+    }
+
+    .faq-item {
+      border-bottom: 1px solid var(--cinza-borda);
+    }
+    .faq-question {
+      width: 100%;
+      background: none;
+      border: none;
+      padding: 20px 0;
+      text-align: left;
+      font-family: inherit;
+      font-size: 0.97rem;
+      font-weight: 600;
+      color: var(--preto-q);
+      cursor: pointer;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 16px;
+      transition: color var(--t);
+    }
+    .faq-question:hover { color: var(--mostarda); }
+    .faq-icon {
+      font-size: 1.2rem;
+      color: var(--mostarda);
+      transition: transform var(--t);
+      flex-shrink: 0;
+      font-weight: 300;
+    }
+    .faq-item.aberto .faq-icon { transform: rotate(45deg); }
+    .faq-answer {
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height 0.38s cubic-bezier(.4,0,.2,1), padding 0.3s;
+      font-size: 0.9rem;
+      color: var(--cinza-q);
+      line-height: 1.8;
+    }
+    .faq-answer-inner { padding-bottom: 20px; }
+    .faq-item.aberto .faq-answer { max-height: 300px; }
+
+    /* ── CTA FINAL ── */
+    .sec-loc-cta {
+      background: var(--preto-q);
+      padding: 72px 0;
+      position: relative;
+      overflow: hidden;
+    }
+    .sec-loc-cta::before {
+      content: '📍';
+      position: absolute;
+      font-size: 18rem;
+      right: -2%;
+      top: 50%;
+      transform: translateY(-50%) rotate(-10deg);
+      opacity: 0.04;
+      pointer-events: none;
+    }
+    .sec-loc-cta-inner {
+      max-width: var(--max-w);
+      margin: 0 auto;
+      padding: 0 var(--gutter);
+      text-align: center;
+      position: relative;
+      z-index: 1;
+    }
+    .sec-loc-cta h2 {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(1.8rem, 3.5vw, 2.8rem);
+      color: var(--off-white);
+      font-weight: 900;
+      margin-bottom: 12px;
+    }
+    .sec-loc-cta p { color: rgba(255,255,255,0.5); font-size: 0.97rem; margin-bottom: 36px; }
+    .cta-buttons { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
+
+    /* ── RESPONSIVO ── */
+    @media (max-width: 960px) {
+      .unidades-lista { grid-template-columns: repeat(2, 1fr) !important; }
+      .mapa-frame-wrap iframe { height: 420px; }
+      .sobre-inner { grid-template-columns: 1fr; gap: 40px; }
+      .loc-hero-inner { grid-template-columns: 1fr; }
+      .loc-hero-stat-block { flex-direction: row; flex-wrap: wrap; justify-content: center; }
+      .strip-senai-inner { grid-template-columns: auto 1fr; }
+      .strip-senai-link { display: none; }
+    }
+    @media (max-width: 560px) {
+      .unidades-lista { grid-template-columns: 1fr !important; }
+      .sobre-cards { grid-template-columns: 1fr; }
+      .unidade-actions { flex-direction: column; }
+    }
+  </style>
+</head>
+<body>
+  <script src="js/skeleton.js"></script>
+
+  <main>
+
+    <!-- HERO -->
+    <section class="loc-hero">
+      <div class="loc-hero-inner">
+        <div>
+          <span class="eyebrow"><i class="fa-solid fa-map-location-dot" style="color: #c7952a;"></i> Onde posso encontrar o estabelecimento?</span>
+          <h1>O SnapBite está no<br><em>SENAI</em> perto de você.</h1>
+          <p>Somos a lanchonete oficial das unidades Firjan SENAI no Rio de Janeiro. Se você estuda, trabalha ou visita uma dessas unidades, pode pedir pelo SnapBite e retirar sem fila.</p>
+        </div>
+        <div class="loc-hero-stat-block">
+          <div class="loc-stat">
+            <div class="loc-stat-val">4</div>
+            <div class="loc-stat-lab">Unidades RJ</div>
+          </div>
+          <div class="loc-stat">
+            <div class="loc-stat-val">4.6★</div>
+            <div class="loc-stat-lab">Nota média</div>
+          </div>
+          <div class="loc-stat">
+            <div class="loc-stat-val">200+</div>
+            <div class="loc-stat-lab">Pedidos/dia</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- BREADCRUMB -->
+    <!-- STRIP: O QUE É O SENAI -->
+    <div class="strip-senai">
+      <div class="strip-senai-inner">
+        <span class="strip-senai-icon">🏫</span>
+        <p class="strip-senai-text">
+          <strong>Não conhece o SENAI?</strong> É uma das maiores redes de educação profissional do Brasil, com cursos técnicos de qualidade — de TI a Elétrica, Design e muito mais.
+        </p>
+        <a href="https://www.firjansenai.com.br" target="_blank" rel="noopener" class="strip-senai-link">
+          Conhecer o SENAI →
+        </a>
+      </div>
+    </div>
+
+    <!-- MAPA INTERATIVO + CARDS -->
+    <section class="sec-mapa">
+      <div class="sec-mapa-inner">
+        <div class="mapa-header">
+          <span class="eyebrow" style="color:var(--terracota)">Rio de Janeiro</span>
+          <h2>4 unidades, um SnapBite só.</h2>
+          <p>Clique em uma unidade para ver no mapa e descobrir como chegar.</p>
+        </div>
+
+        <div class="mapa-layout">
+
+          <!-- MAPA IFRAME (topo, largura total) -->
+          <div>
+            <div class="mapa-frame-wrap">
+              <iframe
+                id="mapa-iframe"
+                src="https://maps.google.com/maps?q=-22.8613238,-43.1026565&hl=pt&z=15&output=embed"
+                allowfullscreen
+                loading="lazy"
+                referrerpolicy="no-referrer-when-downgrade"
+                title="Mapa SENAI Niterói"
+              ></iframe>
+              <div class="mapa-frame-caption">
+                <span>📍</span>
+                <span id="mapa-caption-nome">Firjan SENAI Niterói</span>
+                <a id="mapa-caption-link" href="https://maps.google.com/?cid=17105831075189547044" target="_blank" rel="noopener">
+                  Abrir no Google Maps ↗
+                </a>
+              </div>
+            </div>
+          </div>
+
+          <!-- LISTA DE UNIDADES (cards abaixo) -->
+          <div class="unidades-lista">
+
+            <!-- NITERÓI -->
+            <div class="unidade-card ativo" data-lat="-22.8613238" data-lng="-43.1026565"
+              data-nome="Firjan SENAI Niterói"
+              data-gmaps="https://maps.google.com/?cid=17105831075189547044"
+              data-rota="https://www.google.com/maps/dir/?api=1&destination=-22.8613238,-43.1026565"
+              onclick="selecionarUnidade(this)">
+              <div class="unidade-top">
+                <div class="unidade-emoji">🏭</div>
+                <div class="unidade-info">
+                  <div class="unidade-nome">Firjan SENAI Niterói</div>
+                  <div class="unidade-endereco">R. Gen. Castrioto, 460 — Barreto, Niterói - RJ</div>
+                  <div class="unidade-badges">
+                    <span class="ubadge ubadge-snap">🍔 SnapBite aqui</span>
+                    <span class="ubadge ubadge-nota">⭐ 4.7 — 332 avaliações</span>
+                  </div>
+                </div>
+              </div>
+              <div class="unidade-meta">
+                <div class="unidade-rating">
+                  <span class="rating-stars">★★★★★</span>
+                  <span class="rating-val">4.7</span>
+                  <span>(332 avaliações)</span>
+                </div>
+                <div class="unidade-tel">📞 (21) 4002-0231</div>
+              </div>
+              <div class="unidade-actions">
+                <a class="btn-maps" href="https://maps.google.com/?cid=17105831075189547044" target="_blank" rel="noopener">
+                  🗺️ Ver no Maps
+                </a>
+                <a class="btn-rota" href="https://www.google.com/maps/dir/?api=1&destination=-22.8613238,-43.1026565" target="_blank" rel="noopener">
+                  🧭 Traçar rota
+                </a>
+              </div>
+            </div>
+
+            <!-- RIO CENTRO -->
+            <div class="unidade-card" data-lat="-22.9105982" data-lng="-43.1740382"
+              data-nome="SENAI Rio de Janeiro — Centro"
+              data-gmaps="https://maps.google.com/?cid=7693938041447824257"
+              data-rota="https://www.google.com/maps/dir/?api=1&destination=-22.9105982,-43.1740382"
+              onclick="selecionarUnidade(this)">
+              <div class="unidade-top">
+                <div class="unidade-emoji">🏢</div>
+                <div class="unidade-info">
+                  <div class="unidade-nome">SENAI — Rio de Janeiro Centro</div>
+                  <div class="unidade-endereco">Av. Graça Aranha, 1 — Centro, Rio de Janeiro - RJ</div>
+                  <div class="unidade-badges">
+                    <span class="ubadge ubadge-snap">🍔 SnapBite aqui</span>
+                    <span class="ubadge ubadge-nota">⭐ 4.7 — 7 avaliações</span>
+                  </div>
+                </div>
+              </div>
+              <div class="unidade-meta">
+                <div class="unidade-rating">
+                  <span class="rating-stars">★★★★★</span>
+                  <span class="rating-val">4.7</span>
+                  <span>(7 avaliações)</span>
+                </div>
+                <div class="unidade-tel">📞 (21) 4002-0231</div>
+              </div>
+              <div class="unidade-actions">
+                <a class="btn-maps" href="https://maps.google.com/?cid=7693938041447824257" target="_blank" rel="noopener">
+                  🗺️ Ver no Maps
+                </a>
+                <a class="btn-rota" href="https://www.google.com/maps/dir/?api=1&destination=-22.9105982,-43.1740382" target="_blank" rel="noopener">
+                  🧭 Traçar rota
+                </a>
+              </div>
+            </div>
+
+            <!-- NOVA IGUAÇU -->
+            <div class="unidade-card" data-lat="-22.7534571" data-lng="-43.4744364"
+              data-nome="Firjan SENAI Nova Iguaçu"
+              data-gmaps="https://maps.google.com/?cid=12039970836120832094"
+              data-rota="https://www.google.com/maps/dir/?api=1&destination=-22.7534571,-43.4744364"
+              onclick="selecionarUnidade(this)">
+              <div class="unidade-top">
+                <div class="unidade-emoji">🏗️</div>
+                <div class="unidade-info">
+                  <div class="unidade-nome">Firjan SENAI Nova Iguaçu</div>
+                  <div class="unidade-endereco">R. Gérson Chernichard, 1319 — Luz, Nova Iguaçu - RJ</div>
+                  <div class="unidade-badges">
+                    <span class="ubadge ubadge-snap">🍔 SnapBite aqui</span>
+                    <span class="ubadge ubadge-nota">⭐ 4.5 — 325 avaliações</span>
+                  </div>
+                </div>
+              </div>
+              <div class="unidade-meta">
+                <div class="unidade-rating">
+                  <span class="rating-stars">★★★★½</span>
+                  <span class="rating-val">4.5</span>
+                  <span>(325 avaliações)</span>
+                </div>
+                <div class="unidade-tel">📞 4002-0231</div>
+              </div>
+              <div class="unidade-actions">
+                <a class="btn-maps" href="https://maps.google.com/?cid=12039970836120832094" target="_blank" rel="noopener">
+                  🗺️ Ver no Maps
+                </a>
+                <a class="btn-rota" href="https://www.google.com/maps/dir/?api=1&destination=-22.7534571,-43.4744364" target="_blank" rel="noopener">
+                  🧭 Traçar rota
+                </a>
+              </div>
+            </div>
+
+            <!-- DUQUE DE CAXIAS -->
+            <div class="unidade-card" data-lat="-22.7833876" data-lng="-43.3077836"
+              data-nome="SENAI — Duque de Caxias"
+              data-gmaps="https://maps.google.com/?cid=2633483143558112133"
+              data-rota="https://www.google.com/maps/dir/?api=1&destination=-22.7833876,-43.3077836"
+              onclick="selecionarUnidade(this)">
+              <div class="unidade-top">
+                <div class="unidade-emoji">⚙️</div>
+                <div class="unidade-info">
+                  <div class="unidade-nome">SENAI — Duque de Caxias</div>
+                  <div class="unidade-endereco">Trav. Goulart, 124 — Centro, Duque de Caxias - RJ</div>
+                  <div class="unidade-badges">
+                    <span class="ubadge ubadge-snap">🍔 SnapBite aqui</span>
+                    <span class="ubadge ubadge-nota">⭐ 4.6 — 325 avaliações</span>
+                  </div>
+                </div>
+              </div>
+              <div class="unidade-meta">
+                <div class="unidade-rating">
+                  <span class="rating-stars">★★★★½</span>
+                  <span class="rating-val">4.6</span>
+                  <span>(325 avaliações)</span>
+                </div>
+                <div class="unidade-tel">📞 (21) 4002-0231</div>
+              </div>
+              <div class="unidade-actions">
+                <a class="btn-maps" href="https://maps.google.com/?cid=2633483143558112133" target="_blank" rel="noopener">
+                  🗺️ Ver no Maps
+                </a>
+                <a class="btn-rota" href="https://www.google.com/maps/dir/?api=1&destination=-22.7833876,-43.3077836" target="_blank" rel="noopener">
+                  🧭 Traçar rota
+                </a>
+              </div>
+            </div>
+
+          </div><!-- /unidades-lista -->
+
+          <!-- ── BOTÃO CONHECER MAIS LOCAIS ── -->
+          <div class="mais-locais-banner">
+            <div class="mais-locais-orbs">
+              <div class="orb orb1"></div>
+              <div class="orb orb2"></div>
+              <div class="orb orb3"></div>
+            </div>
+            <div class="mais-locais-grid-bg"></div>
+            <div class="mais-locais-inner">
+              <div class="mais-locais-text">
+                <span class="mais-locais-tag"><i class="fa-solid fa-map-location-dot" style="color: #c7952a;"></i> Em expansão pelo RJ</span>
+                <p>Novas unidades chegando em breve — fique por dentro de onde o SnapBite vai aparecer!</p>
+              </div>
+              <a href="https://www.google.com/search?q=locais+do+senai&sca_esv=76d22973dcec555c&sxsrf=ANbL-n5_za9jBl_mkPuspT1Oc9EslhOKRQ%3A1776174279363&ei=x0TeadzrFaba5OUPvuLpuQM&biw=1920&bih=94
+              5&ved=0ahUKEwic6-vnvO2TAxUmLbkGHT5xOjcQ4dUDCBM&uact=5&oq=locais+do+senai&gs_lp=Egxnd3Mtd2l6LXNlcnAiD2xvY2FpcyBkbyBzZW5haTIGEAAYFhgeMggQABiABBiiBDIFEAAY7wVI3j1Qgg5Y7zpwBXgBkAEAmAGaAaAB6hKqAQQwLjE4uAEDyAEA-AEBmAIXoALOE6gCFMICChAAGLADGNYEGEfCAgcQIxgnGOoCwgINEC4Y0QMYxwEYJxjqAsICEBAAGAMYtAIY6gIYjwHYAQHCAhAQLhgD
+              GLQCGOoCGI8B2AEBwgIKECMYgAQYJxiKBcICERAuGIAEGLEDGNEDGIMBGMcBwgIIEAAYgAQYsQPCAgsQABiABBixAxiDAcICDhAAGIAEGLEDGIMBGIoFwgIIEC4YgAQYsQPCAgoQIxjwBRgnGMkCwgIQECMY8AUYgAQYJxjJAhiKBcICBRAAGIAEwgILEC4YgAQYsQMYgwHCAgoQABiABBhDGIoFwgIEECMYJ8ICDhAuGIAEGLEDGNEDGMcBwgIREC4YgAQYsQMY0QMYxwEYyQPCAgsQABiABBiSAxiKBcICCB
+              AAGIAEGJIDwgIIEAAYgAQYyQOYAwjxBVX6DzaAaCr5iAYBkAYEugYGCAEQARgKkgcENS4xOKAHppQBsgcEMC4xOLgHrhPCBwkwLjEyLjEwLjHIB0eACAA&sclient=gws-wiz-serp" class="btn-mais-locais">
+                Conhecer mais locais
+                <span class="btn-mais-locais-arrow">→</span>
+              </a>
+            </div>
+          </div>
+
+        </div><!-- /mapa-layout -->
+      </div>
+    </section>
+
+    <!-- O QUE É O SENAI — para quem não conhece -->
+    <section class="sec-sobre-senai">
+      <div class="sobre-inner">
+        <div class="sobre-texto">
+          <span class="eyebrow">Para quem não conhece</span>
+          <h2>O SENAI forma os profissionais que o Brasil precisa.</h2>
+          <p>O SENAI — Serviço Nacional de Aprendizagem Industrial — é uma das maiores redes de educação profissional do mundo. São mais de 500 unidades pelo Brasil, oferecendo cursos técnicos, de qualificação e de aperfeiçoamento em diversas áreas.</p>
+          <p>No Rio de Janeiro, as unidades são gerenciadas pela <strong>Firjan SENAI</strong>, cobrindo áreas como Tecnologia da Informação, Design, Elétrica, Mecânica, Logística e muito mais. Os alunos são os principais clientes do SnapBite — mas qualquer pessoa que frequente as unidades pode pedir.</p>
+          <div class="sobre-cta-row">
+            <a href="https://www.firjansenai.com.br" target="_blank" rel="noopener">
+              <button class="btn-secondary">Ver cursos disponíveis ↗</button>
+            </a>
+            <a href="cardapio.html">
+              <button class="btn-ghost">Ver o cardápio</button>
+            </a>
+          </div>
+        </div>
+        <div class="sobre-cards">
+          <div class="sobre-card">
+            <span class="sobre-card-icon">💻</span>
+            <h4>Tecnologia da Informação</h4>
+            <p>Desenvolvimento, redes, cibersegurança e muito mais.</p>
+          </div>
+          <div class="sobre-card">
+            <span class="sobre-card-icon">⚡</span>
+            <h4>Elétrica & Automação</h4>
+            <p>Instalações, manutenção industrial e automação.</p>
+          </div>
+          <div class="sobre-card">
+            <span class="sobre-card-icon">🎨</span>
+            <h4>Design & Moda</h4>
+            <p>Criação gráfica, moda, estética e comunicação visual.</p>
+          </div>
+          <div class="sobre-card">
+            <span class="sobre-card-icon">🔧</span>
+            <h4>Mecânica & Logística</h4>
+            <p>Manutenção mecânica, soldagem, logística industrial.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- FAQ -->
+    <section class="sec-faq">
+      <div class="faq-inner">
+        <div class="faq-header">
+          <span class="eyebrow" style="color:var(--terracota)">Dúvidas frequentes</span>
+          <h2>Perguntas sobre as unidades</h2>
+        </div>
+
+        <div class="faq-item">
+          <button class="faq-question" onclick="toggleFaq(this)">
+            Preciso ser aluno do SENAI para pedir no SnapBite?
+            <span class="faq-icon">+</span>
+          </button>
+          <div class="faq-answer">
+            <div class="faq-answer-inner">
+              Não! O SnapBite atende alunos, professores, funcionários e qualquer visitante das unidades SENAI. Basta fazer o pedido online e aparecer no balcão no horário combinado para retirar.
+            </div>
+          </div>
+        </div>
+
+        <div class="faq-item">
+          <button class="faq-question" onclick="toggleFaq(this)">
+            O SnapBite funciona em todas as unidades ao mesmo tempo?
+            <span class="faq-icon">+</span>
+          </button>
+          <div class="faq-answer">
+            <div class="faq-answer-inner">
+              Sim! Todas as 4 unidades listadas aqui têm lanchonete SnapBite ativa. O cardápio pode variar levemente entre unidades, mas os produtos principais estão disponíveis em todas elas.
+            </div>
+          </div>
+        </div>
+
+        <div class="faq-item">
+          <button class="faq-question" onclick="toggleFaq(this)">
+            Qual o horário de funcionamento das lanchonetes?
+            <span class="faq-icon">+</span>
+          </button>
+          <div class="faq-answer">
+            <div class="faq-answer-inner">
+              Geralmente funcionamos durante os intervalos das aulas — nos períodos da manhã, tarde e início da noite. De segunda a sexta, das 7h às 22h, acompanhando o horário de cada unidade. Aos sábados e domingos as unidades estão fechadas.
+            </div>
+          </div>
+        </div>
+
+        <div class="faq-item">
+          <button class="faq-question" onclick="toggleFaq(this)">
+            Como funciona a retirada do pedido?
+            <span class="faq-icon">+</span>
+          </button>
+          <div class="faq-answer">
+            <div class="faq-answer-inner">
+              Simples: você faz o pedido aqui no site, paga (Pix ou na retirada) e aguarda a confirmação. Em até 15 minutos seu lanche fica pronto. É só ir até o balcão da lanchonete, falar seu nome e pegar. Sem fila, sem espera.
+            </div>
+          </div>
+        </div>
+
+        <div class="faq-item">
+          <button class="faq-question" onclick="toggleFaq(this)">
+            Tem entrega no bloco ou sala de aula?
+            <span class="faq-icon">+</span>
+          </button>
+          <div class="faq-answer">
+            <div class="faq-answer-inner">
+              Por enquanto, trabalhamos apenas com retirada no balcão. Isso garante que o lanche chegue na sua mão quentinho e em perfeitas condições. A entrega interna pode ser uma novidade futura — fica de olho nas promoções!
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- CTA FINAL -->
+    <section class="sec-loc-cta">
+      <div class="sec-loc-cta-inner">
+        <h2>Achou sua unidade? 🍔</h2>
+        <p>Agora é só escolher o que você quer e a gente cuida do resto.</p>
+        <div class="cta-buttons">
+          <a href="cardapio.html"><button class="btn-primary" style="padding:14px 32px;font-size:1rem">Ver Cardápio →</button></a>
+          <a href="IA.html"><button class="btn-ghost" style="color:var(--mostarda);border-color:rgba(200,149,42,0.4);padding:14px 32px;font-size:1rem">Testar IA de lanche</button></a>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <script src="js/components.js"></script>
+  <script src="js/app.js"></script>
+  <script type="module" src="backend/firebase-auth.js"></script>
+
+  <script>
+    // ── Troca de unidade no mapa ──
+    function selecionarUnidade(card) {
+      // Remove ativo de todos
+      document.querySelectorAll('.unidade-card').forEach(c => c.classList.remove('ativo'));
+      card.classList.add('ativo');
+
+      const lat   = card.dataset.lat;
+      const lng   = card.dataset.lng;
+      const nome  = card.dataset.nome;
+      const gmaps = card.dataset.gmaps;
+
+      // Atualiza iframe
+      const iframe = document.getElementById('mapa-iframe');
+      iframe.src = `https://maps.google.com/maps?q=${lat},${lng}&hl=pt&z=15&output=embed`;
+
+      // Atualiza caption
+      document.getElementById('mapa-caption-nome').textContent = nome;
+      document.getElementById('mapa-caption-link').href = gmaps;
+
+      // Scroll suave pro mapa em mobile
+      if (window.innerWidth < 960) {
+        document.querySelector('.mapa-frame-wrap')
+          .scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+    }
+
+    // ── FAQ accordion ──
+    function toggleFaq(btn) {
+      const item = btn.closest('.faq-item');
+      const estaAberto = item.classList.contains('aberto');
+
+      // Fecha todos
+      document.querySelectorAll('.faq-item').forEach(i => i.classList.remove('aberto'));
+
+      // Abre o clicado (se estava fechado)
+      if (!estaAberto) item.classList.add('aberto');
+    }
+  </script>
+</body>
+</html>

@@ -1,0 +1,1178 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Painel Interno | SnapBite</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🧾</text></svg>">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,700&family=DM+Sans:wght@400;500;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/global.css">
+  <style>
+    :root{
+      --bg:var(--off-white);
+      --paper:#fff;
+      --ink:var(--preto-q);
+      --muted:var(--cinza-q);
+      --line:var(--cinza-borda);
+      --accent:var(--mostarda);
+      --accent-2:var(--mostarda-cl);
+      --deep:var(--preto-mid);
+      --danger:var(--terracota);
+      --warn:var(--mostarda);
+      --ok:var(--oliva);
+      --shadow:var(--sombra-m);
+      --radius:var(--radius);
+    }
+    *{box-sizing:border-box;margin:0;padding:0}
+    body{
+      font-family:'DM Sans',sans-serif;
+      background:linear-gradient(160deg,var(--creme),var(--off-white));
+      color:var(--ink);
+      min-height:100vh;
+    }
+    button,input,select,textarea{font:inherit}
+    .hidden{display:none !important}
+
+    /* ── LOGIN ─────────────────────────────── */
+    #tela-login{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:28px}
+    .login-shell{
+      width:min(960px,100%);
+      display:grid;grid-template-columns:1.15fr .85fr;
+      background:rgba(255,253,248,.96);border:1px solid rgba(143,91,46,.12);
+      border-radius:32px;overflow:hidden;box-shadow:var(--shadow);
+    }
+    .login-brand{
+      padding:52px;
+      background:linear-gradient(155deg,var(--vinho),var(--preto-mid));
+      color:#f8f9ff;position:relative;overflow:hidden;
+    }
+    .login-brand::before{
+      content:'';position:absolute;right:-60px;bottom:-60px;
+      width:280px;height:280px;border-radius:50%;
+      background:rgba(227,6,19,.14);filter:blur(30px);
+    }
+    .logo{font-family:'Playfair Display',serif;font-size:2.4rem;font-weight:900;color:#f1d79a;margin-bottom:22px}
+    .logo em{color:#fff;font-style:italic}
+    .login-kicker{
+      display:inline-flex;align-items:center;gap:8px;
+      padding:7px 13px;border:1px solid rgba(255,255,255,.14);border-radius:999px;
+      font-size:.76rem;letter-spacing:.09em;text-transform:uppercase;color:#f0f4ff;margin-bottom:20px;
+    }
+    .login-title{font-family:'Playfair Display',serif;font-size:2rem;line-height:1.1;margin-bottom:14px}
+    .login-copy{color:rgba(255,255,255,.82);line-height:1.75;font-size:.94rem}
+    .brand-notes{display:grid;gap:12px;margin-top:32px}
+    .brand-note{
+      display:flex;gap:12px;align-items:flex-start;
+      padding:13px 15px;border:1px solid rgba(255,255,255,.07);
+      background:rgba(255,255,255,.04);border-radius:14px;
+    }
+    .brand-note .ico{font-size:1.1rem;margin-top:1px}
+    .brand-note strong{display:block;margin-bottom:3px;font-size:.93rem}
+    .brand-note span{color:rgba(255,255,255,.7);font-size:.87rem;line-height:1.55}
+    .login-box{
+      padding:50px 40px;background:rgba(255,255,255,.97);
+      display:flex;flex-direction:column;justify-content:center;
+    }
+    .box-title{font-family:'Playfair Display',serif;font-size:1.75rem;margin-bottom:7px}
+    .box-sub{color:var(--muted);margin-bottom:26px;line-height:1.65;font-size:.93rem}
+    .field{margin-bottom:15px}
+    .field label{
+      display:block;margin-bottom:6px;font-size:.76rem;font-weight:800;
+      letter-spacing:.08em;text-transform:uppercase;color:#755d4e;
+    }
+    .field input{
+      width:100%;border:1.5px solid var(--line);background:#fff;
+      border-radius:13px;padding:13px 15px;outline:none;
+      transition:.2s border-color,.2s box-shadow;
+    }
+    .field input:focus{border-color:rgba(227,6,19,.65);box-shadow:0 0 0 4px rgba(227,6,19,.07)}
+    .btn-main,.btn-soft,.btn-danger,.btn-line{
+      border:none;border-radius:13px;cursor:pointer;
+      transition:.16s transform,.16s opacity,.16s box-shadow;
+      font-weight:700;
+    }
+    .btn-main.btn-primary{
+      background:var(--mostarda);
+      color:var(--preto-mid);padding:13px 18px;width:100%;
+      box-shadow:var(--sombra-m);font-size:.95rem;border-radius:var(--radius-sm);
+    }
+    .btn-main.btn-primary:hover{transform:translateY(-2px);box-shadow:0 14px 28px rgba(227,6,19,.35)}
+    .btn-soft.btn-ghost{
+      background:rgba(255,255,255,.1);color:#fff;
+      padding:11px 14px;border:1px solid rgba(255,255,255,.22);width:100%;
+      backdrop-filter:blur(5px);
+    }
+    .btn-soft:hover{background:rgba(255,255,255,.15)}
+    .btn-danger{
+      background:#fff;border:1.5px solid rgba(182,74,52,.2);
+      color:var(--danger);padding:11px 14px;
+    }
+    .btn-line{
+      background:#fff;border:1.5px solid #e8d9c7;
+      color:#5e493e;padding:9px 13px;font-size:.86rem;
+    }
+    .btn-line:hover{border-color:#c9a47e}
+    .login-erro{
+      display:none;margin-top:14px;padding:11px 13px;border-radius:11px;
+      background:rgba(182,74,52,.07);border:1px solid rgba(182,74,52,.18);
+      color:var(--danger);text-align:center;font-size:.9rem;
+    }
+
+    /* ── APP SHELL ───────────────────────────── */
+    #tela-painel{display:none;min-height:100vh}
+    .app-shell{display:grid;grid-template-columns:260px 1fr;min-height:100vh}
+
+    .sidebar{
+      background:var(--preto-mid);color:#f8f9ff;
+      padding:22px 16px;display:flex;flex-direction:column;gap:16px;
+      border-right:1px solid rgba(255,255,255,.06);
+      position:sticky;top:0;height:100vh;overflow-y:auto;
+    }
+    .side-logo{font-family:'Playfair Display',serif;font-size:1.7rem;color:#f0d186;font-weight:900;padding:4px 8px}
+    .side-logo em{color:#fff;font-style:italic}
+    .side-user{
+      background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.07);
+      border-radius:16px;padding:14px;
+    }
+    .pill{
+      display:inline-flex;align-items:center;gap:7px;border-radius:999px;
+      background:rgba(227,6,19,.12);color:var(--mostarda-cl);
+      padding:5px 11px;font-size:.74rem;font-weight:700;letter-spacing:.05em;
+      text-transform:uppercase;margin-bottom:10px;
+    }
+    .side-user strong{display:block;font-size:.97rem}
+    .side-user span{display:block;color:#d4bfaa;font-size:.86rem;margin-top:3px}
+    .nav{display:grid;gap:6px}
+    .nav-btn{
+      width:100%;text-align:left;padding:12px 14px;
+      background:transparent;color:#d4c5b4;border:1px solid transparent;
+      border-radius:12px;cursor:pointer;font-weight:600;font-size:.92rem;
+      display:flex;align-items:center;gap:9px;
+      transition:.15s background,.15s color;
+    }
+    .nav-btn:hover{background:rgba(255,255,255,.06);color:#fff}
+    .nav-btn.active{background:rgba(255,255,255,.09);border-color:rgba(227,6,19,.22);color:#fff;font-weight:700}
+    .nav-badge{
+      margin-left:auto;background:var(--mostarda);color:var(--preto-mid);
+      border-radius:999px;padding:2px 8px;font-size:.72rem;font-weight:800;
+    }
+    .side-bottom{margin-top:auto;display:grid;gap:8px}
+    .side-note{
+      background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.07);
+      border-radius:var(--radius-sm);padding:12px;color:#c8b9aa;font-size:.84rem;line-height:1.6;
+    }
+
+    .main{display:flex;flex-direction:column;min-width:0}
+    .topbar{
+      display:flex;align-items:center;justify-content:space-between;gap:16px;
+      padding:22px 26px 16px;border-bottom:1px solid var(--line);
+      background:rgba(255,255,255,.85);backdrop-filter:blur(6px);
+      position:sticky;top:0;z-index:10;
+    }
+    .topbar h1{font-family:'Playfair Display',serif;font-size:1.8rem;line-height:1.05}
+    .topbar p{color:var(--muted);margin-top:4px;font-size:.9rem}
+    .top-actions{display:flex;align-items:center;gap:12px}
+    .clock{
+      background:rgba(255,255,255,.75);border:1px solid rgba(227,6,19,.12);
+      border-radius:999px;padding:9px 15px;font-weight:700;color:var(--preto-mid);font-size:.88rem;
+    }
+
+    .content{padding:20px 24px 28px;display:flex;flex-direction:column;gap:18px}
+
+    /* metrics */
+    .metrics{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}
+    .metric{
+      background:rgba(255,255,255,.9);border:1px solid rgba(227,6,19,.1);
+      border-radius:var(--radius);padding:18px;box-shadow:var(--sombra-s);
+    }
+    .metric .label{color:var(--muted);font-size:.82rem;font-weight:600;text-transform:uppercase;letter-spacing:.05em}
+    .metric .value{font-size:2rem;font-weight:900;line-height:1;margin:8px 0 5px}
+    .metric .sub{font-size:.82rem;color:#9a8a7e}
+    .metric.highlight .value{color:var(--mostarda)}
+
+    /* panels */
+    .panel{display:none;gap:18px;flex-direction:column}
+    .panel.active{display:flex}
+
+    /* toolbar */
+    .toolbar{
+      display:flex;gap:12px;align-items:center;justify-content:space-between;flex-wrap:wrap;
+      background:rgba(255,255,255,.88);border:1px solid rgba(227,6,19,.1);
+      border-radius:var(--radius);padding:13px 15px;
+    }
+    .toolbar-left,.toolbar-right{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+    .search input,.input,.select,.textarea{
+      border:1.5px solid var(--line);background:#fff;
+      border-radius:11px;padding:11px 13px;outline:none;
+      transition:.18s border-color;width:100%;
+    }
+    .search{position:relative;min-width:240px}
+    .search input:focus,.input:focus,.select:focus,.textarea:focus{border-color:rgba(227,6,19,.5)}
+    .chips{display:flex;gap:7px;flex-wrap:wrap}
+    .chip{
+      padding:8px 13px;border-radius:999px;border:1.5px solid var(--line);
+      background:#fff;font-weight:700;cursor:pointer;color:#6d5a50;font-size:.85rem;
+      transition:.15s background,.15s border-color;
+    }
+    .chip:hover{border-color:#c9a47e}
+    .chip.active{background:var(--creme-esc);border-color:var(--mostarda);color:var(--preto-mid)}
+
+    /* card */
+    .card{
+      background:rgba(255,255,255,.9);border:1px solid rgba(227,6,19,.1);
+      border-radius:var(--radius-xl);box-shadow:var(--sombra-m);overflow:hidden;
+    }
+    .card-head{
+      display:flex;align-items:center;justify-content:space-between;
+      padding:16px 18px 13px;border-bottom:1px solid #eee0d0;
+    }
+    .card-head h2{font-family:'Playfair Display',serif;font-size:1.2rem}
+    .badge{
+      background:#f1e2ce;color:#7a5228;font-weight:800;
+      border-radius:999px;padding:5px 10px;font-size:.78rem;
+    }
+    .badge.verde{background:rgba(74,82,64,.15);color:var(--oliva)}
+    .badge.azul{background:var(--creme-esc);color:var(--vinho)}
+    .badge.warn{background:rgba(227,6,19,.15);color:var(--mostarda)}
+
+    /* ── PEDIDOS ───────────────────────────── */
+    .pedidos-layout{display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px}
+    .col-status{display:flex;flex-direction:column;gap:12px}
+    .col-header{
+      display:flex;align-items:center;justify-content:space-between;
+      padding:13px 15px;border-radius:14px;margin-bottom:2px;
+    }
+    .col-header.recebido{background:var(--creme-esc);border:1.5px solid rgba(227,6,19,.2)}
+    .col-header.em_preparo{background:#e8f1ff;border:1.5px solid var(--cinza-borda)}
+    .col-header.pronto{background:#e7f5e8;border:1.5px solid rgba(74,82,64,.2)}
+    .col-header span{font-weight:800;font-size:.92rem}
+    .col-count{
+      font-size:.75rem;font-weight:800;padding:3px 9px;
+      border-radius:999px;
+    }
+    .recebido .col-count{background:rgba(227,6,19,.2);color:var(--mostarda)}
+    .em_preparo .col-count{background:var(--creme-esc);color:var(--vinho)}
+    .pronto .col-count{background:rgba(74,82,64,.2);color:var(--oliva)}
+
+    .pedido-card{
+      background:#fff;border:1.5px solid #eadccc;border-radius:16px;
+      padding:15px;display:grid;gap:10px;
+      box-shadow:0 6px 16px rgba(36,25,21,.04);
+      transition:.16s transform,.16s border-color,.16s box-shadow;
+    }
+    .pedido-card:hover{transform:translateY(-1px);border-color:#d7b894}
+    .pedido-card.urgente{border-left:4px solid var(--terracota)}
+    .pedido-top{display:flex;align-items:flex-start;justify-content:space-between;gap:8px}
+    .pedido-num{font-weight:900;font-size:1rem}
+    .pedido-time{font-size:.78rem;color:var(--muted)}
+    .pedido-cliente{font-size:.88rem;color:#5e4a3c}
+    .pedido-itens{
+      display:grid;gap:5px;padding:10px;
+      background:#fdf7ef;border:1px solid #ede2cf;border-radius:11px;
+    }
+    .item-linha{display:flex;justify-content:space-between;font-size:.86rem}
+    .item-qtd{font-weight:800;color:var(--accent)}
+    .pedido-footer{display:flex;align-items:center;justify-content:space-between;gap:8px;flex-wrap:wrap}
+    .pedido-total{font-weight:900;font-size:1rem;color:var(--accent)}
+    .pedido-actions{display:flex;gap:7px;flex-wrap:wrap}
+
+    .btn-avancar{
+      border:none;cursor:pointer;border-radius:10px;
+      padding:8px 13px;font-weight:700;font-size:.82rem;
+      transition:.15s transform,.15s opacity;
+    }
+    .btn-avancar:hover{transform:translateY(-1px)}
+    .btn-avancar.para-preparo{background:var(--vinho);color:#fff;border-radius:var(--radius-sm)}
+    .btn-avancar.para-pronto{background:var(--oliva);color:#fff;border-radius:var(--radius-sm)}
+    .btn-avancar.concluido{background:#eadccc;color:#7a6050;cursor:default}
+    .btn-cancelar-pedido{background:#fff;border:1.5px solid rgba(182,74,52,.18);color:var(--danger);border-radius:10px;padding:7px 11px;font-weight:700;font-size:.78rem;cursor:pointer}
+
+    .timer-badge{
+      display:inline-flex;align-items:center;gap:5px;
+      padding:5px 10px;border-radius:999px;font-size:.78rem;font-weight:700;
+    }
+    .timer-badge.ok{background:rgba(74,82,64,.15);color:var(--oliva)}
+    .timer-badge.warn{background:rgba(227,6,19,.15);color:var(--mostarda)}
+    .timer-badge.late{background:rgba(196,0,42,.15);color:var(--terracota)}
+
+    .empty-col{
+      display:flex;align-items:center;justify-content:center;
+      min-height:180px;color:var(--muted);font-size:.9rem;
+      border:2px dashed #e5d5c0;border-radius:14px;text-align:center;padding:24px;
+    }
+
+    /* ── ATENDIMENTO ───────────────────────── */
+    .atendimento-layout{display:grid;grid-template-columns:340px 1fr;gap:16px;min-height:580px}
+    .ticket-list{max-height:600px;overflow:auto;padding:8px;display:grid;gap:8px}
+    .ticket{
+      background:#fff;border:1.5px solid #eadccc;border-radius:16px;
+      padding:13px;cursor:pointer;transition:.15s transform,.15s border-color,.15s box-shadow;
+    }
+    .ticket:hover{transform:translateY(-1px);border-color:#d7b894;box-shadow:0 8px 20px rgba(36,25,21,.06)}
+    .ticket.active{border-color:#bf8c55;box-shadow:0 10px 24px rgba(143,91,46,.11);background:#fffaf4}
+    .ticket-top{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:8px}
+    .dot{width:9px;height:9px;border-radius:50%;display:inline-block}
+    .aguardando{background:var(--warn)}.em_atendimento{background:var(--ok)}.encerrado{background:#a89b92}
+    .ticket-title{font-weight:900;font-size:.95rem}
+    .ticket-meta,.muted{color:var(--muted);font-size:.86rem}
+    .priority{
+      display:inline-flex;align-items:center;gap:5px;margin-top:8px;
+      font-size:.74rem;border-radius:999px;padding:5px 9px;font-weight:800;
+    }
+    .priority.baixa{background:rgba(74,82,64,.15);color:var(--oliva)}
+    .priority.media{background:rgba(227,6,19,.15);color:var(--mostarda)}
+    .priority.alta{background:rgba(196,0,42,.15);color:var(--terracota)}
+
+    .chat-wrap{display:flex;flex-direction:column;min-height:580px}
+    .empty{display:flex;align-items:center;justify-content:center;flex:1;text-align:center;color:var(--muted);padding:32px}
+    .empty-box{max-width:400px}
+    .empty-box h3{font-family:'Playfair Display',serif;font-size:1.4rem;margin-bottom:9px;color:var(--ink)}
+    .chat-head{
+      padding:18px 20px;border-bottom:1px solid #eee0d0;
+      display:grid;gap:14px;background:linear-gradient(180deg,rgba(255,248,238,.97),rgba(255,253,248,.97));
+    }
+    .client-row{display:flex;align-items:flex-start;justify-content:space-between;gap:16px;flex-wrap:wrap}
+    .client-main{display:flex;gap:13px}
+    .avatar{
+      width:50px;height:50px;border-radius:15px;
+      background:linear-gradient(180deg,#f0d186,#b8833d);
+      display:flex;align-items:center;justify-content:center;
+      color:#fff;font-size:1.2rem;font-weight:900;
+      box-shadow:0 8px 18px rgba(184,131,61,.2);
+    }
+    .client-name{font-family:'Playfair Display',serif;font-size:1.3rem;margin-bottom:3px}
+    .client-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:9px}
+    .mini{background:#fff;border:1px solid #eadccc;border-radius:13px;padding:11px}
+    .mini .k{font-size:.73rem;color:var(--muted);text-transform:uppercase;font-weight:800;letter-spacing:.06em}
+    .mini .v{margin-top:5px;font-weight:800;font-size:.92rem}
+    .problem-box{background:#fff;border:1px solid #eadccc;border-radius:13px;padding:13px;line-height:1.7;color:#543f33;font-size:.92rem}
+    .chat-messages{
+      flex:1;overflow:auto;padding:16px;
+      background:linear-gradient(180deg,rgba(255,255,255,.26),rgba(255,255,255,.26)),
+        repeating-linear-gradient(0deg,transparent,transparent 22px,rgba(143,91,46,.013) 22px,rgba(143,91,46,.013) 23px);
+      display:flex;flex-direction:column;gap:11px;
+    }
+    .msg{display:flex;gap:9px;align-items:flex-end}
+    .msg.func{justify-content:flex-end}
+    .bubble{max-width:min(70%,660px);padding:12px 14px;border-radius:16px;line-height:1.6;box-shadow:0 6px 16px rgba(36,25,21,.04)}
+    .msg.cli .bubble{background:#fff;border:1px solid #eadccc;border-bottom-left-radius:5px}
+    .msg.func .bubble{background:linear-gradient(180deg,#b8833d,#8f5b2e);color:#fff;border-bottom-right-radius:5px}
+    .hour{font-size:.72rem;color:var(--muted);margin-top:5px}
+    .quick-actions{
+      display:flex;gap:7px;flex-wrap:wrap;padding:12px 16px 10px;
+      border-top:1px solid #eee0d0;background:rgba(255,253,248,.92);
+    }
+    .quick{
+      padding:8px 11px;border-radius:999px;border:1.5px solid #eadccc;background:#fff;
+      cursor:pointer;font-size:.82rem;font-weight:700;color:#6b5648;
+      transition:.14s background;
+    }
+    .quick:hover{background:#f7f0e5}
+    .chat-actions{
+      padding:13px 16px 15px;display:grid;grid-template-columns:1fr auto auto;gap:9px;
+      background:rgba(255,253,248,.95);border-top:1px solid #eee0d0;
+    }
+
+    /* ── FISCALIZAÇÃO ─────────────────────── */
+    .fisc-grid{display:grid;grid-template-columns:1.1fr .9fr;gap:16px}
+    .fisc-tools{
+      display:flex;gap:10px;flex-wrap:wrap;align-items:center;
+      justify-content:space-between;padding:15px 17px;border-bottom:1px solid #eee0d0;
+    }
+    .section-title{font-family:'Playfair Display',serif;font-size:1.15rem}
+    .product-list{padding:14px;display:grid;gap:11px;max-height:680px;overflow:auto}
+    .product-card{background:#fff;border:1.5px solid #eadccc;border-radius:16px;padding:14px;display:grid;gap:10px}
+    .product-top{display:flex;align-items:flex-start;justify-content:space-between;gap:11px}
+    .product-name{font-weight:900;font-size:1rem}
+    .product-tags{display:flex;gap:7px;flex-wrap:wrap}
+    .tag{padding:5px 9px;border-radius:999px;font-size:.74rem;font-weight:800}
+    .tag.ok{background:rgba(74,82,64,.15);color:var(--oliva)}.tag.low{background:rgba(227,6,19,.15);color:var(--mostarda)}.tag.critical{background:rgba(196,0,42,.15);color:var(--terracota)}
+    .grid-2{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}
+    .product-meta{background:#fcf7ef;border:1px solid #efe2d1;border-radius:12px;padding:9px 11px}
+    .product-meta .k{font-size:.72rem;color:var(--muted);text-transform:uppercase;font-weight:800}
+    .product-meta .v{margin-top:3px;font-weight:800;font-size:.9rem}
+    .actions-row{display:flex;gap:7px;flex-wrap:wrap}
+    .form-inner{padding:16px;display:grid;gap:13px}
+    .form-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:11px}
+    .textarea{min-height:96px;resize:vertical}
+    .checklist{display:grid;gap:9px}
+    .check{
+      display:flex;align-items:center;justify-content:space-between;gap:12px;
+      background:#fff;border:1.5px solid #eadccc;border-radius:13px;padding:11px 13px;
+      font-size:.9rem;
+    }
+    .check input{transform:scale(1.15)}
+    .log-list{display:grid;gap:7px;max-height:200px;overflow:auto}
+    .log-item{background:#fff;border:1px solid #eadccc;border-radius:12px;padding:11px;font-size:.87rem;color:#5e493e}
+
+    @media(max-width:1280px){
+      .pedidos-layout{grid-template-columns:1fr 1fr}
+      .metrics{grid-template-columns:repeat(2,minmax(0,1fr))}
+    }
+    @media(max-width:1100px){
+      .atendimento-layout,.fisc-grid{grid-template-columns:1fr}
+      .client-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+    }
+    @media(max-width:820px){
+      .login-shell{grid-template-columns:1fr}
+      .login-brand{display:none}
+      .app-shell{grid-template-columns:1fr}
+      .sidebar{position:static;height:auto}
+      .pedidos-layout{grid-template-columns:1fr}
+      .form-grid,.grid-2{grid-template-columns:1fr}
+      .chat-actions{grid-template-columns:1fr}
+      .topbar{padding:16px 18px}
+      .content{padding:14px 16px 20px}
+      .metrics{grid-template-columns:1fr 1fr}
+    }
+  </style>
+</head>
+<body>
+
+<!-- ══════════════════════ LOGIN ══════════════════════ -->
+<div id="tela-login">
+  <div class="login-shell">
+    <section class="login-brand">
+      <div class="login-kicker">● Painel interno SnapBite</div>
+      <div class="logo">Snap<em>Bite</em></div>
+      <h1 class="login-title">Pedidos em tempo real. Controle de verdade.</h1>
+      <p class="login-copy">Gerencie pedidos do recebimento até a retirada, atenda chamados e fiscalize produtos em um painel simples e funcional.</p>
+      <div class="brand-notes">
+        <div class="brand-note">
+          <div class="ico">🚀</div>
+          <div><strong>Sistema de pedidos</strong><span>Atualize status em tempo real: Recebido → Em preparo → Pronto.</span></div>
+        </div>
+        <div class="brand-note">
+          <div class="ico">💬</div>
+          <div><strong>Atendimento organizado</strong><span>Fila de chamados com prioridade, histórico e respostas rápidas.</span></div>
+        </div>
+        <div class="brand-note">
+          <div class="ico">📦</div>
+          <div><strong>Fiscalização</strong><span>Estoque, validade, temperatura e checklist diário integrados.</span></div>
+        </div>
+      </div>
+    </section>
+    <section class="login-box">
+      <h2 class="box-title">Entrar no painel</h2>
+      <p class="box-sub">Use suas credenciais de funcionário para acessar o sistema.</p>
+      <form id="form-login-func">
+        <div class="field">
+          <label for="func-usuario">Usuário</label>
+          <input type="text" id="func-usuario" placeholder="admin" required autocomplete="username">
+        </div>
+        <div class="field">
+          <label for="func-senha">Senha</label>
+          <input type="password" id="func-senha" placeholder="••••••••" required autocomplete="current-password">
+        </div>
+        <button class="btn-main" type="submit">Entrar agora →</button>
+        <div class="login-erro" id="login-erro">Usuário ou senha inválidos.</div>
+      </form>
+    </section>
+  </div>
+</div>
+
+<!-- ══════════════════════ PAINEL ══════════════════════ -->
+<div id="tela-painel">
+  <div class="app-shell">
+    <aside class="sidebar">
+      <div class="side-logo">Snap<em>Bite</em></div>
+      <div class="side-user">
+        <div class="pill">🧑‍🍳 Ativo</div>
+        <strong id="nome-func-logado">—</strong>
+        <span>Operação interna · SnapBite</span>
+      </div>
+      <nav class="nav">
+        <button class="nav-btn active" data-panel="pedidos-panel">
+          🚀 Pedidos
+          <span class="nav-badge hidden" id="badge-pedidos-nav">0</span>
+        </button>
+        <button class="nav-btn" data-panel="atendimento-panel">💬 Atendimento</button>
+        <button class="nav-btn" data-panel="fiscalizacao-panel">📦 Fiscalização</button>
+      </nav>
+      <div class="side-note">
+        Atualizar o status de um pedido notifica o cliente em tempo real na página de acompanhamento.
+      </div>
+      <div class="side-bottom">
+        <button class="btn-soft" id="btn-exportar-chat">Exportar conversa</button>
+        <button class="btn-soft" id="btn-sair-func">Sair do painel</button>
+      </div>
+    </aside>
+
+    <main class="main">
+      <div class="topbar">
+        <div>
+          <h1 id="topbar-titulo">Pedidos</h1>
+          <p id="topbar-sub">Acompanhe e atualize os pedidos em tempo real.</p>
+        </div>
+        <div class="top-actions">
+          <div class="clock" id="clock-now">--:--</div>
+        </div>
+      </div>
+
+      <div class="content">
+        <!-- MÉTRICAS -->
+        <section class="metrics">
+          <div class="metric highlight">
+            <div class="label">Pedidos ativos</div>
+            <div class="value" id="m-pedidos-ativos">0</div>
+            <div class="sub">Recebidos ou em preparo</div>
+          </div>
+          <div class="metric">
+            <div class="label">Prontos p/ retirada</div>
+            <div class="value" id="m-prontos">0</div>
+            <div class="sub">Aguardando o cliente</div>
+          </div>
+          <div class="metric">
+            <div class="label">Chamados abertos</div>
+            <div class="value" id="m-open">0</div>
+            <div class="sub">Aguardando ou em atendimento</div>
+          </div>
+          <div class="metric">
+            <div class="label">Produtos críticos</div>
+            <div class="value" id="m-critical">0</div>
+            <div class="sub">Estoque, validade ou temp.</div>
+          </div>
+        </section>
+
+        <!-- ── PEDIDOS ── -->
+        <section class="panel active" id="pedidos-panel">
+          <div class="toolbar">
+            <div class="toolbar-left">
+              <div class="search">
+                <input id="busca-pedidos" type="text" placeholder="Buscar por nome ou número do pedido…">
+              </div>
+            </div>
+            <div class="toolbar-right">
+              <div class="chips">
+                <button class="chip active" data-filtro-pedido="todos">Todos</button>
+                <button class="chip" data-filtro-pedido="recebido">🟡 Recebidos</button>
+                <button class="chip" data-filtro-pedido="em_preparo">🔵 Em preparo</button>
+                <button class="chip" data-filtro-pedido="pronto">🟢 Prontos</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="pedidos-layout" id="pedidos-kanban">
+            <!-- gerado pelo JS -->
+          </div>
+        </section>
+
+        <!-- ── ATENDIMENTO ── -->
+        <section class="panel" id="atendimento-panel">
+          <div class="toolbar">
+            <div class="toolbar-left">
+              <div class="search">
+                <input id="busca-chamados" type="text" placeholder="Buscar por cliente, assunto ou protocolo">
+              </div>
+            </div>
+            <div class="toolbar-right">
+              <div class="chips">
+                <button class="chip active" data-filtro="todos">Todos</button>
+                <button class="chip" data-filtro="aguardando">Aguardando</button>
+                <button class="chip" data-filtro="em_atendimento">Em atendimento</button>
+                <button class="chip" data-filtro="encerrado">Encerrados</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="atendimento-layout">
+            <div class="card">
+              <div class="card-head">
+                <h2>Fila de chamados</h2>
+                <span class="badge" id="badge-total-chamados">0</span>
+              </div>
+              <div class="ticket-list" id="chamados-lista"></div>
+            </div>
+            <div class="card chat-wrap" id="chat-card">
+              <div class="empty" id="chat-vazio">
+                <div class="empty-box">
+                  <h3>Selecione um chamado</h3>
+                  <p>Abra um atendimento na lista ao lado para ver a conversa e responder o cliente.</p>
+                </div>
+              </div>
+              <div id="chat-conteudo" class="hidden"></div>
+            </div>
+          </div>
+        </section>
+
+        <!-- ── FISCALIZAÇÃO ── -->
+        <section class="panel" id="fiscalizacao-panel">
+          <div class="fisc-grid">
+            <div class="card">
+              <div class="fisc-tools">
+                <div>
+                  <div class="section-title">Fiscalização de produtos</div>
+                  <div class="muted" style="font-size:.86rem;margin-top:3px">Estoque, validade e temperatura.</div>
+                </div>
+                <input class="input" id="busca-produto" placeholder="Buscar produto…" style="min-width:200px;max-width:240px">
+              </div>
+              <div class="product-list" id="product-list"></div>
+            </div>
+
+            <div class="card">
+              <div class="fisc-tools">
+                <div>
+                  <div class="section-title">Registrar produto</div>
+                  <div class="muted" style="font-size:.86rem;margin-top:3px">Salvo localmente neste painel.</div>
+                </div>
+              </div>
+              <div class="form-inner">
+                <div class="form-grid">
+                  <input class="input" id="p-nome" placeholder="Nome do produto">
+                  <select class="select" id="p-categoria">
+                    <option value="Lanche">Lanche</option><option value="Bebida">Bebida</option>
+                    <option value="Sobremesa">Sobremesa</option><option value="Insumo">Insumo</option>
+                  </select>
+                  <input class="input" id="p-estoque" type="number" placeholder="Estoque atual">
+                  <input class="input" id="p-minimo" type="number" placeholder="Estoque mínimo">
+                  <input class="input" id="p-validade" type="date">
+                  <input class="input" id="p-temp" type="number" step="0.1" placeholder="Temperatura °C">
+                  <input class="input" id="p-lote" placeholder="Lote">
+                  <select class="select" id="p-status">
+                    <option value="ok">Conforme</option><option value="low">Atenção</option><option value="critical">Crítico</option>
+                  </select>
+                </div>
+                <textarea class="textarea input" id="p-obs" placeholder="Observações da fiscalização"></textarea>
+                <button class="btn-main" id="btn-add-produto" type="button">Salvar produto</button>
+                <div>
+                  <div class="section-title" style="font-size:1rem;margin-bottom:9px">Checklist diário</div>
+                  <div class="checklist">
+                    <label class="check"><span>Superfícies higienizadas</span><input type="checkbox" class="daily-check" value="Superfícies higienizadas"></label>
+                    <label class="check"><span>Refrigeração conferida</span><input type="checkbox" class="daily-check" value="Refrigeração conferida"></label>
+                    <label class="check"><span>Validades revisadas</span><input type="checkbox" class="daily-check" value="Validades revisadas"></label>
+                    <label class="check"><span>Estoque mínimo revisado</span><input type="checkbox" class="daily-check" value="Estoque mínimo revisado"></label>
+                  </div>
+                </div>
+                <div>
+                  <div class="section-title" style="font-size:1rem;margin-bottom:9px">Últimos registros</div>
+                  <div class="log-list" id="log-list"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+      </div><!-- /content -->
+    </main>
+  </div>
+</div>
+
+<script type="module">
+  import { initializeApp, getApps } from 'https://www.gstatic.com/firebasejs/11.0.2/firebase-app.js';
+  import {
+    getFirestore, collection, onSnapshot, doc,
+    updateDoc, arrayUnion, query, orderBy, where
+  } from 'https://www.gstatic.com/firebasejs/11.0.2/firebase-firestore.js';
+
+  const FIREBASE_CONFIG = {
+    apiKey:"AIzaSyCPQuK79XDc8B5bgr8tVSUwcLkSHlVJU6c",
+    authDomain:"snapbite-85943.firebaseapp.com",
+    projectId:"snapbite-85943",
+    storageBucket:"snapbite-85943.firebasestorage.app",
+    messagingSenderId:"839470161933",
+    appId:"1:839470161933:web:fc3fe935406a2406e13544"
+  };
+
+  const app = getApps().length ? getApps()[0] : initializeApp(FIREBASE_CONFIG);
+  const db  = getFirestore(app);
+
+  // ── helpers ──
+  const $ = s => document.querySelector(s);
+  const $$ = s => Array.from(document.querySelectorAll(s));
+  const hora = () => new Date().toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'});
+  function esc(t){ const d=document.createElement('div'); d.textContent=t??''; return d.innerHTML; }
+  function fmtDT(ts){
+    if (!ts) return '—';
+    if (typeof ts==='string') return ts;
+    if (ts?.toDate) return ts.toDate().toLocaleString('pt-BR',{day:'2-digit',month:'2-digit',hour:'2-digit',minute:'2-digit'});
+    return '—';
+  }
+  function minSince(ts){
+    if (!ts) return null;
+    const d = ts?.toDate ? ts.toDate() : new Date(ts);
+    return Math.floor((Date.now()-d)/60000);
+  }
+
+  // ── state ──
+  const FUNCIONARIOS=[
+    {usuario:'admin',    senha:'snapbite123', nome:'Administrador'},
+    {usuario:'lucas',    senha:'lucas2025',   nome:'Lucas Alves'},
+    {usuario:'bernardo', senha:'berna2025',   nome:'Bernardo Vieira'},
+    {usuario:'samuel',   senha:'samuel2025',  nome:'Samuel Monteiro'},
+  ];
+  const QUICK_REPLIES=[
+    'Olá! Já estou verificando seu pedido.',
+    'Obrigado por avisar. Vou resolver isso agora.',
+    'Seu atendimento já foi iniciado por aqui.',
+    'Pode me mandar mais detalhes, por favor?',
+    'Pronto! Seu chamado foi finalizado.'
+  ];
+  const DEFAULT_PRODUCTS=[
+    {id:'p1',nome:'Pão brioche',categoria:'Insumo',estoque:18,minimo:12,validade:'2026-04-12',temperatura:24,lote:'BR-042',status:'ok',observacoes:'Armazenado seco.',ultimaInspecao:null},
+    {id:'p2',nome:'Blend artesanal',categoria:'Insumo',estoque:4,minimo:8,validade:'2026-04-11',temperatura:2.8,lote:'ME-211',status:'critical',observacoes:'Comprar reposição urgente.',ultimaInspecao:null},
+    {id:'p3',nome:'Suco natural',categoria:'Bebida',estoque:9,minimo:6,validade:'2026-04-10',temperatura:5.9,lote:'SJ-778',status:'low',observacoes:'Conferir refrigeração.',ultimaInspecao:null}
+  ];
+
+  let funcLogado=null, todosOsChamados=[], chamadoAtivo=null;
+  let filtroAtual='todos', buscaAtual='', unsubChat=null;
+  let todosPedidos=[], filtroPedido='todos', buscaPedido='';
+  let produtos=carregarProdutos(), logs=carregarLogs();
+
+  // ── clock ──
+  function tickClock(){
+    $('#clock-now').textContent=new Date().toLocaleString('pt-BR',{weekday:'short',day:'2-digit',month:'2-digit',hour:'2-digit',minute:'2-digit'});
+  }
+  setInterval(tickClock,1000); tickClock();
+
+  // ── LOGIN ──
+  $('#form-login-func').addEventListener('submit',e=>{
+    e.preventDefault();
+    const u=$('#func-usuario').value.trim().toLowerCase();
+    const s=$('#func-senha').value;
+    const func=FUNCIONARIOS.find(f=>f.usuario===u&&f.senha===s);
+    if(!func){ $('#login-erro').style.display='block'; $('#func-senha').value=''; return; }
+    funcLogado=func;
+    $('#login-erro').style.display='none';
+    $('#tela-login').style.display='none';
+    $('#tela-painel').style.display='block';
+    $('#nome-func-logado').textContent=func.nome;
+    iniciarPedidos();
+    iniciarChamados();
+    renderProducts(); renderLogs(); updateMetrics();
+  });
+
+  $('#btn-sair-func').addEventListener('click',()=>{
+    funcLogado=null; chamadoAtivo=null;
+    if(unsubChat){unsubChat();unsubChat=null;}
+    $('#tela-painel').style.display='none';
+    $('#tela-login').style.display='flex';
+    $('#func-usuario').value=''; $('#func-senha').value='';
+  });
+
+  // ── NAV ──
+  const TOPBAR={
+    'pedidos-panel':     ['Pedidos','Acompanhe e atualize os pedidos em tempo real.'],
+    'atendimento-panel': ['Atendimento','Chamados dos clientes em tempo real.'],
+    'fiscalizacao-panel':['Fiscalização','Controle de estoque, validade e temperatura.'],
+  };
+  $$('.nav-btn').forEach(btn=>{
+    btn.addEventListener('click',()=>{
+      $$('.nav-btn').forEach(b=>b.classList.remove('active'));
+      btn.classList.add('active');
+      $$('.panel').forEach(p=>p.classList.remove('active'));
+      $('#'+btn.dataset.panel).classList.add('active');
+      const [t,s]=TOPBAR[btn.dataset.panel]||['Painel',''];
+      $('#topbar-titulo').textContent=t;
+      $('#topbar-sub').textContent=s;
+    });
+  });
+
+  // ══════════════════════════════════════════
+  // PEDIDOS
+  // ══════════════════════════════════════════
+  function iniciarPedidos(){
+    const q=query(collection(db,'pedidos'),orderBy('criadoEm','desc'));
+    onSnapshot(q,snap=>{
+      todosPedidos=snap.docs.map(d=>({id:d.id,...d.data()}));
+      renderKanban();
+      updateMetrics();
+    });
+  }
+
+  $('#busca-pedidos').addEventListener('input',e=>{
+    buscaPedido=e.target.value.trim().toLowerCase();
+    renderKanban();
+  });
+  $$('[data-filtro-pedido]').forEach(chip=>{
+    chip.addEventListener('click',()=>{
+      $$('[data-filtro-pedido]').forEach(c=>c.classList.remove('active'));
+      chip.classList.add('active');
+      filtroPedido=chip.dataset.filtroPedido;
+      renderKanban();
+    });
+  });
+
+  function pedidosFiltrados(){
+    return todosPedidos.filter(p=>{
+      const statusOk=filtroPedido==='todos'||p.status===filtroPedido;
+      const txt=`${p.clienteNome||''} ${p.numero||''}`.toLowerCase();
+      const buscaOk=!buscaPedido||txt.includes(buscaPedido);
+      return statusOk&&buscaOk;
+    });
+  }
+
+  function renderKanban(){
+    const wrap=$('#pedidos-kanban');
+    const pedidos=pedidosFiltrados();
+
+    const COLS=[
+      {key:'recebido',   label:'🟡 Recebido',     cls:'recebido'},
+      {key:'em_preparo', label:'🔵 Em preparo',    cls:'em_preparo'},
+      {key:'pronto',     label:'🟢 Pronto p/ retirada', cls:'pronto'},
+    ];
+
+    if(filtroPedido!=='todos'){
+      // single column mode
+      const col=COLS.find(c=>c.key===filtroPedido)||COLS[0];
+      wrap.innerHTML=`<div class="col-status" style="grid-column:1/-1">`+
+        colHeader(col,pedidos.length)+
+        pedidos.map(p=>cardHTML(p)).join('')+
+        (pedidos.length?'':'<div class="empty-col">Nenhum pedido neste status.</div>')+
+      `</div>`;
+    } else {
+      wrap.innerHTML=COLS.map(col=>{
+        const itens=pedidos.filter(p=>p.status===col.key);
+        return `<div class="col-status">`+
+          colHeader(col,itens.length)+
+          itens.map(p=>cardHTML(p)).join('')+
+          (itens.length?'':'<div class="empty-col">Nenhum pedido aqui.</div>')+
+        `</div>`;
+      }).join('');
+    }
+
+    // bind buttons
+    wrap.querySelectorAll('[data-pedido-action]').forEach(btn=>{
+      btn.addEventListener('click',()=>handlePedidoAction(btn.dataset.pedidoAction, btn.dataset.pedidoId));
+    });
+
+    // badge nav
+    const ativos=todosPedidos.filter(p=>p.status==='recebido'||p.status==='em_preparo').length;
+    const badge=$('#badge-pedidos-nav');
+    if(ativos>0){ badge.textContent=ativos; badge.classList.remove('hidden'); }
+    else { badge.classList.add('hidden'); }
+  }
+
+  function colHeader(col,count){
+    return `<div class="col-header ${col.cls}">
+      <span>${col.label}</span>
+      <span class="col-count">${count}</span>
+    </div>`;
+  }
+
+  function cardHTML(p){
+    const mins=minSince(p.criadoEm);
+    const timerCls=mins===null?'ok':mins<10?'ok':mins<20?'warn':'late';
+    const timerLabel=mins===null?'agora':mins<1?'< 1 min':`${mins} min`;
+    const itens=(p.itens||[]);
+
+    let acaoBtn='';
+    if(p.status==='recebido'){
+      acaoBtn=`<button class="btn-avancar para-preparo" data-pedido-action="preparo" data-pedido-id="${p.id}">🔵 Iniciar preparo</button>`;
+    } else if(p.status==='em_preparo'){
+      acaoBtn=`<button class="btn-avancar para-pronto" data-pedido-action="pronto" data-pedido-id="${p.id}">🟢 Marcar pronto</button>`;
+    } else {
+      acaoBtn=`<button class="btn-avancar concluido" disabled>✅ Retirado</button>`;
+    }
+
+    return `<article class="pedido-card${p.status==='recebido'&&(mins||0)>15?' urgente':''}">
+      <div class="pedido-top">
+        <div>
+          <div class="pedido-num">#${esc(p.numero||p.id.slice(-4).toUpperCase())}</div>
+          <div class="pedido-cliente">👤 ${esc(p.clienteNome||'Cliente')}</div>
+        </div>
+        <div>
+          <div class="timer-badge ${timerCls}">⏱ ${timerLabel}</div>
+          <div class="pedido-time" style="text-align:right;margin-top:4px">${fmtDT(p.criadoEm)}</div>
+        </div>
+      </div>
+      <div class="pedido-itens">
+        ${itens.length ? itens.map(it=>`
+          <div class="item-linha">
+            <span><span class="item-qtd">${esc(String(it.qtd||1))}×</span> ${esc(it.nome||'Item')}</span>
+            <span style="color:var(--muted);font-size:.83rem">R$ ${Number(it.preco||0).toFixed(2).replace('.',',')}</span>
+          </div>`).join('') : `<div class="muted" style="font-size:.86rem">Sem itens cadastrados.</div>`}
+      </div>
+      <div class="pedido-footer">
+        <div class="pedido-total">Total: R$ ${Number(p.total||0).toFixed(2).replace('.',',')}</div>
+        <div class="pedido-actions">
+          ${acaoBtn}
+          ${p.status!=='pronto'?`<button class="btn-cancelar-pedido" data-pedido-action="cancelar" data-pedido-id="${p.id}">✕</button>`:''}
+        </div>
+      </div>
+    </article>`;
+  }
+
+  async function handlePedidoAction(action,id){
+    const ref=doc(db,'pedidos',id);
+    if(action==='preparo'){
+      await updateDoc(ref,{
+        status:'em_preparo',
+        iniciadoEm:new Date().toISOString(),
+        funcResponsavel:funcLogado?.nome||'Funcionário'
+      });
+    } else if(action==='pronto'){
+      await updateDoc(ref,{
+        status:'pronto',
+        prontoEm:new Date().toISOString(),
+        funcResponsavel:funcLogado?.nome||'Funcionário'
+      });
+    } else if(action==='cancelar'){
+      if(confirm('Cancelar este pedido?')){
+        await updateDoc(ref,{status:'cancelado'});
+      }
+    }
+  }
+
+  // ══════════════════════════════════════════
+  // CHAMADOS (mantido do original)
+  // ══════════════════════════════════════════
+  function iniciarChamados(){
+    const q=query(collection(db,'chamados'),orderBy('criadoEm','desc'));
+    onSnapshot(q,snap=>{
+      todosOsChamados=snap.docs.map(d=>({id:d.id,...d.data()}));
+      renderizarLista(); updateMetrics();
+      if(chamadoAtivo){
+        const atual=todosOsChamados.find(c=>c.id===chamadoAtivo);
+        if(atual) renderizarChamado(atual);
+      }
+    });
+  }
+
+  $('#busca-chamados').addEventListener('input',e=>{ buscaAtual=e.target.value.trim().toLowerCase(); renderizarLista(); });
+  $$('.chip[data-filtro]').forEach(chip=>{
+    chip.addEventListener('click',()=>{
+      $$('.chip[data-filtro]').forEach(c=>c.classList.remove('active'));
+      chip.classList.add('active');
+      filtroAtual=chip.dataset.filtro;
+      renderizarLista();
+    });
+  });
+
+  function chamadosFiltrados(){
+    return todosOsChamados.filter(c=>{
+      const statusOk=filtroAtual==='todos'||c.status===filtroAtual;
+      const txt=`${c.nomeCliente||''} ${c.assunto||''} ${c.protocolo||''}`.toLowerCase();
+      return statusOk&&(!buscaAtual||txt.includes(buscaAtual));
+    });
+  }
+
+  function priorityForTicket(c){
+    const text=`${c.assunto||''} ${c.descricao||''}`.toLowerCase();
+    if(/urgente|cancel|errado|sumiu|pagamento|não chegou|nao chegou/.test(text)) return 'alta';
+    if((c.mensagens||[]).length>=4||c.status==='em_atendimento') return 'media';
+    return 'baixa';
+  }
+
+  function labelStatus(s){ return ({aguardando:'Aguardando',em_atendimento:'Em atendimento',encerrado:'Encerrado'})[s]||s; }
+
+  function renderizarLista(){
+    const lista=$('#chamados-lista');
+    const chamados=chamadosFiltrados();
+    $('#badge-total-chamados').textContent=chamados.length;
+    if(!chamados.length){
+      lista.innerHTML=`<div class="empty" style="min-height:220px"><div class="empty-box"><h3>Nenhum chamado</h3><p>Nada encontrado com o filtro atual.</p></div></div>`;
+      return;
+    }
+    lista.innerHTML=chamados.map(c=>{
+      const priority=priorityForTicket(c);
+      const preview=esc((c.descricao||'').slice(0,85)+((c.descricao||'').length>85?'…':''));
+      const ts=c.criadoEm?.toDate?c.criadoEm.toDate().toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'}):'--:--';
+      return `<article class="ticket ${chamadoAtivo===c.id?'active':''}" data-id="${c.id}">
+        <div class="ticket-top">
+          <div style="display:flex;align-items:center;gap:9px">
+            <span class="dot ${c.status}"></span>
+            <div class="ticket-title">${esc(c.nomeCliente||'Cliente')}</div>
+          </div>
+          <div class="ticket-meta">${ts}</div>
+        </div>
+        <div style="font-weight:700;margin-bottom:3px;font-size:.9rem">📌 ${esc(c.assunto||'Sem assunto')}</div>
+        <div class="ticket-meta">${preview}</div>
+        <div class="priority ${priority}" style="margin-top:9px">${priority==='alta'?'⚠️ Alta':priority==='media'?'🕒 Média':'✅ Baixa'}</div>
+      </article>`;
+    }).join('');
+    $$('.ticket').forEach(item=>item.addEventListener('click',()=>abrirChamado(item.dataset.id)));
+  }
+
+  function abrirChamado(id){
+    chamadoAtivo=id;
+    const chamado=todosOsChamados.find(c=>c.id===id);
+    if(!chamado) return;
+    renderizarLista(); renderizarChamado(chamado);
+    if(unsubChat){unsubChat();unsubChat=null;}
+    let prevLen=(chamado.mensagens||[]).length;
+    unsubChat=onSnapshot(doc(db,'chamados',id),snap=>{
+      if(!snap.exists()) return;
+      const data={id:snap.id,...snap.data()};
+      if((data.mensagens||[]).length!==prevLen){
+        renderizarChamado(data);
+        prevLen=(data.mensagens||[]).length;
+      }
+    });
+  }
+
+  function renderizarChamado(chamado){
+    $('#chat-vazio').classList.add('hidden');
+    const cont=$('#chat-conteudo');
+    cont.classList.remove('hidden');
+    const msgs=chamado.mensagens||[];
+    cont.innerHTML=`
+      <div class="chat-head">
+        <div class="client-row">
+          <div class="client-main">
+            <div class="avatar">${esc((chamado.nomeCliente||'C').slice(0,1).toUpperCase())}</div>
+            <div>
+              <div class="client-name">${esc(chamado.nomeCliente||'Cliente')}</div>
+              <div class="muted">Protocolo #${esc(chamado.protocolo||'---')}</div>
+            </div>
+          </div>
+          ${chamado.status==='aguardando'?`<button class="btn-main" id="btn-aceitar" style="width:auto;padding:11px 16px">Iniciar atendimento</button>`:''}
+        </div>
+        <div class="client-grid">
+          <div class="mini"><div class="k">Assunto</div><div class="v">${esc(chamado.assunto||'—')}</div></div>
+          <div class="mini"><div class="k">Status</div><div class="v">${labelStatus(chamado.status)}</div></div>
+          <div class="mini"><div class="k">Aberto em</div><div class="v">${esc(fmtDT(chamado.criadoEm))}</div></div>
+          <div class="mini"><div class="k">Atendente</div><div class="v">${esc(chamado.funcAtendente||'Não definido')}</div></div>
+        </div>
+        <div class="problem-box"><strong style="display:block;margin-bottom:5px">Relato</strong>${esc(chamado.descricao||'Sem descrição')}</div>
+      </div>
+      <div class="chat-messages" id="func-chat-msgs">
+        ${msgs.length?msgs.map(m=>`
+          <div class="msg ${m.de==='func'?'func':'cli'}">
+            <div class="bubble">${esc(m.texto||'')}
+              <div class="hour">${esc(m.hora||hora())}</div>
+            </div>
+          </div>`).join(''):`<div class="empty" style="min-height:160px"><div class="empty-box"><h3>Sem mensagens</h3><p>O histórico aparece aqui assim que alguém enviar.</p></div></div>`}
+      </div>
+      ${chamado.status!=='encerrado'?`
+        <div class="quick-actions">
+          ${QUICK_REPLIES.map(q=>`<button class="quick" data-text="${esc(q)}">${esc(q)}</button>`).join('')}
+        </div>
+        <div class="chat-actions">
+          <input class="input" id="func-input-msg" placeholder="Digite sua resposta…">
+          <button class="btn-main" id="btn-func-enviar" style="width:auto;padding:11px 18px">Enviar</button>
+          <button class="btn-danger" id="btn-encerrar-chamado">Encerrar</button>
+        </div>`:`<div class="quick-actions"><div class="badge verde">✅ Chamado encerrado</div></div>`}
+    `;
+    const box=$('#func-chat-msgs');
+    box.scrollTop=box.scrollHeight;
+
+    $('#btn-aceitar')?.addEventListener('click',async()=>{
+      await updateDoc(doc(db,'chamados',chamado.id),{status:'em_atendimento',funcAtendente:funcLogado?.nome||'Funcionário'});
+    });
+    $$('.quick').forEach(q=>q.addEventListener('click',()=>{
+      const input=$('#func-input-msg');
+      if(input) input.value=q.textContent;
+    }));
+    $('#btn-func-enviar')?.addEventListener('click',()=>enviarMensagem(chamado.id));
+    $('#func-input-msg')?.addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();enviarMensagem(chamado.id);}});
+    $('#btn-encerrar-chamado')?.addEventListener('click',async()=>{
+      await updateDoc(doc(db,'chamados',chamado.id),{status:'encerrado'});
+    });
+  }
+
+  async function enviarMensagem(id){
+    const input=$('#func-input-msg');
+    const texto=input?.value?.trim();
+    if(!texto) return;
+    input.value='';
+    await updateDoc(doc(db,'chamados',id),{
+      mensagens:arrayUnion({de:'func',texto,hora:hora(),func:funcLogado?.nome||'Funcionário'}),
+      funcAtendente:funcLogado?.nome||'Funcionário'
+    });
+  }
+
+  $('#btn-exportar-chat').addEventListener('click',()=>{
+    if(!chamadoAtivo){alert('Abra um chamado para exportar.'); return;}
+    const chamado=todosOsChamados.find(c=>c.id===chamadoAtivo);
+    if(!chamado) return;
+    const linhas=[`SnapBite – Atendimento`,`Cliente: ${chamado.nomeCliente||'-'}`,`Assunto: ${chamado.assunto||'-'}`,`Protocolo: ${chamado.protocolo||'-'}`,``];
+    (chamado.mensagens||[]).forEach(m=>linhas.push(`[${m.hora||'--:--'}] ${m.de==='func'?'Funcionário':'Cliente'}: ${m.texto||''}`));
+    const a=document.createElement('a');
+    a.href=URL.createObjectURL(new Blob([linhas.join('\n')],{type:'text/plain;charset=utf-8'}));
+    a.download=`atendimento-${chamado.protocolo||chamado.id}.txt`;
+    a.click(); URL.revokeObjectURL(a.href);
+  });
+
+  // ══════════════════════════════════════════
+  // FISCALIZAÇÃO (igual ao original)
+  // ══════════════════════════════════════════
+  function carregarProdutos(){
+    try{ const s=JSON.parse(localStorage.getItem('snapbite_painel_produtos')||'null'); return Array.isArray(s)&&s.length?s:DEFAULT_PRODUCTS; }
+    catch{ return DEFAULT_PRODUCTS; }
+  }
+  function salvarProdutos(){ localStorage.setItem('snapbite_painel_produtos',JSON.stringify(produtos)); }
+  function carregarLogs(){ try{ return JSON.parse(localStorage.getItem('snapbite_painel_logs')||'[]'); }catch{ return []; } }
+  function salvarLogs(){ localStorage.setItem('snapbite_painel_logs',JSON.stringify(logs)); }
+  function addLog(texto){
+    logs.unshift({texto,em:new Date().toLocaleString('pt-BR',{day:'2-digit',month:'2-digit',hour:'2-digit',minute:'2-digit'})});
+    logs=logs.slice(0,20); salvarLogs(); renderLogs(); updateMetrics();
+  }
+  function statusAuto(p){
+    const hoje=new Date().toISOString().slice(0,10);
+    if(p.validade&&p.validade<hoje) return 'critical';
+    if(Number(p.estoque)<=Number(p.minimo)) return 'critical';
+    if(Number(p.temperatura)>6) return 'low';
+    return p.status||'ok';
+  }
+  function renderProducts(){
+    const wrap=$('#product-list');
+    const busca=($('#busca-produto')?.value||'').trim().toLowerCase();
+    const filtered=produtos.filter(p=>(`${p.nome} ${p.categoria} ${p.lote}`).toLowerCase().includes(busca));
+    if(!filtered.length){ wrap.innerHTML=`<div class="empty" style="min-height:200px"><div class="empty-box"><h3>Nenhum produto</h3><p>Cadastre um item para começar.</p></div></div>`; updateMetrics(); return; }
+    wrap.innerHTML=filtered.map(p=>{
+      const cs=statusAuto(p);
+      const sl=cs==='critical'?'Crítico':cs==='low'?'Atenção':'Conforme';
+      return `<article class="product-card">
+        <div class="product-top">
+          <div><div class="product-name">${esc(p.nome)}</div><div class="muted">${esc(p.categoria)} · Lote ${esc(p.lote||'—')}</div></div>
+          <div class="product-tags"><span class="tag ${cs}">${sl}</span></div>
+        </div>
+        <div class="grid-2">
+          <div class="product-meta"><div class="k">Estoque</div><div class="v">${esc(String(p.estoque))}</div></div>
+          <div class="product-meta"><div class="k">Mínimo</div><div class="v">${esc(String(p.minimo))}</div></div>
+          <div class="product-meta"><div class="k">Validade</div><div class="v">${esc(p.validade||'—')}</div></div>
+          <div class="product-meta"><div class="k">Temperatura</div><div class="v">${esc(String(p.temperatura??'—'))} °C</div></div>
+        </div>
+        <div class="muted" style="font-size:.87rem">${esc(p.observacoes||'Sem observações.')}</div>
+        <div class="actions-row">
+          <button class="btn-line" data-action="stock" data-id="${p.id}">−1 estoque</button>
+          <button class="btn-line" data-action="inspect" data-id="${p.id}">Registrar inspeção</button>
+          <button class="btn-line" data-action="remove" data-id="${p.id}">Remover</button>
+        </div>
+      </article>`;
+    }).join('');
+    wrap.querySelectorAll('[data-action]').forEach(btn=>btn.addEventListener('click',()=>handleProductAction(btn.dataset.action,btn.dataset.id)));
+    updateMetrics();
+  }
+  function handleProductAction(action,id){
+    const idx=produtos.findIndex(p=>p.id===id); if(idx<0) return;
+    const item=produtos[idx];
+    if(action==='stock'){ item.estoque=Math.max(0,Number(item.estoque)-1); item.ultimaInspecao=new Date().toISOString(); salvarProdutos(); addLog(`Estoque de ${item.nome}: ${item.estoque}.`); renderProducts(); }
+    if(action==='inspect'){ item.ultimaInspecao=new Date().toISOString(); salvarProdutos(); addLog(`Inspeção: ${item.nome}.`); renderProducts(); }
+    if(action==='remove'){ produtos.splice(idx,1); salvarProdutos(); addLog(`Removido: ${item.nome}.`); renderProducts(); }
+  }
+  function renderLogs(){
+    const wrap=$('#log-list');
+    if(!logs.length){ wrap.innerHTML=`<div class="log-item">Nenhum registro ainda.</div>`; return; }
+    wrap.innerHTML=logs.map(l=>`<div class="log-item"><strong>${esc(l.em)}</strong><br>${esc(l.texto)}</div>`).join('');
+  }
+  $('#btn-add-produto').addEventListener('click',()=>{
+    const nome=$('#p-nome').value.trim(); if(!nome){alert('Nome obrigatório.'); return;}
+    const produto={id:'p_'+Date.now(),nome,categoria:$('#p-categoria').value,estoque:Number($('#p-estoque').value||0),minimo:Number($('#p-minimo').value||0),validade:$('#p-validade').value,temperatura:Number($('#p-temp').value||0),lote:$('#p-lote').value.trim(),status:$('#p-status').value,observacoes:$('#p-obs').value.trim(),ultimaInspecao:new Date().toISOString()};
+    produtos.unshift(produto); salvarProdutos(); addLog(`Cadastrado: ${produto.nome}.`);
+    ['#p-nome','#p-estoque','#p-minimo','#p-validade','#p-temp','#p-lote','#p-obs'].forEach(id=>$(id).value='');
+    $('#p-categoria').value='Lanche'; $('#p-status').value='ok';
+    renderProducts();
+  });
+  $('#busca-produto').addEventListener('input',renderProducts);
+  $$('.daily-check').forEach(el=>el.addEventListener('change',()=>{ if(el.checked) addLog(`Checklist: ${el.value}.`); updateMetrics(); }));
+
+  // ── MÉTRICAS ──
+  function updateMetrics(){
+    const ativos=todosPedidos.filter(p=>p.status==='recebido'||p.status==='em_preparo').length;
+    const prontos=todosPedidos.filter(p=>p.status==='pronto').length;
+    const open=todosOsChamados.filter(c=>c.status!=='encerrado').length;
+    const critical=produtos.filter(p=>statusAuto(p)!=='ok').length;
+    $('#m-pedidos-ativos').textContent=ativos;
+    $('#m-prontos').textContent=prontos;
+    $('#m-open').textContent=open;
+    $('#m-critical').textContent=critical;
+  }
+
+  renderProducts(); renderLogs(); updateMetrics();
+</script>
+</body>
+</html>

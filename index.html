@@ -1,0 +1,485 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SnapBite — Lanchonete do SENAI</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🍔</text></svg>">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link rel="stylesheet" href="css/global.css">
+  <link rel="stylesheet" href="css/home.css">
+</head>
+<body>
+  <script src="js/skeleton.js"></script>
+ 
+
+  <main>
+
+    <!-- HERO CAROUSEL -->
+    <section class="hero-carousel">
+      <div class="hc-track" id="hcTrack">
+
+        <div class="hc-slide" style="
+          --bg:url('https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=1600&q=80');
+          --hc-accent:#E30613;
+          --hc-accent-strong:#FF4D57;
+          --hc-accent-soft:rgba(227,6,19,0.18);
+          --hc-accent-border:rgba(255,255,255,0.22);
+          --hc-accent-shadow:rgba(227,6,19,0.35);
+        ">
+          <div class="hc-overlay" style="--ov-color:rgba(0,20,72,0.70)"></div>
+          <div class="hc-content">
+            <span class="hc-tag"><span class="dot"></span> SnapBite · intervalo sem fila</span>
+            <h1 class="hc-title">Seu pedido <span class="hc-highlight">pronto</span><br>antes mesmo<br>do sinal bater.</h1>
+            <p class="hc-desc">Monte seu lanche, pague rapidinho e retire no balcão sem perder tempo do intervalo no SENAI.</p>
+            <div class="hc-actions">
+              <a href="cardapio.html" class="hc-btn hc-btn-primary">Ver cardápio →</a>
+              <a href="promocoes.html" class="hc-btn hc-btn-ghost">Promoções do dia</a>
+            </div>
+            <div class="hc-badge-item">🍔 Lanche rápido · visual forte · cara de SENAI</div>
+          </div>
+        </div>
+
+        <div class="hc-slide" style="
+          --bg:url('https://images.unsplash.com/photo-1515003197210-e0cd71810b5f?w=1600&q=80');
+          --hc-accent:rgba(0,26,102,0.88);
+          --hc-accent-strong:rgba(47, 80, 179, 0.88);
+          --hc-accent-soft:rgba(255,255,255,0.16);
+          --hc-accent-border:rgba(255,255,255,0.22);
+          --hc-accent-shadow:rgba(255,255,255,0.18);
+        ">
+          <div class="hc-overlay" style="--ov-color: rgba(0,26,102,0.88)"></div>
+          <div class="hc-content is-right">
+            <span class="hc-tag"><span class="dot"></span> feito pro aluno do SENAI</span>
+            <h1 class="hc-title">Combos com <span class="hc-highlight">preço</span><br>de estudante e<br>cara profissional.</h1>
+            <p class="hc-desc">Visual limpo, cores da sua marca e ofertas pensadas pra quem quer comer bem sem gastar demais.</p>
+            <div class="hc-actions">
+              <a href="cardapio.html" class="hc-btn hc-btn-primary">Explorar combos →</a>
+              <a href="sobre.html" class="hc-btn hc-btn-ghost">Conhecer a marca</a>
+            </div>
+          </div>
+        </div>
+
+        <div class="hc-slide" style="
+          --bg:url('https://images.unsplash.com/photo-1525610553991-2bede1a236e2?w=1600&q=80');
+          --hc-accent:#E30613;
+          --hc-accent-strong:#FF6871;
+          --hc-accent-soft:rgba(227,6,19,0.16);
+          --hc-accent-border:rgba(255,255,255,0.20);
+          --hc-accent-shadow:rgba(227,6,19,0.32);
+        ">
+          <div class="hc-overlay" style="--ov-color:rgba(0,26,102,0.74)"></div>
+          <div class="hc-content">
+            <span class="hc-tag"><span class="dot"></span> pedido online · retirada ágil</span>
+            <h1 class="hc-title">Mais sabor, menos <span class="hc-highlight">fila</span><br>e mais tempo<br>pro seu intervalo.</h1>
+            <p class="hc-desc">Seu site fica mais moderno quando o carrossel conversa com a marca e com a rotina real dos estudantes.</p>
+            <div class="hc-actions">
+              <a href="IA.html" class="hc-btn hc-btn-primary">Testar a IA →</a>
+              <a href="cardapio.html" class="hc-btn hc-btn-ghost">Pedir agora</a>
+            </div>
+            <div class="hc-badge-item">⚡ Pedido online com retirada rápida no balcão</div>
+          </div>
+        </div>
+
+        <div class="hc-slide" style="
+          --bg:url('https://images.unsplash.com/photo-1571091718767-18b5b1457add?w=1600&q=80');
+          --hc-accent:rgba(0,26,102,0.88);
+          --hc-accent-strong:rgba(3, 46, 173, 0.88);
+          --hc-accent-soft:rgba(255,255,255,0.16);
+          --hc-accent-border:rgba(255,255,255,0.22);
+          --hc-accent-shadow:rgba(0,51,153,0.28);
+        ">
+          <div class="hc-overlay" style="--ov-color:rgba(0,51,153,0.68)"></div>
+          <div class="hc-content is-right">
+            <span class="hc-tag"><span class="dot"></span> design forte · identidade marcante</span>
+            <h1 class="hc-title">Um hero com mais <span class="hc-highlight">presença</span><br>pra deixar seu site<br>muito mais bonito.</h1>
+            <p class="hc-desc">Texto alternando de lado, contraste melhor e detalhe tipo marca-texto pra destacar as palavras certas.</p>
+            <div class="hc-actions">
+              <a href="cardapio.html" class="hc-btn hc-btn-primary">Abrir cardápio →</a>
+              <a href="contato.html" class="hc-btn hc-btn-ghost">Falar com a equipe</a>
+            </div>
+            <div class="hc-badge-item">💙 Visual premium sem perder a energia do SnapBite</div>
+          </div>
+        </div>
+
+      </div>
+
+      <button class="hc-arrow hc-prev" id="hcPrev" aria-label="Anterior">&#8592;</button>
+      <button class="hc-arrow hc-next" id="hcNext" aria-label="Próximo">&#8594;</button>
+      <div class="hc-dots" id="hcDots"></div>
+    </section>
+
+    <script>
+    (function() {
+      const track = document.getElementById('hcTrack');
+      const slides = track.querySelectorAll('.hc-slide');
+      const dotsContainer = document.getElementById('hcDots');
+      const total = slides.length;
+      let current = 0;
+      let timer = null;
+
+      slides.forEach((_, i) => {
+        const d = document.createElement('button');
+        d.className = 'hc-dot' + (i === 0 ? ' active' : '');
+        d.setAttribute('aria-label', 'Slide ' + (i + 1));
+        d.addEventListener('click', () => goTo(i));
+        dotsContainer.appendChild(d);
+      });
+
+      function goTo(idx) {
+        slides[current].classList.remove('active');
+        dotsContainer.children[current].classList.remove('active');
+        current = (idx + total) % total;
+        slides[current].classList.add('active');
+        dotsContainer.children[current].classList.add('active');
+        restartTimer();
+      }
+
+      function next() { goTo(current + 1); }
+      function prev() { goTo(current - 1); }
+
+      function restartTimer() {
+        clearInterval(timer);
+        timer = setInterval(next, 5200);
+      }
+
+      slides[0].classList.add('active');
+      restartTimer();
+
+      document.getElementById('hcNext').addEventListener('click', next);
+      document.getElementById('hcPrev').addEventListener('click', prev);
+
+      let startX = 0;
+      track.addEventListener('touchstart', e => { startX = e.touches[0].clientX; }, { passive: true });
+      track.addEventListener('touchend', e => {
+        const dx = e.changedTouches[0].clientX - startX;
+        if (Math.abs(dx) > 40) dx < 0 ? next() : prev();
+      }, { passive: true });
+    })();
+    </script>
+
+    <!-- STRIP CATEGORIAS -->
+    <div class="strip-cats">
+      <div class="strip-cats-inner">
+        <a href="cardapio.html" class="cat-item">
+          <span class="cat-emoji"><i class="fa-solid fa-burger" style="color: rgba(0,26,102,0.88);"></i></span>
+          <div class="cat-info"><div class="cat-nome">Lanches</div><div class="cat-qtd" style="color: red">12 opções</div></div>
+        </a>
+        <a href="cardapio.html" class="cat-item">
+          <span class="cat-emoji"><i class="fa-solid fa-mug-hot" style="color: rgba(0,26,102,0.88);"></i></span>
+          <div class="cat-info"><div class="cat-nome">Combos</div><div class="cat-qtd" style="color: red">6 combos</div></div>
+        </a>
+        <a href="cardapio.html" class="cat-item">
+          <span class="cat-emoji"><i class="fa-solid fa-champagne-glasses" style="color: rgba(0,26,102,0.88);"></i></span>
+          <div class="cat-info"><div class="cat-nome">Bebidas</div><div class="cat-qtd" style="color: red">8 opções</div></div>
+        </a>
+        <a href="cardapio.html" class="cat-item">
+          <span class="cat-emoji"><i class="fa-solid fa-cake-candles" style="color: rgba(0,26,102,0.88);"></i></span>
+          <div class="cat-info"><div class="cat-nome">Sobremesas</div><div class="cat-qtd" style="color: red">5 opções</div></div>
+        </a>
+      </div>
+    </div>
+
+    <!-- COMO FUNCIONA -->
+    <section class="sec-como">
+      <div class="como-inner">
+        <div class="como-header">
+          <span class="eyebrow" style="color:var(--mostarda)">Simples e rápido</span>
+          <h2 class="section-title">Peça em 3 passos,<br>retire sem fila.</h2>
+        </div>
+        <div class="como-steps">
+          <div class="como-step">
+            <div class="step-num">01</div>
+            <div class="step-icon"><i class="fa-solid fa-burger" style="color: rgb(255, 255, 255);"></i></div>
+            <h3 class="step-titulo">Escolha no cardápio</h3>
+            <p class="step-desc">Navegue pelo cardápio completo, monte seu lanche do jeito que você quer e adicione tudo ao carrinho.</p>
+          </div>
+          <div class="como-arrow">→</div>
+          <div class="como-step">
+            <div class="step-num">02</div>
+            <div class="step-icon"><i class="fa-solid fa-mobile-screen" style="color: rgb(255, 255, 255);"></i></div>
+            <h3 class="step-titulo">Confirme o pedido</h3>
+            <p class="step-desc">Faça login com o Google, revise seus itens e finalize o pagamento com Pix ou na retirada. Leva segundos.</p>
+          </div>
+          <div class="como-arrow">→</div>
+          <div class="como-step">
+            <div class="step-num">03</div>
+            <div class="step-icon"><i class="fa-solid fa-circle-check" style="color: rgb(255, 255, 255);"></i></div>
+            <h3 class="step-titulo">Retire sem espera</h3>
+            <p class="step-desc">Seu lanche fica prontinho no horário combinado. É só chegar, falar o nome e pegar — sem fila, sem estresse.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- DESTAQUE DO DIA -->
+    <section class="sec-destaque">
+      <div class="destaque-inner">
+        <div class="destaque-texto">
+          <span class="eyebrow" style="color:var(--terracota)">Oferta do dia</span>
+          <h2>Combo Estudante por menos do que você pensa.</h2>
+          <p>Burguer artesanal + batata crocante + refri gelado. A combinação perfeita pra você se concentrar no que importa — a aula.</p>
+          <div class="preco-bloco">
+            <span class="preco-antes">R$ 24,90</span>
+            <span class="preco-agora">R$ 18,50</span>
+          </div>
+          <button class="btn-secondary" onclick="adicionarAoCarrinho({id:'combo1',nome:'Combo Estudante',preco:18.50,emoji:'🍔',desc:'Burguer + Batata + Refri'})">Quero esse combo</button>
+        </div>
+        <div class="destaque-card">
+          <span class="rotulo">🔥 Hoje com 26% off</span>
+          <div class="emoji-destaque"><img src="img/img2.png"></div>
+          <div style="font-family:'Playfair Display',serif;font-size:1.1rem;font-weight:700;color:var(--preto-q)">Combo Estudante</div>
+          <div style="color:var(--cinza-q);font-size:0.83rem;margin-top:6px">Burguer + Batata M + Refri 300ml</div>
+        </div>
+      </div>
+    </section>
+
+
+    <!-- MAIS PEDIDOS DA SEMANA -->
+    <section class="sec-mais-pedidos">
+      <div class="mais-inner">
+        <div class="mais-header">
+          <div>
+            <span class="eyebrow" style="color:var(--terracota)">Favoritos da galera</span>
+            <h2 class="section-title" style="margin-top:6px">Mais pedidos da semana</h2>
+          </div>
+          <a href="cardapio.html"><button class="btn-ghost" style="color:var(--mostarda);border-color:rgba(200,149,42,0.4)">Ver cardápio completo →</button></a>
+        </div>
+        <div class="mais-grid">
+          <div class="mais-card">
+            <div class="mais-badge">🔥 #1</div>
+            <div class="mais-emoji">🍔</div>
+            <div class="mais-nome">SnapBurguer Clássico</div>
+            <div class="mais-desc">Blend artesanal, cheddar, alface, tomate e molho especial</div>
+            <div class="mais-footer">
+              <span class="mais-preco">R$ 12,90</span>
+              <button class="prod-add-btn" onclick="adicionarAoCarrinho({id:'snb1',nome:'SnapBurguer Clássico',preco:12.90,emoji:'🍔',desc:'Blend artesanal clássico'})">+ Pedir</button>
+            </div>
+          </div>
+          <div class="mais-card">
+            <div class="mais-badge" style="background:var(--terracota)">⚡ #2</div>
+            <div class="mais-emoji">🥪</div>
+            <div class="mais-nome">X-Frango Crocante</div>
+            <div class="mais-desc">Frango empanado crocante, queijo prato, maionese de ervas</div>
+            <div class="mais-footer">
+              <span class="mais-preco">R$ 11,50</span>
+              <button class="prod-add-btn" onclick="adicionarAoCarrinho({id:'xfc1',nome:'X-Frango Crocante',preco:11.50,emoji:'🥪',desc:'Frango empanado crocante'})">+ Pedir</button>
+            </div>
+          </div>
+          <div class="mais-card">
+            <div class="mais-badge" style="background:var(--oliva)">💚 #3</div>
+            <div class="mais-emoji">🍟</div>
+            <div class="mais-nome">Batata Frita Crocante</div>
+            <div class="mais-desc">Batata palito frita na hora, temperada com sal e ervas secas</div>
+            <div class="mais-footer">
+              <span class="mais-preco">R$ 7,90</span>
+              <button class="prod-add-btn" onclick="adicionarAoCarrinho({id:'bat1',nome:'Batata Frita Crocante',preco:7.90,emoji:'🍟',desc:'Batata frita temperada'})">+ Pedir</button>
+            </div>
+          </div>
+          <div class="mais-card">
+            <div class="mais-badge" style="background:var(--vinho)">❤️ #4</div>
+            <div class="mais-emoji">🥤</div>
+            <div class="mais-nome">Refri Gelado 350ml</div>
+            <div class="mais-desc">Coca-Cola, Guaraná Antarctica ou Sprite, sempre geladinho</div>
+            <div class="mais-footer">
+              <span class="mais-preco">R$ 5,00</span>
+              <button class="prod-add-btn" onclick="adicionarAoCarrinho({id:'ref1',nome:'Refri Gelado 350ml',preco:5.00,emoji:'🥤',desc:'Refri gelado 350ml'})">+ Pedir</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- DEPOIMENTOS -->
+    <section class="sec-depo">
+      <div class="sec-depo-inner">
+        <div class="depo-header">
+          <div>
+            <span class="eyebrow">O que a galera fala</span>
+            <h2 class="section-title" style="margin-top:6px">+200 estudantes já pediram</h2>
+          </div>
+          <a href="cardapio.html"><button class="btn-ghost">Ver cardápio</button></a>
+        </div>
+        <div class="depo-grid">
+          <div class="depo-card">
+            <div class="depo-stars">★★★★★</div>
+            <p class="depo-texto">"Melhor lanche do SENAI. O burguer é gigante e o atendimento é super rápido. Não fico mais sem pedir!"</p>
+            <div class="depo-autor">
+              <div class="depo-av">🧑‍💻</div>
+              <div><div class="depo-nome">Gabriel S.</div><div class="depo-cargo">Estudante de TI</div></div>
+            </div>
+          </div>
+          <div class="depo-card">
+            <div class="depo-stars">★★★★★</div>
+            <p class="depo-texto">"O combo estudante é incrível. Pago pouco e saio satisfeita. Recomendo pra todo mundo aqui do SENAI."</p>
+            <div class="depo-autor">
+              <div class="depo-av">👩‍🎨</div>
+              <div><div class="depo-nome">Ana L.</div><div class="depo-cargo">Estudante de Design</div></div>
+            </div>
+          </div>
+          <div class="depo-card">
+            <div class="depo-stars">★★★★★</div>
+            <p class="depo-texto">"O sistema online é o diferencial. Peço antes do intervalo e quando chego já tá na minha mão. Top!"</p>
+            <div class="depo-autor">
+              <div class="depo-av">👨‍🔧</div>
+              <div><div class="depo-nome">Pedro M.</div><div class="depo-cargo">Estudante de Elétrica</div></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- POR QUE SNAPBITE -->
+    <section class="sec-porque">
+      <div class="porque-inner">
+        <div class="porque-header">
+          <span class="eyebrow" style="color:var(--terracota)">Nossos diferenciais</span>
+          <h2 class="section-title" style="margin-top:6px">Por que o SnapBite?</h2>
+          <p class="porque-sub">Muito mais do que um lanche — é a experiência certa no horário certo.</p>
+        </div>
+        <div class="porque-grid">
+          <div class="porque-item">
+            <div class="porque-icon">⚡</div>
+            <h4>Preparo em 15 min</h4>
+            <p>Seu pedido fica pronto no tempo do intervalo. Zero espera, máximo sabor.</p>
+          </div>
+          <div class="porque-item">
+            <div class="porque-icon">💰</div>
+            <h4>Preço de estudante</h4>
+            <p>Cardápio pensado no bolso jovem, com combos a partir de R$ 10,00. Sem surpresas.</p>
+          </div>
+          <div class="porque-item">
+            <div class="porque-icon">📲</div>
+            <h4>Pedido 100% online</h4>
+            <p>Tudo pelo celular, sem precisar enfrentar a fila. Pede, paga e retira na hora.</p>
+          </div>
+          <div class="porque-item">
+            <div class="porque-icon">🌿</div>
+            <h4>Ingredientes frescos</h4>
+            <p>Usamos pão fresquinho todo dia e ingredientes selecionados. O sabor faz a diferença.</p>
+          </div>
+          <div class="porque-item">
+            <div class="porque-icon">🤖</div>
+            <h4>IA de recomendação</h4>
+            <p>Nossa IA sugere o lanche certo pro seu humor e bolso. Experimente na página de IA.</p>
+          </div>
+          <div class="porque-item">
+            <div class="porque-icon">⭐</div>
+            <h4>Nota 4.9 pelos alunos</h4>
+            <p>Mais de 200 pedidos por dia e avaliação 4.9 estrelas. A galera aprova de verdade.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- NOSSA HISTÓRIA -->
+    <section class="sec-empresa fade-in-up">
+      <div class="empresa-inner">
+        <div class="empresa-texto">
+          <span class="eyebrow" style="color:var(--terracota)">Nossa empresa</span>
+          <h2>SnapBite nasceu para transformar o intervalo em experiência.</h2>
+          <p>
+            A gente começou com uma missão simples: entregar lanches rápidos, saborosos e com preço justo
+            para os estudantes do SENAI. Hoje, seguimos evoluindo com foco em qualidade, agilidade e atendimento.
+          </p>
+          <p>
+            Cada detalhe do nosso serviço foi pensado para facilitar o seu dia: pedido online, retirada ágil
+            e um cardápio que combina com a rotina de quem estuda e trabalha.
+          </p>
+        </div>
+        <div class="empresa-imagem">
+          <img src="img/img1.png" alt="Equipe SnapBite em ação">
+        </div>
+      </div>
+    </section>
+
+    <!-- CULTURA SNAPBITE -->
+    <section class="sec-cultura fade-in-up">
+      <div class="cultura-inner">
+        <h2 class="section-title">O que move a SnapBite</h2>
+        <div class="cultura-grid">
+          <article class="cultura-card">
+            <img src="img/img2.png" alt="Compromisso com qualidade">
+            <h3>Qualidade real</h3>
+            <p>Selecionamos ingredientes com cuidado para manter sabor, padrão e confiança em cada pedido.</p>
+          </article>
+          <article class="cultura-card">
+            <img src="img/img3.png" alt="Foco no estudante">
+            <h3>Foco no estudante</h3>
+            <p>Preço acessível, produção rápida e uma experiência prática para caber no seu intervalo.</p>
+          </article>
+          <article class="cultura-card">
+            <img src="img/img1.png" alt="Inovação constante">
+            <h3>Inovação contínua</h3>
+            <p>Evoluímos com tecnologia e escuta ativa para melhorar o atendimento e os resultados todos os dias.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- APP TEASER -->
+    <section class="sec-app">
+      <div class="app-inner">
+        <div class="app-texto">
+          <span class="eyebrow" style="color:var(--mostarda-cl)">Em breve</span>
+          <h2>SnapBite no<br>seu bolso. <span class="app-hl">Literalmente.</span></h2>
+          <p>Estamos desenvolvendo o app oficial do SnapBite. Notificação quando seu pedido ficar pronto, histórico de lances, promoções exclusivas e muito mais. Tudo isso direto no seu celular.</p>
+          <div class="app-pills">
+            <div class="app-pill">🔔 Notificação de pedido</div>
+            <div class="app-pill">📋 Histórico de compras</div>
+            <div class="app-pill">🎁 Promos exclusivas</div>
+            <div class="app-pill">⚡ Pedir em 1 toque</div>
+          </div>
+          <div class="app-aviso">
+            <span class="app-aviso-dot"></span>
+            Seja um dos primeiros a testar — disponível em breve para iOS e Android.
+          </div>
+        </div>
+        <div class="app-mockup">
+          <div class="phone-frame">
+            <div class="phone-notch"></div>
+            <div class="phone-screen">
+              <div class="ps-header">
+                <span style="font-size:0.75rem;font-weight:700;color:var(--mostarda)">SnapBite</span>
+                <span style="font-size:1rem">🔔</span>
+              </div>
+              <div class="ps-hero-img">🍔</div>
+              <div class="ps-tag">Seu pedido está pronto! ✅</div>
+              <div class="ps-item">
+                <span>SnapBurguer Clássico</span>
+                <span style="color:var(--mostarda);font-weight:700">R$12,90</span>
+              </div>
+              <div class="ps-item">
+                <span>Batata Frita Crocante</span>
+                <span style="color:var(--mostarda);font-weight:700">R$7,90</span>
+              </div>
+              <div class="ps-divider"></div>
+              <div class="ps-total">
+                <span>Total</span>
+                <span>R$ 20,80</span>
+              </div>
+              <a href="Sobreapp.html" class="ps-btn-link"><div class="ps-btn">Saiba mais</div></a>
+            </div>
+          </div>
+          <div class="phone-glow"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- CTA -->
+    <section class="sec-cta">
+      <div class="sec-cta-inner">
+        <h2>Teste nossa IA 🍟</h2>
+        <p>Descubra o lanche perfeito com apenas um clique.</p>
+        <a href="IA.html"><button class="btn-primary" style="margin:0 auto;display:inline-flex;padding:15px 36px;font-size:1rem">Testar agora</button></a>
+      </div>
+    </section>
+  </main>
+
+  <script src="js/components.js"></script>
+  <script src="js/app.js"></script>
+  <script type="module" src="backend/firebase-auth.js"></script>
+
+</body>
+</html>

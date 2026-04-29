@@ -1,0 +1,1051 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Solicitar Cartão Fidelidade · SnapBite</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,700;0,9..144,900;1,9..144,400&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+  <link rel="stylesheet" href="style.css" />
+  <link rel="stylesheet" href="css/global.css"><link rel="stylesheet" href="css/pages.css">
+
+  <style>
+    :root {
+      --gold:       #E30613;
+      --gold-light: #FF4D57;
+      --gold-pale:  #FFF0F4;
+      --dark:       #001A66;
+      --dark-mid:   #003399;
+      --cream:      #F7F9FF;
+      --text:       #0A0F1E;
+      --muted:      #5C6680;
+      --border:     #D6DCF5;
+      --radius:     14px;
+      --radius-lg:  22px;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'DM Sans', sans-serif;
+      background: var(--cream);
+      color: var(--text);
+      min-height: 100vh;
+    }
+
+    /* ── PAGE HERO ── */
+    .sc-hero {
+      background: linear-gradient(135deg, #001A66 0%, #003399 60%, #001A66 100%);
+      padding: 120px 24px 60px;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .sc-hero::before {
+      content: '';
+      position: absolute;
+      width: 500px; height: 500px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(227,6,19,0.14) 0%, transparent 70%);
+      top: -180px; right: -100px;
+      pointer-events: none;
+    }
+    .sc-hero::after {
+      content: '';
+      position: absolute;
+      width: 300px; height: 300px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(0,51,153,0.12) 0%, transparent 70%);
+      bottom: -100px; left: -60px;
+      pointer-events: none;
+    }
+
+    .sc-hero-inner { position: relative; z-index: 1; max-width: 560px; margin: 0 auto; }
+
+    .sc-breadcrumb {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 0.72rem;
+      color: rgba(255,255,255,0.4);
+      font-weight: 500;
+      margin-bottom: 20px;
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+    .sc-breadcrumb:hover { color: rgba(255,255,255,0.7); }
+
+    .sc-hero h1 {
+      font-family: 'Fraunces', serif;
+      font-size: clamp(2rem, 5vw, 3rem);
+      font-weight: 900;
+      color: #fff;
+      letter-spacing: -1px;
+      line-height: 1.1;
+      margin-bottom: 14px;
+    }
+    .sc-hero h1 em { font-style: italic; color: var(--gold-light); }
+
+    .sc-hero p {
+      font-size: 0.95rem;
+      color: rgba(255,255,255,0.55);
+      line-height: 1.7;
+    }
+
+    /* ── STEPS BAR ── */
+    .steps-bar {
+      background: #fff;
+      border-bottom: 1.5px solid var(--border);
+      padding: 20px 24px;
+      position: sticky;
+      top: 0;
+      z-index: 10;
+    }
+
+    .steps-bar-inner {
+      max-width: 680px;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      gap: 0;
+    }
+
+    .step-indicator {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex: 1;
+    }
+
+    .step-num {
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      background: var(--border);
+      color: #9a8878;
+      font-size: 0.72rem;
+      font-weight: 800;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      transition: background 0.3s, color 0.3s;
+    }
+
+    .step-indicator.active .step-num {
+      background: var(--gold);
+      color: var(--dark);
+    }
+    .step-indicator.done .step-num {
+      background: #003399;
+      color: #fff;
+    }
+    .step-indicator.done .step-num::before { content: '✓'; }
+
+    .step-label {
+      font-size: 0.78rem;
+      font-weight: 600;
+      color: #b8a89a;
+      transition: color 0.3s;
+      white-space: nowrap;
+    }
+    .step-indicator.active .step-label { color: var(--gold); }
+    .step-indicator.done  .step-label { color: #003399; }
+
+    .step-divider {
+      height: 1.5px;
+      flex: 1;
+      background: var(--border);
+      margin: 0 8px;
+    }
+
+    /* ── MAIN LAYOUT ── */
+    .sc-main {
+      max-width: 760px;
+      margin: 0 auto;
+      padding: 48px 24px 80px;
+      display: grid;
+      grid-template-columns: 1fr 280px;
+      gap: 32px;
+      align-items: start;
+    }
+
+    @media (max-width: 720px) {
+      .sc-main { grid-template-columns: 1fr; }
+      .sc-sidebar { order: -1; }
+    }
+
+    /* ── FORM ── */
+    .form-card {
+      background: #fff;
+      border-radius: var(--radius-lg);
+      border: 1.5px solid var(--border);
+      overflow: hidden;
+    }
+
+    .form-section-header {
+      padding: 24px 28px 0;
+    }
+
+    .form-section-tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 0.65rem;
+      font-weight: 800;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      color: var(--gold);
+      background: rgba(227,6,19,0.08);
+      padding: 4px 10px;
+      border-radius: 100px;
+      margin-bottom: 10px;
+    }
+
+    .form-section-header h2 {
+      font-family: 'Fraunces', serif;
+      font-size: 1.3rem;
+      font-weight: 900;
+      color: var(--dark);
+      letter-spacing: -0.3px;
+    }
+
+    .form-body {
+      padding: 24px 28px 28px;
+    }
+
+    .form-step { display: none; }
+    .form-step.active { display: block; }
+
+    /* ── INPUTS ── */
+    .field {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      margin-bottom: 18px;
+    }
+
+    .field label {
+      font-size: 0.8rem;
+      font-weight: 700;
+      color: var(--dark);
+    }
+
+    .field .field-hint {
+      font-size: 0.73rem;
+      color: var(--muted);
+      font-weight: 400;
+      margin-top: -2px;
+    }
+
+    .field input,
+    .field select,
+    .field textarea {
+      width: 100%;
+      padding: 12px 16px;
+      border: 1.5px solid var(--border);
+      border-radius: 10px;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.9rem;
+      color: var(--text);
+      background: #fdfaf6;
+      outline: none;
+      transition: border-color 0.2s, box-shadow 0.2s;
+      appearance: none;
+    }
+
+    .field input:focus,
+    .field select:focus,
+    .field textarea:focus {
+      border-color: var(--gold);
+      box-shadow: 0 0 0 3px rgba(199,149,42,0.1);
+      background: #fff;
+    }
+
+    .field input.error { border-color: #d94040; }
+    .field .error-msg {
+      font-size: 0.73rem;
+      color: #d94040;
+      font-weight: 600;
+      display: none;
+    }
+    .field input.error + .error-msg { display: block; }
+
+    .field-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+    }
+
+    @media (max-width: 480px) {
+      .field-row { grid-template-columns: 1fr; }
+    }
+
+    .field textarea { resize: vertical; min-height: 90px; }
+
+    /* Checkbox personalizado */
+    .check-field {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      padding: 14px 16px;
+      border: 1.5px solid var(--border);
+      border-radius: 10px;
+      cursor: pointer;
+      transition: border-color 0.2s, background 0.2s;
+      margin-bottom: 12px;
+    }
+    .check-field:hover { border-color: var(--gold); background: rgba(227,6,19,0.08); }
+    .check-field input[type="checkbox"] { display: none; }
+    .check-box {
+      width: 20px; height: 20px;
+      border-radius: 6px;
+      border: 2px solid var(--border);
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0; margin-top: 1px;
+      transition: border-color 0.2s, background 0.2s;
+      font-size: 0.65rem; color: #fff;
+    }
+    .check-field input:checked ~ .check-box {
+      border-color: var(--gold);
+      background: var(--gold);
+    }
+    .check-field input:checked ~ .check-box::after { content: '✓'; }
+    .check-text { font-size: 0.83rem; color: var(--text); line-height: 1.5; }
+    .check-text strong { font-weight: 700; display: block; margin-bottom: 2px; }
+    .check-text span { color: var(--muted); font-size: 0.78rem; }
+
+    /* Radio de turno */
+    .turno-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      margin-bottom: 18px;
+    }
+
+    .turno-btn {
+      border: 1.5px solid var(--border);
+      border-radius: 10px;
+      padding: 14px 12px;
+      cursor: pointer;
+      text-align: center;
+      transition: border-color 0.2s, background 0.2s;
+      position: relative;
+    }
+    .turno-btn:hover { border-color: var(--gold); }
+    .turno-btn.selected {
+      border-color: var(--gold);
+      background: rgba(227,6,19,0.08);
+    }
+    .turno-btn input { display: none; }
+    .turno-icon { font-size: 1.3rem; margin-bottom: 5px; display: block; }
+    .turno-label { font-size: 0.82rem; font-weight: 700; color: var(--dark); display: block; }
+    .turno-time  { font-size: 0.72rem; color: var(--muted); display: block; }
+    .turno-check {
+      position: absolute;
+      top: 8px; right: 8px;
+      width: 18px; height: 18px;
+      border-radius: 50%;
+      background: var(--gold);
+      color: #fff;
+      font-size: 0.6rem;
+      display: none;
+      align-items: center; justify-content: center;
+    }
+    .turno-btn.selected .turno-check { display: flex; }
+
+    /* Botões de navegação */
+    .form-nav {
+      display: flex;
+      gap: 12px;
+      margin-top: 8px;
+      padding-top: 20px;
+      border-top: 1.5px solid var(--border);
+    }
+
+    .btn-back {
+      flex: 0;
+      padding: 12px 20px;
+      border: 1.5px solid var(--border);
+      border-radius: 100px;
+      background: transparent;
+      color: var(--muted);
+      font-weight: 700;
+      font-size: 0.88rem;
+      cursor: pointer;
+      transition: border-color 0.2s, color 0.2s;
+      white-space: nowrap;
+    }
+    .btn-back:hover { border-color: var(--text); color: var(--text); }
+
+    .btn-next {
+      flex: 1;
+      padding: 13px 20px;
+      border: none;
+      border-radius: 100px;
+      background: linear-gradient(135deg, var(--gold), var(--gold-light));
+      color: #fff;
+      font-weight: 800;
+      font-size: 0.92rem;
+      cursor: pointer;
+      transition: transform 0.2s, box-shadow 0.2s;
+      box-shadow: 0 4px 16px rgba(199,149,42,0.3);
+    }
+    .btn-next:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 24px rgba(199,149,42,0.4);
+    }
+
+    /* ── SIDEBAR ── */
+    .sc-sidebar {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .sidebar-card {
+      background: #fff;
+      border: 1.5px solid var(--border);
+      border-radius: var(--radius);
+      padding: 20px;
+    }
+
+    .sidebar-card h4 {
+      font-family: 'Fraunces', serif;
+      font-size: 1rem;
+      font-weight: 700;
+      color: var(--dark);
+      margin-bottom: 14px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .sidebar-card h4 i { color: var(--gold); }
+
+    .sidebar-perks {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .sidebar-perks li {
+      display: flex;
+      align-items: flex-start;
+      gap: 9px;
+      font-size: 0.82rem;
+      color: var(--text);
+      line-height: 1.5;
+    }
+
+    .sidebar-perks li i {
+      color: var(--gold);
+      margin-top: 2px;
+      flex-shrink: 0;
+      font-size: 0.75rem;
+    }
+
+    .sidebar-gratuito {
+      background: linear-gradient(135deg, #FFF0F4, #F7F9FF);
+      border-color: var(--gold);
+      text-align: center;
+      padding: 20px;
+    }
+
+    .gratui-icon { font-size: 2rem; margin-bottom: 8px; }
+    .gratui-titulo {
+      font-family: 'Fraunces', serif;
+      font-size: 1rem;
+      font-weight: 900;
+      color: var(--dark);
+      margin-bottom: 5px;
+    }
+    .gratui-desc { font-size: 0.78rem; color: var(--muted); line-height: 1.5; }
+
+    /* ── SUCESSO ── */
+    .success-screen {
+      display: none;
+      text-align: center;
+      padding: 48px 28px;
+    }
+    .success-screen.active { display: block; }
+
+    .success-icon-wrap {
+      width: 80px;
+      height: 80px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #003399, #0047CC);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 2rem;
+      color: #fff;
+      margin: 0 auto 24px;
+      box-shadow: 0 6px 24px rgba(42,122,58,0.3);
+      animation: successPop 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+    }
+
+    @keyframes successPop {
+      0% { transform: scale(0); opacity: 0; }
+      100% { transform: scale(1); opacity: 1; }
+    }
+
+    .success-screen h2 {
+      font-family: 'Fraunces', serif;
+      font-size: 1.8rem;
+      font-weight: 900;
+      color: var(--dark);
+      margin-bottom: 12px;
+      letter-spacing: -0.3px;
+    }
+
+    .success-screen p {
+      font-size: 0.92rem;
+      color: var(--muted);
+      line-height: 1.7;
+      max-width: 380px;
+      margin: 0 auto 28px;
+    }
+
+    .success-code {
+      display: inline-block;
+      background: rgba(227,6,19,0.08);
+      border: 1.5px solid rgba(199,149,42,0.3);
+      border-radius: 10px;
+      padding: 12px 24px;
+      font-family: 'DM Mono', 'Courier New', monospace;
+      font-size: 1rem;
+      font-weight: 700;
+      color: var(--gold);
+      letter-spacing: 2px;
+      margin-bottom: 28px;
+    }
+
+    .success-actions { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
+
+    .btn-success-primary {
+      padding: 12px 26px;
+      background: linear-gradient(135deg, var(--gold), var(--gold-light));
+      color: #fff;
+      font-weight: 800;
+      font-size: 0.88rem;
+      border: none;
+      border-radius: 100px;
+      cursor: pointer;
+      text-decoration: none;
+      transition: transform 0.2s;
+    }
+    .btn-success-primary:hover { transform: translateY(-2px); }
+
+    .btn-success-secondary {
+      padding: 12px 26px;
+      background: transparent;
+      color: var(--text);
+      font-weight: 700;
+      font-size: 0.88rem;
+      border: 1.5px solid var(--border);
+      border-radius: 100px;
+      cursor: pointer;
+      text-decoration: none;
+      transition: border-color 0.2s;
+    }
+    .btn-success-secondary:hover { border-color: var(--text); }
+
+    /* Progress bar do steps */
+    .form-progress {
+      height: 3px;
+      background: var(--border);
+      position: relative;
+    }
+    .form-progress-fill {
+      height: 100%;
+      background: linear-gradient(90deg, var(--gold), var(--gold-light));
+      transition: width 0.4s ease;
+    }
+  </style>
+</head>
+<body>
+    <script src="js/skeleton.js"></script>
+
+  <!-- ── HERO ── -->
+  <section class="sc-hero">
+    <div class="sc-hero-inner">
+      <a href="Fidelidade.html" class="sc-breadcrumb">
+        <i class="fa-solid fa-arrow-left"></i>
+        Voltar para Fidelidade
+      </a>
+      <h1>Solicitar <em>Cartão</em><br>Fidelidade</h1>
+      <p>Preencha o formulário abaixo. É rápido, gratuito e você já sai acumulando pontos no próximo pedido.</p>
+    </div>
+  </section>
+
+  <!-- ── STEPS BAR ── -->
+  <div class="steps-bar">
+    <div class="steps-bar-inner">
+      <div class="step-indicator active" id="si-1">
+        <div class="step-num">1</div>
+        <div class="step-label">Dados pessoais</div>
+      </div>
+      <div class="step-divider"></div>
+      <div class="step-indicator" id="si-2">
+        <div class="step-num">2</div>
+        <div class="step-label">Preferências</div>
+      </div>
+      <div class="step-divider"></div>
+      <div class="step-indicator" id="si-3">
+        <div class="step-num">3</div>
+        <div class="step-label">Confirmação</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── MAIN ── -->
+  <div class="sc-main">
+
+    <!-- Form -->
+    <div>
+      <div class="form-card">
+        <div class="form-progress">
+          <div class="form-progress-fill" id="form-progress-fill" style="width:33%"></div>
+        </div>
+
+        <!-- STEP 1: Dados pessoais -->
+        <div class="form-step active" id="step-1">
+          <div class="form-section-header">
+            <div class="form-section-tag"><i class="fa-solid fa-user"></i> Passo 1 de 3</div>
+            <h2>Seus dados</h2>
+          </div>
+          <div class="form-body">
+
+            <div class="field-row">
+              <div class="field">
+                <label for="s-nome">Nome completo *</label>
+                <input type="text" id="s-nome" placeholder="João da Silva" required />
+                <span class="error-msg">Campo obrigatório</span>
+              </div>
+              <div class="field">
+                <label for="s-ra">RA / Matrícula *</label>
+                <input type="text" id="s-ra" placeholder="2024001234" required />
+                <span class="error-msg">Campo obrigatório</span>
+              </div>
+            </div>
+
+            <div class="field">
+              <label for="s-email">E-mail *</label>
+              <input type="email" id="s-email" placeholder="joao@email.com" required />
+              <span class="error-msg">E-mail inválido</span>
+            </div>
+
+            <div class="field-row">
+              <div class="field">
+                <label for="s-tel">Telefone *</label>
+                <input type="tel" id="s-tel" placeholder="(11) 99999-9999" required />
+                <span class="error-msg">Campo obrigatório</span>
+              </div>
+              <div class="field">
+                <label for="s-cpf">CPF *</label>
+                <input type="text" id="s-cpf" placeholder="000.000.000-00" maxlength="14" required />
+                <span class="error-msg">CPF inválido</span>
+              </div>
+            </div>
+
+            <div class="field">
+              <label for="s-curso">Curso / Departamento *</label>
+              <select id="s-curso" required>
+                <option value="">Selecione...</option>
+                <option>Desenvolvimento de Sistemas</option>
+                <option>Mecânica Industrial</option>
+                <option>Eletrotécnica</option>
+                <option>Administração</option>
+                <option>Design de Interiores</option>
+                <option>Logística</option>
+                <option>Outro</option>
+              </select>
+              <span class="error-msg">Selecione uma opção</span>
+            </div>
+
+            <div class="form-nav">
+              <button class="btn-next" onclick="goToStep(2)">
+                Próximo <i class="fa-solid fa-arrow-right"></i>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- STEP 2: Preferências -->
+        <div class="form-step" id="step-2">
+          <div class="form-section-header">
+            <div class="form-section-tag"><i class="fa-solid fa-sliders"></i> Passo 2 de 3</div>
+            <h2>Preferências</h2>
+          </div>
+          <div class="form-body">
+
+            <div class="field">
+              <label>Turno de preferência *</label>
+              <div class="turno-grid">
+                <label class="turno-btn" onclick="selecionarTurno(this)">
+                  <input type="radio" name="turno" value="manha" />
+                  <span class="turno-icon">🌅</span>
+                  <span class="turno-label">Manhã</span>
+                  <span class="turno-time">07:00 – 08:30</span>
+                  <span class="turno-check"><i class="fa-solid fa-check"></i></span>
+                </label>
+                <label class="turno-btn" onclick="selecionarTurno(this)">
+                  <input type="radio" name="turno" value="tarde" />
+                  <span class="turno-icon">☀️</span>
+                  <span class="turno-label">Tarde</span>
+                  <span class="turno-time">11:00 – 12:30</span>
+                  <span class="turno-check"><i class="fa-solid fa-check"></i></span>
+                </label>
+              </div>
+            </div>
+
+            <div class="field">
+              <label>Categorias favoritas</label>
+              <span class="field-hint">Marque o que você mais curte pedir</span>
+            </div>
+
+            <label class="check-field">
+              <input type="checkbox" value="lanches" />
+              <span class="check-box"></span>
+              <div class="check-text">
+                <strong>🍔 Lanches</strong>
+                <span>Hambúrgueres, hot dogs, wraps e mais</span>
+              </div>
+            </label>
+
+            <label class="check-field">
+              <input type="checkbox" value="bebidas" />
+              <span class="check-box"></span>
+              <div class="check-text">
+                <strong>🥤 Bebidas</strong>
+                <span>Sucos, refrigerantes, água e vitaminas</span>
+              </div>
+            </label>
+
+            <label class="check-field">
+              <input type="checkbox" value="combos" />
+              <span class="check-box"></span>
+              <div class="check-text">
+                <strong>🎯 Combos</strong>
+                <span>Refeições completas com desconto</span>
+              </div>
+            </label>
+
+            <label class="check-field">
+              <input type="checkbox" value="sobremesas" />
+              <span class="check-box"></span>
+              <div class="check-text">
+                <strong>🍩 Sobremesas</strong>
+                <span>Doces, bolos e opções rápidas</span>
+              </div>
+            </label>
+
+            <div class="field" style="margin-top:16px">
+              <label for="s-obs">Alguma restrição alimentar?</label>
+              <textarea id="s-obs" placeholder="Ex: sou vegetariano, tenho alergia a glúten..."></textarea>
+            </div>
+
+            <div class="form-nav">
+              <button class="btn-back" onclick="goToStep(1)">
+                <i class="fa-solid fa-arrow-left"></i> Voltar
+              </button>
+              <button class="btn-next" onclick="goToStep(3)">
+                Próximo <i class="fa-solid fa-arrow-right"></i>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- STEP 3: Confirmação -->
+        <div class="form-step" id="step-3">
+          <div class="form-section-header">
+            <div class="form-section-tag"><i class="fa-solid fa-check"></i> Passo 3 de 3</div>
+            <h2>Confirme os dados</h2>
+          </div>
+          <div class="form-body">
+
+            <!-- Resumo -->
+            <div id="resumo-dados" style="
+              background:#fdfaf6;
+              border:1.5px solid var(--border);
+              border-radius:12px;
+              padding:18px 20px;
+              margin-bottom:20px;
+              font-size:0.86rem;
+              line-height:2;
+              color:var(--text);
+            ">
+              <!-- preenchido via JS -->
+            </div>
+
+            <label class="check-field">
+              <input type="checkbox" id="s-termos" />
+              <span class="check-box"></span>
+              <div class="check-text">
+                <strong>Aceito os termos do programa fidelidade</strong>
+                <span>Li e concordo com as <a href="termos.html" target="_blank" style="color:var(--gold);font-weight:600;">regras do Cartão Fidelidade SnapBite</a>.</span>
+              </div>
+            </label>
+
+            <label class="check-field">
+              <input type="checkbox" id="s-comunicados" />
+              <span class="check-box"></span>
+              <div class="check-text">
+                <strong>Quero receber novidades e promoções</strong>
+                <span>Enviaremos apenas informações relevantes sobre o SnapBite.</span>
+              </div>
+            </label>
+
+            <div class="form-nav">
+              <button class="btn-back" onclick="goToStep(2)">
+                <i class="fa-solid fa-arrow-left"></i> Voltar
+              </button>
+              <button class="btn-next" onclick="enviarSolicitacao()">
+                <i class="fa-solid fa-star"></i> Solicitar cartão
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- SUCESSO -->
+        <div class="success-screen" id="success-screen">
+          <div class="success-icon-wrap">🎉</div>
+          <h2>Solicitação enviada!</h2>
+          <p>Seu Cartão Fidelidade SnapBite foi solicitado com sucesso. Retire no balcão no próximo dia útil apresentando seu RA.</p>
+          <div class="success-code" id="success-code">SB-0000-0000</div>
+          <div class="success-actions">
+            <a href="cardapio.html" class="btn-success-primary">
+              <i class="fa-solid fa-utensils"></i> Ver cardápio
+            </a>
+            <a href="index.html" class="btn-success-secondary">
+              Voltar ao início
+            </a>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- Sidebar -->
+    <div class="sc-sidebar">
+
+      <div class="sidebar-card sidebar-gratuito">
+        <div class="gratui-icon">🎁</div>
+        <div class="gratui-titulo">100% gratuito</div>
+        <div class="gratui-desc">O Cartão Fidelidade SnapBite não tem nenhum custo. É um benefício pra toda a comunidade SENAI.</div>
+      </div>
+
+      <div class="sidebar-card">
+        <h4><i class="fa-solid fa-circle-info"></i> O que acontece depois?</h4>
+        <ul class="sidebar-perks">
+          <li><i class="fa-solid fa-check-circle"></i> Você recebe um código de protocolo por e-mail</li>
+          <li><i class="fa-solid fa-check-circle"></i> O cartão fica pronto no próximo dia útil</li>
+          <li><i class="fa-solid fa-check-circle"></i> Retire no balcão com seu RA</li>
+          <li><i class="fa-solid fa-check-circle"></i> Já comece a acumular pontos no mesmo dia</li>
+        </ul>
+      </div>
+
+      <div class="sidebar-card">
+        <h4><i class="fa-solid fa-shield-halved"></i> Seus dados estão seguros</h4>
+        <ul class="sidebar-perks">
+          <li><i class="fa-solid fa-lock"></i> Usamos seus dados só pra o programa fidelidade</li>
+          <li><i class="fa-solid fa-lock"></i> Não compartilhamos com terceiros</li>
+          <li><i class="fa-solid fa-lock"></i> Você pode cancelar a qualquer momento</li>
+        </ul>
+      </div>
+
+      <div class="sidebar-card" style="background:linear-gradient(135deg,#1a0f0a,#3d1f08);border-color:rgba(199,149,42,0.3)">
+        <h4 style="color:#fff;"><i class="fa-solid fa-star" style="color:var(--gold-light)"></i> Bônus de boas-vindas</h4>
+        <ul class="sidebar-perks">
+          <li style="color:rgba(255,255,255,0.7)"><i class="fa-solid fa-gift" style="color:var(--gold-light)"></i> Ganhe <strong style="color:var(--gold-light)">20 pontos</strong> ao ativar o cartão</li>
+          <li style="color:rgba(255,255,255,0.7)"><i class="fa-solid fa-gift" style="color:var(--gold-light)"></i> Dobro de pontos na primeira semana</li>
+        </ul>
+      </div>
+
+    </div>
+  </div>
+
+  <script src="components.js"></script>
+  <script src="skeleton.js"></script>
+  <script src="app.js" type="module"></script>
+  <script src="firebase-auth.js" type="module"></script>
+
+  <script>
+    let currentStep = 1;
+    const totalSteps = 3;
+
+    // Dados coletados
+    const dados = {};
+
+    function goToStep(step) {
+      // Validação do step atual antes de avançar
+      if (step > currentStep && !validarStep(currentStep)) return;
+
+      // Preenche resumo no step 3
+      if (step === 3) preencherResumo();
+
+      // Atualiza UI
+      document.querySelectorAll('.form-step').forEach(s => s.classList.remove('active'));
+      const target = document.getElementById('step-' + step);
+      if (target) target.classList.add('active');
+
+      // Steps indicator
+      for (let i = 1; i <= totalSteps; i++) {
+        const ind = document.getElementById('si-' + i);
+        ind.classList.remove('active', 'done');
+        if (i < step) ind.classList.add('done');
+        if (i === step) ind.classList.add('active');
+      }
+
+      // Progress bar
+      const pct = (step / totalSteps) * 100;
+      document.getElementById('form-progress-fill').style.width = pct + '%';
+
+      currentStep = step;
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    function validarStep(step) {
+      if (step === 1) {
+        const campos = ['s-nome', 's-ra', 's-email', 's-tel', 's-cpf', 's-curso'];
+        let ok = true;
+        campos.forEach(id => {
+          const el = document.getElementById(id);
+          if (!el || !el.value.trim()) {
+            el && el.classList.add('error');
+            ok = false;
+          } else {
+            el.classList.remove('error');
+          }
+        });
+        if (!ok) {
+          mostrarToast('Preencha todos os campos obrigatórios.', 'warning');
+          return false;
+        }
+      }
+
+      if (step === 2) {
+        const turnoSelecionado = document.querySelector('.turno-btn.selected');
+        if (!turnoSelecionado) {
+          mostrarToast('Selecione seu turno de preferência.', 'warning');
+          return false;
+        }
+      }
+
+      return true;
+    }
+
+    function preencherResumo() {
+      const nome   = document.getElementById('s-nome')?.value || '';
+      const ra     = document.getElementById('s-ra')?.value || '';
+      const email  = document.getElementById('s-email')?.value || '';
+      const tel    = document.getElementById('s-tel')?.value || '';
+      const cpf    = document.getElementById('s-cpf')?.value || '';
+      const curso  = document.getElementById('s-curso')?.value || '';
+      const turno  = document.querySelector('.turno-btn.selected .turno-label')?.textContent || '—';
+
+      const resumo = document.getElementById('resumo-dados');
+      if (!resumo) return;
+
+      resumo.innerHTML = `
+        <div style="display:grid;grid-template-columns:auto 1fr;gap:4px 12px;color:#2a1a10">
+          <span style="font-weight:700;color:#7a5c3a">Nome</span>       <span>${nome}</span>
+          <span style="font-weight:700;color:#7a5c3a">RA</span>         <span>${ra}</span>
+          <span style="font-weight:700;color:#7a5c3a">E-mail</span>     <span>${email}</span>
+          <span style="font-weight:700;color:#7a5c3a">Telefone</span>   <span>${tel}</span>
+          <span style="font-weight:700;color:#7a5c3a">CPF</span>        <span>${cpf}</span>
+          <span style="font-weight:700;color:#7a5c3a">Curso</span>      <span>${curso}</span>
+          <span style="font-weight:700;color:#7a5c3a">Turno</span>      <span>${turno}</span>
+        </div>
+      `;
+    }
+
+    function enviarSolicitacao() {
+      const termos = document.getElementById('s-termos');
+      if (!termos?.checked) {
+        mostrarToast('Aceite os termos para continuar.', 'warning');
+        return;
+      }
+
+      // Simula envio
+      const codigo = gerarProtocolo();
+
+      // Esconde steps, mostra sucesso
+      document.querySelectorAll('.form-step').forEach(s => s.classList.remove('active'));
+      const success = document.getElementById('success-screen');
+      success.classList.add('active');
+      document.getElementById('success-code').textContent = codigo;
+
+      // Steps todos done
+      for (let i = 1; i <= totalSteps; i++) {
+        const ind = document.getElementById('si-' + i);
+        ind.classList.remove('active');
+        ind.classList.add('done');
+      }
+      document.getElementById('form-progress-fill').style.width = '100%';
+    }
+
+    function gerarProtocolo() {
+      const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+      const seg = n => Array.from({length: n}, () => chars[Math.floor(Math.random() * chars.length)]).join('');
+      return `SB-${seg(4)}-${seg(4)}`;
+    }
+
+    function selecionarTurno(el) {
+      document.querySelectorAll('.turno-btn').forEach(b => b.classList.remove('selected'));
+      el.classList.add('selected');
+    }
+
+    // Toast simples (caso app.js não tenha carregado ainda)
+    function mostrarToast(msg, tipo) {
+      if (typeof showToast === 'function') {
+        showToast(msg, tipo);
+        return;
+      }
+      alert(msg);
+    }
+
+    // Máscara simples pro CPF
+    document.addEventListener('DOMContentLoaded', () => {
+      const cpfEl = document.getElementById('s-cpf');
+      if (cpfEl) {
+        cpfEl.addEventListener('input', (e) => {
+          let v = e.target.value.replace(/\D/g, '');
+          if (v.length > 11) v = v.slice(0, 11);
+          v = v.replace(/(\d{3})(\d)/, '$1.$2')
+               .replace(/(\d{3})(\d)/, '$1.$2')
+               .replace(/(\d{3})(\d{1,2})$/, '$1-$2');
+          e.target.value = v;
+        });
+      }
+
+      const telEl = document.getElementById('s-tel');
+      if (telEl) {
+        telEl.addEventListener('input', (e) => {
+          let v = e.target.value.replace(/\D/g, '');
+          if (v.length > 11) v = v.slice(0, 11);
+          v = v.replace(/(\d{2})(\d)/, '($1) $2')
+               .replace(/(\d{5})(\d)/, '$1-$2');
+          e.target.value = v;
+        });
+      }
+
+      // Remove erro ao digitar
+      document.querySelectorAll('input, select').forEach(el => {
+        el.addEventListener('input', () => el.classList.remove('error'));
+        el.addEventListener('change', () => el.classList.remove('error'));
+      });
+    });
+  </script>
+
+<script src="js/components.js"></script>
+<script src="js/app.js"></script>
+<script type="module" src="backend/firebase-auth.js"></script>
+
+</body>
+</html>

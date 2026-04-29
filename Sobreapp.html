@@ -1,0 +1,772 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SnapBite App — Seu lanche no bolso</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🍔</text></svg>">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <link rel="stylesheet" href="css/global.css">
+  <link rel="stylesheet" href="css/pages.css">
+  <style>
+    .app-hero-section {
+      background: linear-gradient(135deg, rgba(3,46,173,0.04), rgba(227,6,19,0.04));
+      padding: 80px 0 60px;
+    }
+    .app-hero-content {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 40px;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 60px;
+      align-items: center;
+    }
+    .app-hero-texto h1 {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(2rem, 4vw, 3rem);
+      font-weight: 900;
+      color: var(--preto-q);
+      line-height: 1.1;
+      margin-bottom: 20px;
+    }
+    .app-hero-texto h1 em {
+      font-style: italic;
+      color: var(--mostarda);
+    }
+    .app-hero-texto p {
+      font-size: 1.05rem;
+      color: var(--cinza-q);
+      line-height: 1.8;
+      margin-bottom: 30px;
+    }
+    .app-cta-buttons {
+      display: flex;
+      gap: 16px;
+      align-items: center;
+      margin-bottom: 40px;
+      flex-wrap: wrap;
+    }
+    .app-btn-primary {
+      background: var(--vinho);
+      color: white;
+      border: none;
+      padding: 14px 28px;
+      border-radius: 8px;
+      font-weight: 700;
+      font-size: 0.95rem;
+      cursor: pointer;
+      transition: background var(--t), transform var(--t);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      text-decoration: none;
+    }
+    .app-btn-primary:hover {
+      background: var(--vinho-cl);
+      transform: translateY(-2px);
+    }
+    .app-btn-secondary {
+      color: var(--vinho);
+      border: 2px solid var(--vinho);
+      background: transparent;
+      padding: 12px 24px;
+      border-radius: 8px;
+      font-weight: 700;
+      font-size: 0.95rem;
+      cursor: pointer;
+      transition: border-color var(--t), color var(--t);
+      text-decoration: none;
+    }
+    .app-btn-secondary:hover {
+      color: var(--vinho-cl);
+      border-color: var(--vinho-cl);
+    }
+    .app-aviso {
+      background: rgba(227,6,19,0.08);
+      border-left: 3px solid var(--mostarda);
+      padding: 14px 16px;
+      border-radius: 6px;
+      font-size: 0.9rem;
+      color: var(--cinza-q);
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .app-aviso i {
+      color: var(--mostarda);
+      font-size: 1.1rem;
+      flex-shrink: 0;
+    }
+
+    .app-mockup-container {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      position: relative;
+    }
+    .app-phone {
+      width: 240px;
+      height: 480px;
+      background: #000;
+      border-radius: 40px;
+      border: 8px solid #1a1a1a;
+      overflow: hidden;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.15);
+      position: relative;
+    }
+    .app-phone::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 140px;
+      height: 28px;
+      background: #000;
+      border-radius: 0 0 20px 20px;
+      z-index: 30;
+    }
+
+    .app-screen {
+      width: 100%;
+      height: 100%;
+      background: var(--creme);
+      padding-top: 16px;
+      padding-bottom: 16px;
+      overflow: hidden;
+      position: relative;
+    }
+
+    .app-screen-panel {
+      position: absolute;
+      inset: 16px 0 16px 0;
+      display: flex;
+      flex-direction: column;
+      opacity: 0;
+      pointer-events: none;
+      transform: translateX(24px);
+      transition: opacity 0.45s ease, transform 0.45s ease;
+    }
+
+    .app-screen-panel.active {
+      opacity: 1;
+      pointer-events: auto;
+      transform: translateX(0);
+    }
+
+    .app-screen-header {
+      padding: 12px 16px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid var(--creme-esc);
+      background: var(--creme);
+    }
+    .app-screen-header span {
+      font-size: 0.7rem;
+      font-weight: 700;
+      color: var(--mostarda);
+    }
+    .app-screen-header i {
+      font-size: 0.9rem;
+      color: var(--preto-q);
+    }
+
+    .app-screen-content {
+      flex: 1;
+      padding: 16px;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      position: relative;
+    }
+
+    .app-screen-notif {
+      background: var(--vinho);
+      color: white;
+      padding: 10px;
+      border-radius: 6px;
+      font-size: 0.7rem;
+      font-weight: 700;
+      text-align: center;
+      position: relative;
+      cursor: pointer;
+      transform-origin: center;
+      box-shadow: 0 10px 22px rgba(0,51,153,0.18);
+    }
+
+    .app-screen-notif.is-pressed {
+      animation: notifPress 0.45s ease forwards;
+    }
+
+    @keyframes notifPress {
+      0% { transform: scale(1); }
+      35% { transform: scale(0.94); }
+      60% { transform: scale(1.03); }
+      100% { transform: scale(1); }
+    }
+
+    .app-screen-item {
+      background: white;
+      border: 1px solid var(--cinza-borda);
+      padding: 10px;
+      border-radius: 6px;
+      font-size: 0.65rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .app-screen-item span:last-child {
+      color: var(--mostarda);
+      font-weight: 700;
+    }
+
+    .app-screen-total {
+      background: white;
+      border: 1px solid var(--cinza-borda);
+      padding: 10px;
+      border-radius: 6px;
+      font-size: 0.68rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-weight: 700;
+    }
+    .app-screen-total span:last-child {
+      color: var(--mostarda);
+    }
+
+    .resgate-hero {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+      text-align: center;
+      padding: 10px 0 6px;
+    }
+
+    .resgate-icon {
+      width: 72px;
+      height: 72px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #18a957, #4bc86e);
+      color: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.8rem;
+      box-shadow: 0 10px 24px rgba(24,169,87,0.24);
+    }
+
+    .resgate-titulo {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.2rem;
+      font-weight: 900;
+      color: var(--preto-q);
+      line-height: 1.1;
+    }
+
+    .resgate-sub {
+      font-size: 0.72rem;
+      color: var(--cinza-q);
+      line-height: 1.5;
+      max-width: 160px;
+    }
+
+    .resgate-card {
+      background: white;
+      border: 1px solid var(--cinza-borda);
+      border-radius: 10px;
+      padding: 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .resgate-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-size: 0.68rem;
+      color: var(--preto-q);
+    }
+
+    .resgate-row strong {
+      color: var(--vinho);
+    }
+
+    .resgate-code {
+      background: rgba(227,6,19,0.08);
+      border: 1px dashed rgba(227,6,19,0.35);
+      border-radius: 8px;
+      padding: 10px;
+      text-align: center;
+      font-family: 'DM Mono', monospace;
+      font-size: 0.74rem;
+      font-weight: 700;
+      color: var(--terracota);
+      letter-spacing: 1px;
+    }
+
+    .resgate-badge {
+      background: var(--vinho);
+      color: white;
+      padding: 10px;
+      border-radius: 8px;
+      text-align: center;
+      font-size: 0.72rem;
+      font-weight: 700;
+    }
+
+    .features-section {
+      padding: 80px 0;
+      background: #fff;
+    }
+    .features-inner {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 40px;
+    }
+    .features-header {
+      text-align: center;
+      margin-bottom: 60px;
+    }
+    .features-header .eyebrow {
+      color: var(--mostarda);
+    }
+    .features-header h2 {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(2rem, 4vw, 2.5rem);
+      font-weight: 900;
+      color: var(--preto-q);
+      margin: 12px 0 20px;
+    }
+    .features-header p {
+      font-size: 1rem;
+      color: var(--cinza-q);
+      max-width: 600px;
+      margin: 0 auto;
+    }
+    .features-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 28px;
+    }
+    .feature-card {
+      background: #fff;
+      border: 1.5px solid var(--cinza-borda);
+      border-radius: 12px;
+      padding: 32px 24px;
+      transition: transform var(--t), box-shadow var(--t), border-color var(--t);
+    }
+    .feature-card:hover {
+      transform: translateY(-6px);
+      box-shadow: var(--sombra-m);
+      border-color: var(--mostarda);
+    }
+    .feature-icon {
+      font-size: 2.4rem;
+      margin-bottom: 16px;
+    }
+    .feature-card h3 {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.2rem;
+      font-weight: 700;
+      color: var(--preto-q);
+      margin-bottom: 12px;
+    }
+    .feature-card p {
+      font-size: 0.9rem;
+      color: var(--cinza-q);
+      line-height: 1.6;
+    }
+
+    .timeline-section {
+      padding: 80px 0;
+      background: var(--creme);
+    }
+    .timeline-inner {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 40px;
+    }
+    .timeline-header {
+      text-align: center;
+      margin-bottom: 60px;
+    }
+    .timeline-header h2 {
+      font-family: 'Playfair Display', serif;
+      font-size: 2.2rem;
+      font-weight: 900;
+      color: var(--preto-q);
+      margin: 12px 0 20px;
+    }
+    .timeline-header p {
+      font-size: 1rem;
+      color: var(--cinza-q);
+    }
+    .timeline {
+      display: grid;
+      grid-template-columns: 1fr 3px 1fr;
+      gap: 28px;
+      position: relative;
+      align-items: stretch;
+      max-width: 980px;
+      margin: 0 auto;
+    }
+    .timeline-line {
+      background: linear-gradient(to bottom, var(--mostarda), var(--vinho));
+      border-radius: 2px;
+    }
+    .timeline-column {
+      display: flex;
+      flex-direction: column;
+      gap: 28px;
+    }
+    .timeline-item {
+      background: #fff;
+      border: 1.5px solid var(--cinza-borda);
+      border-radius: 12px;
+      padding: 24px;
+      position: relative;
+    }
+    .timeline-item h3 {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: var(--preto-q);
+      margin-bottom: 8px;
+    }
+    .timeline-item p {
+      font-size: 0.9rem;
+      color: var(--cinza-q);
+      line-height: 1.6;
+    }
+
+    .cta-section {
+      padding: 80px 0;
+      background: #fff;
+    }
+    .cta-inner {
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 0 40px;
+      text-align: center;
+    }
+    .cta-inner h2 {
+      font-family: 'Playfair Display', serif;
+      font-size: 2.2rem;
+      font-weight: 900;
+      color: var(--preto-q);
+      margin-bottom: 20px;
+    }
+    .cta-inner p {
+      font-size: 1.05rem;
+      color: var(--cinza-q);
+      line-height: 1.8;
+      margin-bottom: 40px;
+    }
+    .cta-buttons {
+      display: flex;
+      gap: 16px;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+
+    @media (max-width: 768px) {
+      .app-hero-content {
+        grid-template-columns: 1fr;
+        gap: 40px;
+      }
+      .app-cta-buttons {
+        flex-direction: column;
+        gap: 12px;
+      }
+      .timeline {
+        grid-template-columns: 1fr;
+        gap: 20px;
+      }
+      .timeline-line {
+        display: none;
+      }
+      .cta-buttons {
+        flex-direction: column;
+      }
+    }
+  </style>
+</head>
+<body>
+  <script src="js/skeleton.js"></script>
+
+  <main>
+    <!-- HERO APP -->
+    <section class="app-hero-section">
+      <div class="app-hero-content">
+        <div class="app-hero-texto">
+          <h1>SnapBite no seu <em>bolso</em>.</h1>
+          <p>O app oficial do SnapBite está chegando. Notificações em tempo real, histórico de pedidos, promoções exclusivas e tudo o que você precisa pra pedir rápido e fácil.</p>
+          
+          <div class="app-cta-buttons">
+            <button class="app-btn-primary" onclick="ativarNotificacao()">
+              <i class="fa-solid fa-bell"></i>
+              Quero notificação
+            </button>
+            <button class="app-btn-secondary"><a href="saiba-mais.html">Saber mais</a></button>
+          </div>
+
+          <div class="app-aviso">
+            <i class="fa-solid fa-circle-info"></i>
+            <span>Disponível em breve para iOS e Android. Seja um dos primeiros a testar!</span>
+          </div>
+        </div>
+
+        <div class="app-mockup-container">
+          <div class="app-phone">
+            <div class="app-screen">
+
+              <!-- Tela 1 -->
+              <div class="app-screen-panel active" id="app-panel-pronto">
+                <div class="app-screen-header">
+                  <span>SnapBite</span>
+                  <i class="fa-solid fa-bell"></i>
+                </div>
+
+                <div class="app-screen-content">
+                  <div class="app-screen-notif" id="pedido-pronto-btn">✅ Pedido pronto!</div>
+
+                  <div class="app-screen-item">
+                    <span>SnapBurguer Clássico</span>
+                    <span>R$ 12,90</span>
+                  </div>
+
+                  <div class="app-screen-item">
+                    <span>Batata Crocante</span>
+                    <span>R$ 7,90</span>
+                  </div>
+
+                  <div class="app-screen-total">
+                    <span>Total</span>
+                    <span>R$ 20,80</span>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Tela 2 -->
+              <div class="app-screen-panel" id="app-panel-resgatado">
+                <div class="app-screen-header">
+                  <span>SnapBite</span>
+                  <i class="fa-solid fa-check-circle"></i>
+                </div>
+
+                <div class="app-screen-content">
+                  <div class="resgate-hero">
+                    <div class="resgate-icon">
+                      <i class="fa-solid fa-check"></i>
+                    </div>
+                    <div class="resgate-titulo">Pedido resgatado</div>
+                    <div class="resgate-sub">Seu pedido foi retirado com sucesso no balcão.</div>
+                  </div>
+
+                  <div class="resgate-badge">✅ Retirada confirmada</div>
+
+                  <div class="resgate-card">
+                    <div class="resgate-row">
+                      <span>Status</span>
+                      <strong>Concluído</strong>
+                    </div>
+                    <div class="resgate-row">
+                      <span>Horário</span>
+                      <strong>11:47</strong>
+                    </div>
+                    <div class="resgate-row">
+                      <span>Total pago</span>
+                      <strong>R$ 20,80</strong>
+                    </div>
+                  </div>
+
+                  <div class="resgate-code">RESGATE #SB-20A8</div>
+                </div>
+              </div>
+
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- FEATURES -->
+    <section class="features-section">
+      <div class="features-inner">
+        <div class="features-header">
+          <span class="eyebrow">Recursos do app</span>
+          <h2>Tudo o que você precisa<br>na palma da mão</h2>
+          <p>Um aplicativo criado pra facilitar sua rotina no SENAI e deixar seu pedido mais rápido, mais bonito e mais inteligente.</p>
+        </div>
+
+        <div class="features-grid">
+          <div class="feature-card">
+            <div class="feature-icon">🔔</div>
+            <h3>Notificações em tempo real</h3>
+            <p>Receba alertas quando seu pedido entrar em preparo, estiver pronto e for liberado pra retirada.</p>
+          </div>
+
+          <div class="feature-card">
+            <div class="feature-icon">📋</div>
+            <h3>Histórico de pedidos</h3>
+            <p>Veja tudo o que você já pediu, repita pedidos favoritos e acompanhe seus combos preferidos.</p>
+          </div>
+
+          <div class="feature-card">
+            <div class="feature-icon">🎁</div>
+            <h3>Promoções exclusivas</h3>
+            <p>Tenha acesso a ofertas especiais e combos pensados pra quem usa o app com frequência.</p>
+          </div>
+
+          <div class="feature-card">
+            <div class="feature-icon">⚡</div>
+            <h3>Pedido em poucos toques</h3>
+            <p>Mais rapidez no intervalo: escolha, confirme e retire sem enrolação.</p>
+          </div>
+
+          <div class="feature-card">
+            <div class="feature-icon">🤖</div>
+            <h3>Sugestões inteligentes</h3>
+            <p>A IA do SnapBite pode indicar lanches com base no seu gosto, horário e estilo de pedido.</p>
+          </div>
+
+          <div class="feature-card">
+            <div class="feature-icon">📍</div>
+            <h3>Retirada organizada</h3>
+            <p>Evite filas e confusão com status claro, confirmação de retirada e tela de resgate concluído.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- TIMELINE -->
+    <section class="timeline-section">
+      <div class="timeline-inner">
+        <div class="timeline-header">
+          <span class="eyebrow">Como funciona</span>
+          <h2>Do pedido ao resgate</h2>
+          <p>Veja como o app acompanha cada etapa até a retirada do seu lanche.</p>
+        </div>
+
+        <div class="timeline">
+          <div class="timeline-column">
+            <div class="timeline-item">
+              <h3>1. Você faz o pedido</h3>
+              <p>Escolhe os itens, confirma tudo e recebe o pedido no seu histórico.</p>
+            </div>
+
+            <div class="timeline-item">
+              <h3>2. O preparo começa</h3>
+              <p>O app mostra que o pedido entrou em produção e avisa em tempo real.</p>
+            </div>
+          </div>
+
+          <div class="timeline-line"></div>
+
+          <div class="timeline-column">
+            <div class="timeline-item">
+              <h3>3. Pedido pronto</h3>
+              <p>Você recebe a notificação de que já pode buscar o lanche no balcão.</p>
+            </div>
+
+            <div class="timeline-item">
+              <h3>4. Pedido resgatado</h3>
+              <p>Depois da retirada, o app registra a confirmação e mostra o pedido concluído.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- CTA -->
+    <section class="cta-section">
+      <div class="cta-inner">
+        <h2>Quer testar quando lançar?</h2>
+        <p>O SnapBite App vai deixar seu intervalo ainda mais rápido. Entre cedo nessa novidade e acompanhe as próximas atualizações.</p>
+
+        <div class="cta-buttons">
+          <a href="index.html" class="app-btn-primary">
+            <i class="fa-solid fa-house"></i>
+            Voltar para home
+          </a>
+          <a href="IA.html" class="app-btn-secondary">Conhecer a IA</a>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <script src="js/components.js"></script>
+  <script src="js/app.js"></script>
+
+  <script>
+    (function () {
+      const btn = document.getElementById('pedido-pronto-btn');
+      const panelPronto = document.getElementById('app-panel-pronto');
+      const panelResgatado = document.getElementById('app-panel-resgatado');
+      const finger = document.querySelector('.app-finger');
+
+      if (!btn || !panelPronto || !panelResgatado) return;
+
+      let locked = false;
+
+      function tocarEAbrir() {
+        if (locked) return;
+        locked = true;
+
+        btn.classList.add('is-pressed');
+
+        setTimeout(() => {
+          panelPronto.classList.remove('active');
+          panelResgatado.classList.add('active');
+        }, 480);
+
+        setTimeout(() => {
+          panelResgatado.classList.remove('active');
+          panelPronto.classList.add('active');
+          btn.classList.remove('is-pressed');
+          locked = false;
+        }, 3200);
+      }
+
+      btn.addEventListener('click', tocarEAbrir);
+
+      setInterval(() => {
+        tocarEAbrir();
+      }, 7000);
+
+      if (finger) {
+        finger.classList.add('animate');
+      }
+    })();
+  </script>
+
+<script>
+  function ativarNotificacao() {
+    if (!("Notification" in window)) {
+      alert("Seu navegador não suporta notificações 😢");
+      return;
+    }
+  
+    Notification.requestPermission().then(permission => {
+      if (permission === "granted") {
+        new Notification("SnapBite 🍔", {
+          body: "Você será avisado quando o app lançar!",
+          icon: "https://cdn-icons-png.flaticon.com/512/3075/3075977.png"
+        });
+      } else {
+        alert("Você bloqueou as notificações 😢");
+      }
+    });
+  }
+  </script>
+
+  <script type="module" src="backend/firebase-auth.js"></script>
+</body>
+</html>

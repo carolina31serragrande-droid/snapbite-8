@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Cardápio | SnapBite</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🍽️</text></svg>">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link rel="stylesheet" href="css/global.css">
+  <link rel="stylesheet" href="css/cardapio.css">
+</head>
+<body>
+  <script src="js/skeleton.js"></script>
+  
+  <main>
+    <div class="page-hero">
+      <div class="page-hero-inner">
+        <span class="eyebrow">Escolha o seu</span>
+        <h1>Cardápio completo</h1>
+        <p>Tudo preparado na hora, com ingredientes frescos. Adicione ao carrinho e retire no intervalo.</p>
+      </div>
+    </div>
+
+    <div class="filtros-wrap">
+      <div class="filtros-inner">
+        <button class="filtro-btn active" data-filtro="todos">Todos</button>
+        <button class="filtro-btn" data-filtro="lanches">🍔 Lanches</button>
+        <button class="filtro-btn" data-filtro="combos">🍟 Combos</button>
+        <button class="filtro-btn" data-filtro="bebidas">🥤 Bebidas</button>
+        <button class="filtro-btn" data-filtro="sobremesas">🍰 Sobremesas</button>
+        <div class="busca-wrap">
+          <span>🔍</span>
+          <input type="text" id="busca-cardapio" placeholder="Buscar produto...">
+        </div>
+      </div>
+    </div>
+
+    <div class="cardapio-body">
+      <!-- Lanches -->
+      <div class="secao-bloco" id="sec-lanches">
+        <div class="secao-header">
+          <span class="secao-icon">🍔</span>
+          <h2>Lanches</h2>
+          <span class="secao-count">4 itens</span>
+        </div>
+        <div class="prods-grid">
+          <div class="prod-card" data-categoria="lanches">
+            <div class="prod-img">🍔<div class="prod-tags"><span class="tag tag-m">Top</span></div></div>
+            <div class="prod-body">
+              <div class="prod-nome">SnapBurguer Clássico</div>
+              <div class="prod-desc">Pão brioche, blend artesanal 150g, queijo cheddar, alface, tomate e molho especial da casa.</div>
+              <div class="prod-foot">
+                <div class="prod-preco">R$ 12,90</div>
+                <button class="btn-add" onclick="adicionarAoCarrinho({id:'snb1',nome:'SnapBurguer Clássico',preco:12.90,emoji:'🍔',desc:'Blend artesanal clássico'})">+</button>
+              </div>
+            </div>
+          </div>
+          <div class="prod-card" data-categoria="lanches">
+            <div class="prod-img">🥓</div>
+            <div class="prod-body">
+              <div class="prod-nome">Burguer Bacon Duplo</div>
+              <div class="prod-desc">Dois blends artesanais, bacon crocante, queijo gouda e maionese de alho defumado.</div>
+              <div class="prod-foot">
+                <div class="prod-preco">R$ 16,90</div>
+                <button class="btn-add" onclick="adicionarAoCarrinho({id:'snb2',nome:'Burguer Bacon Duplo',preco:16.90,emoji:'🥓',desc:'Duplo com bacon'})">+</button>
+              </div>
+            </div>
+          </div>
+          <div class="prod-card" data-categoria="lanches">
+            <div class="prod-img">🌮<div class="prod-tags"><span class="tag tag-o">Novo</span></div></div>
+            <div class="prod-body">
+              <div class="prod-nome">Wrap Frango Crocante</div>
+              <div class="prod-desc">Tortilha integral, frango empanado, cream cheese e mix de folhas frescas.</div>
+              <div class="prod-foot">
+                <div class="prod-preco">R$ 11,50</div>
+                <button class="btn-add" onclick="adicionarAoCarrinho({id:'snb3',nome:'Wrap Frango Crocante',preco:11.50,emoji:'🌮',desc:'Wrap crocante'})">+</button>
+              </div>
+            </div>
+          </div>
+          <div class="prod-card" data-categoria="lanches">
+            <div class="prod-img">🥪</div>
+            <div class="prod-body">
+              <div class="prod-nome">Misto Especial</div>
+              <div class="prod-desc">Pão de forma artesanal, presunto, queijo e manteiga. Simples e quentinho.</div>
+              <div class="prod-foot">
+                <div class="prod-preco">R$ 7,00</div>
+                <button class="btn-add" onclick="adicionarAoCarrinho({id:'snb4',nome:'Misto Especial',preco:7.00,emoji:'🥪',desc:'Misto quentinho'})">+</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Combos -->
+      <div class="secao-bloco" id="sec-combos">
+        <div class="secao-header">
+          <span class="secao-icon">🍟</span>
+          <h2>Combos</h2>
+          <span class="secao-count">3 combos</span>
+        </div>
+        <div class="prods-grid">
+          <div class="prod-card" data-categoria="combos">
+            <div class="prod-img">🍔<div class="prod-tags"><span class="tag tag-v">Promo</span></div></div>
+            <div class="prod-body">
+              <div class="prod-nome">Combo Estudante</div>
+              <div class="prod-desc">SnapBurguer Clássico + Batata Crocante P + Refrigerante 300ml. O favorito da galera!</div>
+              <div class="prod-foot">
+                <div class="prod-preco"><span class="prod-preco-old">R$ 24,90</span>R$ 18,50</div>
+                <button class="btn-add" onclick="adicionarAoCarrinho({id:'combo1',nome:'Combo Estudante',preco:18.50,emoji:'🍔',desc:'Burguer + Batata + Refri'})">+</button>
+              </div>
+            </div>
+          </div>
+          <div class="prod-card" data-categoria="combos">
+            <div class="prod-img">🍗</div>
+            <div class="prod-body">
+              <div class="prod-nome">Combo Frango</div>
+              <div class="prod-desc">Wrap de Frango Crocante + Batata M + Suco Natural 400ml.</div>
+              <div class="prod-foot">
+                <div class="prod-preco">R$ 19,90</div>
+                <button class="btn-add" onclick="adicionarAoCarrinho({id:'combo2',nome:'Combo Frango',preco:19.90,emoji:'🍗',desc:'Wrap + Batata + Suco'})">+</button>
+              </div>
+            </div>
+          </div>
+          <div class="prod-card" data-categoria="combos">
+            <div class="prod-img">👑<div class="prod-tags"><span class="tag tag-m">Premium</span></div></div>
+            <div class="prod-body">
+              <div class="prod-nome">Combo King Size</div>
+              <div class="prod-desc">Bacon Duplo + Batata G + Milk Shake + Sobremesa do dia. Tudo que você precisa.</div>
+              <div class="prod-foot">
+                <div class="prod-preco">R$ 32,90</div>
+                <button class="btn-add" onclick="adicionarAoCarrinho({id:'combo3',nome:'Combo King Size',preco:32.90,emoji:'👑',desc:'Combo premium completo'})">+</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Bebidas -->
+      <div class="secao-bloco" id="sec-bebidas">
+        <div class="secao-header">
+          <span class="secao-icon">🥤</span>
+          <h2>Bebidas</h2>
+          <span class="secao-count">3 opções</span>
+        </div>
+        <div class="prods-grid">
+          <div class="prod-card" data-categoria="bebidas">
+            <div class="prod-img">🧃</div>
+            <div class="prod-body">
+              <div class="prod-nome">Suco Natural</div>
+              <div class="prod-desc">Laranja, limão, maracujá ou morango. 400ml espremido na hora.</div>
+              <div class="prod-foot">
+                <div class="prod-preco">R$ 6,50</div>
+                <button class="btn-add" onclick="adicionarAoCarrinho({id:'beb1',nome:'Suco Natural',preco:6.50,emoji:'🧃',desc:'400ml natural'})">+</button>
+              </div>
+            </div>
+          </div>
+          <div class="prod-card" data-categoria="bebidas">
+            <div class="prod-img">🥤</div>
+            <div class="prod-body">
+              <div class="prod-nome">Refrigerante Lata</div>
+              <div class="prod-desc">Coca-Cola, Guaraná ou Fanta. Latinha 350ml bem gelada.</div>
+              <div class="prod-foot">
+                <div class="prod-preco">R$ 4,50</div>
+                <button class="btn-add" onclick="adicionarAoCarrinho({id:'beb2',nome:'Refrigerante Lata',preco:4.50,emoji:'🥤',desc:'Lata 350ml'})">+</button>
+              </div>
+            </div>
+          </div>
+          <div class="prod-card" data-categoria="bebidas">
+            <div class="prod-img">🍫<div class="prod-tags"><span class="tag tag-o">Novo</span></div></div>
+            <div class="prod-body">
+              <div class="prod-nome">Milk Shake Artesanal</div>
+              <div class="prod-desc">Chocolate, baunilha ou morango. 400ml cremoso e bem cheio.</div>
+              <div class="prod-foot">
+                <div class="prod-preco">R$ 9,90</div>
+                <button class="btn-add" onclick="adicionarAoCarrinho({id:'beb3',nome:'Milk Shake Artesanal',preco:9.90,emoji:'🍫',desc:'Milk shake 400ml'})">+</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Sobremesas -->
+      <div class="secao-bloco" id="sec-sobremesas">
+        <div class="secao-header">
+          <span class="secao-icon">🍰</span>
+          <h2>Sobremesas</h2>
+          <span class="secao-count">2 opções</span>
+        </div>
+        <div class="prods-grid">
+          <div class="prod-card" data-categoria="sobremesas">
+            <div class="prod-img">🍰</div>
+            <div class="prod-body">
+              <div class="prod-nome">Fatia de Bolo</div>
+              <div class="prod-desc">Chocolate, cenoura ou red velvet. Assado todo dia, sempre fresquinho.</div>
+              <div class="prod-foot">
+                <div class="prod-preco">R$ 5,00</div>
+                <button class="btn-add" onclick="adicionarAoCarrinho({id:'sob1',nome:'Fatia de Bolo',preco:5.00,emoji:'🍰',desc:'Bolo do dia'})">+</button>
+              </div>
+            </div>
+          </div>
+          <div class="prod-card" data-categoria="sobremesas">
+            <div class="prod-img">🍩</div>
+            <div class="prod-body">
+              <div class="prod-nome">Donuts Recheados</div>
+              <div class="prod-desc">Nutella, doce de leite ou frutas vermelhas. 2 unidades caprichadas.</div>
+              <div class="prod-foot">
+                <div class="prod-preco">R$ 7,50</div>
+                <button class="btn-add" onclick="adicionarAoCarrinho({id:'sob2',nome:'Donuts Recheados',preco:7.50,emoji:'🍩',desc:'2 donuts recheados'})">+</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <script src="js/components.js"></script>
+  <script src="js/app.js"></script>
+<script type="module" src="backend/firebase-auth.js"></script>
+</body>
+</html>

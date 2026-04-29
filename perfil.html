@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Meu Perfil — SnapBite</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🍔</text></svg>">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <link rel="stylesheet" href="css/global.css">
+  <link rel="stylesheet" href="css/pages.css">
+</head>
+<body>
+  <script src="js/skeleton.js"></script>
+
+  <main>
+    <section class="page-hero">
+      <div class="page-hero-inner">
+        <span class="eyebrow" style="color:var(--terracota)">Área do cliente</span>
+        <h1>Meu perfil</h1>
+        <p>Mostre quem você é no SnapBite, conte sua experiência e personalize sua conta.</p>
+      </div>
+    </section>
+
+    <section class="perfil-page">
+      <div class="perfil-wrap">
+        <div class="perfil-card perfil-card-preview">
+          <div class="perfil-avatar-box">
+            <img id="perfil-preview" alt="Foto de perfil" style="display:none;">
+            <div id="perfil-iniciais" class="perfil-iniciais">U</div>
+          </div>
+
+          <h2>Seu perfil</h2>
+          <p>Adicione uma foto, escreva uma descrição opcional e conte como foi sua experiência com a lanchonete.</p>
+        </div>
+
+        <div class="perfil-card">
+          <form id="perfil-form" class="perfil-form">
+            <div class="form-group">
+              <label for="perfil-nome">Nome</label>
+              <input type="text" id="perfil-nome" placeholder="Seu nome">
+            </div>
+
+            <div class="form-group">
+              <label for="perfil-email">E-mail</label>
+            
+              <div class="perfil-email-row">
+                <input type="email" id="perfil-email" readonly>
+                <button type="button" id="btn-editar-email" class="btn-email-edit">
+                  Alterar
+                </button>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label for="perfil-foto">Foto de perfil</label>
+              <input type="file" id="perfil-foto" accept="image/*">
+            </div>
+
+            <div class="form-group">
+              <label for="perfil-descricao">Descrição</label>
+              <textarea id="perfil-descricao" rows="4" placeholder="Fala um pouco sobre você. Esse campo é opcional."></textarea>
+            </div>
+
+            <div class="form-group">
+              <label for="perfil-experiencia">Sua experiência</label>
+              <textarea id="perfil-experiencia" rows="6" placeholder="Conta como foi sua experiência com o SnapBite."></textarea>
+            </div>
+
+            <button type="submit" class="btn-primary">Salvar perfil</button>
+          </form>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <script src="js/components.js"></script>
+  <script src="js/app.js"></script>
+  <script type="module" src="backend/firebase-auth.js"></script>
+</body>
+</html>

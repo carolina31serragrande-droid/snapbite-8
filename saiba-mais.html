@@ -1,0 +1,558 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SnapBite App — Saiba Mais</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🍔</text></svg>">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <link rel="stylesheet" href="css/global.css">
+  <link rel="stylesheet" href="css/pages.css">
+  <style>
+    .saiba-mais-hero {
+      background: linear-gradient(135deg, rgba(3,46,173,0.04), rgba(227,6,19,0.04));
+      padding: 60px 40px;
+      text-align: center;
+    }
+
+    .saiba-mais-hero h1 {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(2rem, 4vw, 2.8rem);
+      font-weight: 900;
+      color: var(--preto-q);
+      margin-bottom: 16px;
+      line-height: 1.2;
+    }
+
+    .saiba-mais-hero p {
+      font-size: 1.05rem;
+      color: var(--cinza-q);
+      max-width: 600px;
+      margin: 0 auto 20px;
+      line-height: 1.8;
+    }
+
+    .saiba-mais-content {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 60px 40px;
+    }
+
+    .saiba-mais-section {
+      margin-bottom: 50px;
+    }
+
+    .saiba-mais-section h2 {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.8rem;
+      color: var(--preto-q);
+      margin-bottom: 20px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .saiba-mais-section h2 i {
+      font-size: 1.4rem;
+      color: var(--mostarda);
+    }
+
+    .saiba-mais-section p {
+      font-size: 1rem;
+      color: var(--cinza-q);
+      line-height: 1.8;
+      margin-bottom: 16px;
+    }
+
+    .saiba-mais-list {
+      list-style: none;
+      padding: 0;
+      margin: 20px 0;
+    }
+
+    .saiba-mais-list li {
+      padding: 12px 0;
+      padding-left: 36px;
+      position: relative;
+      color: var(--cinza-q);
+      line-height: 1.7;
+    }
+
+    .saiba-mais-list li::before {
+      content: '✓';
+      position: absolute;
+      left: 0;
+      color: var(--mostarda);
+      font-weight: 700;
+      font-size: 1.1rem;
+    }
+
+    .saiba-mais-highlight {
+      background: rgba(200, 149, 42, 0.08);
+      border-left: 4px solid var(--mostarda);
+      padding: 20px;
+      border-radius: 8px;
+      margin: 20px 0;
+    }
+
+    .saiba-mais-highlight strong {
+      color: var(--mostarda);
+    }
+
+    .saiba-mais-faq {
+      margin-top: 40px;
+    }
+
+    .faq-item {
+      border-bottom: 1px solid var(--cinza-borda);
+      padding: 20px 0;
+    }
+
+    .faq-item:last-child {
+      border-bottom: none;
+    }
+
+    .faq-question {
+      cursor: pointer;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-weight: 600;
+      color: var(--preto-q);
+      user-select: none;
+      padding: 12px 0;
+    }
+
+    .faq-question i {
+      color: var(--mostarda);
+      transition: transform 0.3s ease;
+    }
+
+    .faq-item.open .faq-question i {
+      transform: rotate(180deg);
+    }
+
+    .faq-answer {
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height 0.3s ease;
+      color: var(--cinza-q);
+      line-height: 1.7;
+      padding-top: 0;
+    }
+
+    .faq-item.open .faq-answer {
+      max-height: 200px;
+      padding-top: 12px;
+    }
+
+    .saiba-mais-cta {
+      background: var(--vinho);
+      color: white;
+      padding: 40px;
+      border-radius: 12px;
+      text-align: center;
+      margin-top: 60px;
+    }
+
+    .saiba-mais-cta h2 {
+      color: white;
+      margin-bottom: 16px;
+    }
+
+    .saiba-mais-cta p {
+      color: rgba(255, 255, 255, 0.9);
+      margin-bottom: 24px;
+    }
+
+    .saiba-mais-back {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      color: var(--vinho);
+      text-decoration: none;
+      font-weight: 600;
+      margin-bottom: 20px;
+      transition: color var(--t);
+    }
+
+    .saiba-mais-back:hover {
+      color: var(--vinho-cl);
+    }
+
+    .saiba-mais-timeline {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 24px;
+      margin: 30px 0;
+    }
+
+    .timeline-card {
+      background: white;
+      border: 2px solid var(--cinza-borda);
+      padding: 24px;
+      border-radius: 12px;
+      text-align: center;
+    }
+
+    .timeline-card .icon {
+      font-size: 2.5rem;
+      margin-bottom: 12px;
+    }
+
+    .timeline-card h3 {
+      font-size: 1rem;
+      color: var(--preto-q);
+      margin-bottom: 8px;
+    }
+
+    .timeline-card p {
+      font-size: 0.9rem;
+      color: var(--cinza-q);
+      margin: 0;
+    }
+
+    @media (max-width: 768px) {
+      .saiba-mais-hero {
+        padding: 40px 20px;
+      }
+
+      .saiba-mais-content {
+        padding: 40px 20px;
+      }
+
+      .saiba-mais-section h2 {
+        font-size: 1.4rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <script src="js/skeleton.js"></script>
+
+  <main>
+    <!-- VOLTAR -->
+    <div style="max-width: 900px; margin: 0 auto; padding: 20px 40px;">
+      <a href="Sobreapp.html" class="saiba-mais-back">
+        <i class="fa-solid fa-arrow-left"></i>
+        Voltar para app
+      </a>
+    </div>
+
+    <!-- HERO -->
+    <section class="saiba-mais-hero">
+      <h1>Tudo sobre o SnapBite App</h1>
+      <p>Conheça em detalhes como o app vai transformar a forma como você pede seus lanches favoritos.</p>
+    </section>
+
+    <!-- CONTEÚDO -->
+    <section class="saiba-mais-content">
+      
+      <!-- O QUE É -->
+      <div class="saiba-mais-section">
+        <h2>
+          <i class="fa-solid fa-star"></i>
+          O que é o SnapBite App?
+        </h2>
+        <p>
+          O SnapBite App é a versão mobile oficial do SnapBite, seu lanchonete inteligente do SENAI. Um aplicativo criado pra tornar a experiência de pedir lanches mais rápida, inteligente e conveniente para quem está sempre na correria durante o intervalo.
+        </p>
+        <p>
+          Com notificações em tempo real, histórico de pedidos, promoções exclusivas e muito mais, o app traz toda a praticidade do SnapBite direto no seu bolso.
+        </p>
+      </div>
+
+      <!-- FEATURES DETALHADAS -->
+      <div class="saiba-mais-section">
+        <h2>
+          <i class="fa-solid fa-rocket"></i>
+          Principais Funcionalidades
+        </h2>
+        
+        <ul class="saiba-mais-list">
+          <li><strong>Notificações em tempo real:</strong> Saiba exatamente quando seu pedido entra em preparo, fica pronto e está liberado para retirada</li>
+          <li><strong>Histórico de pedidos:</strong> Veja todos os pedidos que já fez, com datas, valores e o que foi pedido</li>
+          <li><strong>Repetir pedidos favoritos:</strong> Repita aquele combo que você adora com apenas um toque</li>
+          <li><strong>Promoções exclusivas:</strong> Acesso a ofertas e descontos pensados especialmente para usuários do app</li>
+          <li><strong>Pedido rápido:</strong> Interface intuitiva que reduz o tempo de escolha e confirmação do pedido</li>
+          <li><strong>Status visual do pedido:</strong> Acompanhe seu lanche em tempo real com animações e alertas claros</li>
+          <li><strong>Sugestões inteligentes:</strong> IA que aprende seus gostos e sugere lanches baseado no seu histórico</li>
+          <li><strong>Confirmação de retirada:</strong> Marque como retirado e receba comprovante no app</li>
+        </ul>
+      </div>
+
+      <!-- COMO FUNCIONA -->
+      <div class="saiba-mais-section">
+        <h2>
+          <i class="fa-solid fa-flow"></i>
+          Como Funciona na Prática
+        </h2>
+        
+        <div class="saiba-mais-timeline">
+          <div class="timeline-card">
+            <div class="icon">📱</div>
+            <h3>1. Abrir o App</h3>
+            <p>Faça login rápido com Google ou email</p>
+          </div>
+          <div class="timeline-card">
+            <div class="icon">🍔</div>
+            <h3>2. Escolher Lanches</h3>
+            <p>Browse rápido e selecione seus itens favoritos</p>
+          </div>
+          <div class="timeline-card">
+            <div class="icon">✅</div>
+            <h3>3. Confirmar Pedido</h3>
+            <p>Revise tudo e confirme o pagamento</p>
+          </div>
+          <div class="timeline-card">
+            <div class="icon">🔔</div>
+            <h3>4. Receber Notificações</h3>
+            <p>Acompanhe em tempo real até ficar pronto</p>
+          </div>
+          <div class="timeline-card">
+            <div class="icon">🏪</div>
+            <h3>5. Retirar no Balcão</h3>
+            <p>Mostre a confirmação e pegue seu lanche</p>
+          </div>
+          <div class="timeline-card">
+            <div class="icon">⭐</div>
+            <h3>6. Historiar</h3>
+            <p>Pedido fica registrado e pronto pra repetir</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- DESTAQUE -->
+      <div class="saiba-mais-highlight">
+        <strong>💡 Por que usar o SnapBite App?</strong>
+        <p style="margin: 10px 0 0;">
+          Porque o intervalo é sagrado e seu tempo é ouro. Com o app, você economiza minutos que poderiam ser gastos na fila, ganha notificações que te avisam exatamente quando pegar seu lanche, e ainda fica ligado nas promoções exclusivas que só aparecem pra quem usa a versão mobile.
+        </p>
+      </div>
+
+      <!-- FAQ -->
+      <div class="saiba-mais-section saiba-mais-faq">
+        <h2>
+          <i class="fa-solid fa-circle-question"></i>
+          Perguntas Frequentes
+        </h2>
+
+        <div class="faq-item">
+          <div class="faq-question">
+            <span>Quando o app estará disponível?</span>
+            <i class="fa-solid fa-chevron-down"></i>
+          </div>
+          <div class="faq-answer">
+            O app ainda está em desenvolvimento e deve estar disponível em breve nas lojas iOS (App Store) e Android (Google Play). Registre seu interesse para receber notificações quando ele lançar!
+          </div>
+        </div>
+
+        <div class="faq-item">
+          <div class="faq-question">
+            <span>Será preciso pagar para usar?</span>
+            <i class="fa-solid fa-chevron-down"></i>
+          </div>
+          <div class="faq-answer">
+            Não! O SnapBite App é totalmente gratuito. Você só paga pelos lanches que pedir, assim como no balcão físico. As promoções exclusivas do app são uma forma de agradecermos por você usar a versão mobile.
+          </div>
+        </div>
+
+        <div class="faq-item">
+          <div class="faq-question">
+            <span>Posso fazer pedidos pelo site ou só pelo app?</span>
+            <i class="fa-solid fa-chevron-down"></i>
+          </div>
+          <div class="faq-answer">
+            Você pode fazer pedidos tanto pelo site quanto pelo app. O site é perfeito se você estiver no computador, mas o app oferece notificações em tempo real e funcionalidades exclusivas que deixam a experiência bem melhor.
+          </div>
+        </div>
+
+        <div class="faq-item">
+          <div class="faq-question">
+            <span>Meus dados estão seguros?</span>
+            <i class="fa-solid fa-chevron-down"></i>
+          </div>
+          <div class="faq-answer">
+            Sim! O SnapBite App usa Firebase de ponta, a mesma infraestrutura que grandes empresas usam para proteger dados sensíveis. Seus dados de login, pedidos e pagamento são criptografados e protegidos.
+          </div>
+        </div>
+
+        <div class="faq-item">
+          <div class="faq-question">
+            <span>Preciso ter internet para usar?</span>
+            <i class="fa-solid fa-chevron-down"></i>
+          </div>
+          <div class="faq-answer">
+            Sim, é necessário estar conectado à internet para fazer pedidos e receber notificações. No entanto, você poderá visualizar seu histórico mesmo offline.
+          </div>
+        </div>
+      </div>
+
+      <!-- CTA FINAL -->
+      <div class="saiba-mais-cta">
+        <h2>Pronto para ficar ligado?</h2>
+        <p>Vamos te notificar no seu e-mail! Fique ligado pelos próximos dias.</p>
+        <button type="button" class="app-btn-primary" id="btn-notificacao-final" style="background: white; color: var(--vinho); border: none; cursor: pointer; font-size: 1rem; padding: 14px 28px; border-radius: 50px; font-weight: 700; display: inline-flex; align-items: center; gap: 10px; box-shadow: 0 4px 18px rgba(0,0,0,0.18); transition: transform 0.2s ease, box-shadow 0.2s ease;">
+        <a href="index.html">
+            <i class="fa-solid fa-arrow-left"></i>
+            Voltar para o site
+          </a>
+        </button>
+      </div>
+
+    </section>
+  </main>
+
+  <!-- MODAL NOTIFICAÇÃO -->
+  <div id="modal-notificacao" class="modal-overlay" style="display: none;">
+    <div class="modal-content" style="max-width: 420px; width: 90%;">
+
+      <!-- Cabeçalho -->
+      <div class="modal-header" style="border-bottom: 1px solid #eee; padding: 20px 24px; display: flex; justify-content: space-between; align-items: center;">
+        <div style="display: flex; align-items: center; gap: 10px;">
+          <div style="width: 36px; height: 36px; background: var(--vinho); border-radius: 10px; display: flex; align-items: center; justify-content: center;">
+            <i class="fa-solid fa-bell" style="color: white; font-size: 0.9rem;"></i>
+          </div>
+          <div>
+            <h2 style="margin: 0; font-size: 1.1rem; color: var(--preto-q); line-height: 1.2;">Quero ser notificado</h2>
+            <p style="margin: 0; font-size: 0.8rem; color: var(--cinza-q);">SnapBite App em breve</p>
+          </div>
+        </div>
+        <button type="button" class="modal-close" aria-label="Fechar modal">
+          <i class="fa-solid fa-times"></i>
+        </button>
+      </div>
+
+      <!-- Formulário -->
+      <div class="modal-body" id="modal-body-form">
+        <p style="color: var(--cinza-q); margin: 0 0 20px; font-size: 0.95rem; line-height: 1.6;">
+          Seja um dos primeiros a saber quando o app chegar no iOS e Android. A gente avisa você! 🚀
+        </p>
+
+        <form id="form-notificacao" novalidate>
+          <div style="margin-bottom: 14px;">
+            <label for="notif-nome" style="display: block; font-weight: 600; margin-bottom: 6px; color: var(--preto-q); font-size: 0.9rem;">Seu nome</label>
+            <input type="text" id="notif-nome" placeholder="Ex: João Silva" autocomplete="name"
+              style="width: 100%; padding: 11px 14px; border: 1.5px solid #ddd; border-radius: 8px; font-size: 0.95rem; font-family: inherit; box-sizing: border-box; outline: none; transition: border-color 0.2s;"
+              onfocus="this.style.borderColor='var(--vinho)'" onblur="this.style.borderColor='#ddd'">
+          </div>
+
+          <div style="margin-bottom: 22px;">
+            <label for="notif-email" style="display: block; font-weight: 600; margin-bottom: 6px; color: var(--preto-q); font-size: 0.9rem;">Seu email</label>
+            <input type="email" id="notif-email" placeholder="seu@email.com" autocomplete="email"
+              style="width: 100%; padding: 11px 14px; border: 1.5px solid #ddd; border-radius: 8px; font-size: 0.95rem; font-family: inherit; box-sizing: border-box; outline: none; transition: border-color 0.2s;"
+              onfocus="this.style.borderColor='var(--vinho)'" onblur="this.style.borderColor='#ddd'">
+          </div>
+
+          <button type="submit" id="btn-enviar-notif"
+            style="width: 100%; padding: 13px; background: var(--vinho); color: white; border: none; border-radius: 10px; font-size: 1rem; font-weight: 700; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; font-family: inherit;">
+            <i class="fa-solid fa-bell"></i>
+            Me notifique
+          </button>
+        </form>
+
+        <p style="font-size: 0.8rem; color: #aaa; margin-top: 14px; text-align: center;">
+          🔒 Sem spam. Você pode cancelar quando quiser.
+        </p>
+      </div>
+
+      <!-- Tela de sucesso -->
+      <div class="modal-body" id="modal-body-sucesso" style="display: none; text-align: center; padding: 40px 24px;">
+        <div style="width: 64px; height: 64px; background: #e8f5e9; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 16px;">
+          <i class="fa-solid fa-check" style="color: #2e7d32; font-size: 1.8rem;"></i>
+        </div>
+        <h3 style="margin: 0 0 10px; color: var(--preto-q); font-size: 1.2rem;">Tudo certo! 🎉</h3>
+        <p style="color: var(--cinza-q); font-size: 0.95rem; line-height: 1.6; margin: 0 0 24px;">
+          Cadastro confirmado! Você receberá um email assim que o SnapBite App estiver disponível.
+        </p>
+        <button type="button" id="btn-fechar-sucesso"
+          style="padding: 10px 28px; background: var(--vinho); color: white; border: none; border-radius: 8px; font-size: 0.95rem; font-weight: 600; cursor: pointer; font-family: inherit;">
+          Fechar
+        </button>
+      </div>
+
+    </div>
+  </div>
+
+  <style>
+    .modal-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0, 0, 0, 0.5);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 1000;
+      animation: fadeIn 0.3s ease;
+    }
+
+    .modal-overlay.hidden {
+      display: none;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+
+    .modal-content {
+      background: white;
+      border-radius: 12px;
+      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15);
+      animation: slideUp 0.3s ease;
+      max-width: 90%;
+    }
+
+    @keyframes slideUp {
+      from { transform: translateY(20px); opacity: 0; }
+      to { transform: translateY(0); opacity: 1; }
+    }
+
+    .modal-header {
+      padding: 24px;
+      border-bottom: 1px solid var(--cinza-borda);
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+    }
+
+    .modal-header h2 {
+      margin: 0;
+      font-size: 1.4rem;
+      color: var(--preto-q);
+      flex: 1;
+    }
+
+    .modal-close {
+      background: none;
+      border: none;
+      font-size: 1.4rem;
+      cursor: pointer;
+      color: var(--cinza-q);
+      padding: 0;
+      width: 32px;
+      height: 32px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 6px;
+      transition: background var(--t);
+    }
+
+    .modal-close:hover {
+      background: var(--creme);
+    }
+
+    .modal-body {
+      padding: 24px;
+    }
+  </style>
+
+  <script src="js/components.js"></script>
+  <script src="js/app.js"></script>
+  <script type="module" src="backend/firebase-auth.js"></script>
+</body>
+</html>

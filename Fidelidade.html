@@ -1,0 +1,916 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Cartão Fidelidade · SnapBite</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,700;0,9..144,900;1,9..144,400&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+  <!-- Seu CSS principal -->
+  <link rel="stylesheet" href="css/global.css">
+  <link rel="stylesheet" href="css/pages.css">
+
+  <style>
+    /* ── VARIÁVEIS ── */
+    :root {
+      --gold:        #E30613;
+      --gold-light:  #FF4D57;
+      --gold-pale:   #FFF0F4;
+      --dark:        #001A66;
+      --dark-mid:    #003399;
+      --cream:       #F7F9FF;
+      --text:        #0A0F1E;
+      --text-muted:  #5C6680;
+      --radius:      16px;
+      --radius-lg:   24px;
+    }
+
+    /* ── RESET ── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'DM Sans', sans-serif;
+      background: var(--cream);
+      color: var(--text);
+      overflow-x: hidden;
+    }
+
+    /* ── HERO ── */
+    .fid-hero {
+      background: linear-gradient(135deg, #001A66 0%, #003399 55%, #001A66 100%);
+      min-height: 520px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 120px 24px 80px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    /* Grain texture */
+    .fid-hero::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+      opacity: 0.35;
+      pointer-events: none;
+    }
+
+    /* Decorative circles */
+    .fid-hero::after {
+      content: '';
+      position: absolute;
+      width: 600px;
+      height: 600px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(227,6,19,0.14) 0%, transparent 70%);
+      top: -200px;
+      right: -200px;
+      pointer-events: none;
+    }
+
+    .hero-deco-circle {
+      position: absolute;
+      width: 400px;
+      height: 400px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(0,51,153,0.12) 0%, transparent 70%);
+      bottom: -150px;
+      left: -100px;
+      pointer-events: none;
+    }
+
+    .fid-hero-inner {
+      position: relative;
+      z-index: 1;
+      max-width: 680px;
+    }
+
+    .hero-eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 0.72rem;
+      font-weight: 700;
+      letter-spacing: 2.5px;
+      text-transform: uppercase;
+      color: var(--gold-light);
+      background: rgba(245,197,66,0.12);
+      border: 1px solid rgba(245,197,66,0.25);
+      padding: 6px 16px;
+      border-radius: 100px;
+      margin-bottom: 24px;
+    }
+
+    .fid-hero h1 {
+      font-family: 'Fraunces', serif;
+      font-size: clamp(2.4rem, 6vw, 4rem);
+      font-weight: 900;
+      color: #fff;
+      line-height: 1.1;
+      margin-bottom: 18px;
+      letter-spacing: -1px;
+    }
+
+    .fid-hero h1 em {
+      font-style: italic;
+      color: var(--gold-light);
+    }
+
+    .fid-hero p {
+      font-size: 1.05rem;
+      color: rgba(255,255,255,0.65);
+      line-height: 1.7;
+      max-width: 520px;
+      margin: 0 auto 36px;
+    }
+
+    .btn-pedir-cartao {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      background: linear-gradient(135deg, var(--gold), var(--gold-light));
+      color: #fff;
+      font-weight: 800;
+      font-size: 1rem;
+      padding: 15px 34px;
+      border-radius: 100px;
+      text-decoration: none;
+      transition: transform 0.2s, box-shadow 0.2s;
+      box-shadow: 0 6px 28px rgba(199,149,42,0.45);
+    }
+    .btn-pedir-cartao:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 12px 36px rgba(199,149,42,0.55);
+    }
+
+    /* ── CARD VISUAL ── */
+    .fid-card-section {
+      padding: 80px 24px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 70px;
+      flex-wrap: wrap;
+      max-width: 1100px;
+      margin: 0 auto;
+    }
+
+    .loyalty-card {
+      width: 340px;
+      height: 200px;
+      border-radius: 20px;
+      background: linear-gradient(135deg, #001A66 0%, #003399 45%, #E30613 100%);
+      padding: 28px 28px 24px;
+      position: relative;
+      overflow: hidden;
+      box-shadow: 0 20px 60px rgba(26,15,10,0.35), 0 4px 16px rgba(199,149,42,0.2);
+      flex-shrink: 0;
+      animation: cardFloat 4s ease-in-out infinite;
+    }
+
+    @keyframes cardFloat {
+      0%, 100% { transform: translateY(0) rotate(-1deg); }
+      50% { transform: translateY(-8px) rotate(-1deg); }
+    }
+
+    .loyalty-card::before {
+      content: '';
+      position: absolute;
+      width: 240px;
+      height: 240px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(245,197,66,0.18) 0%, transparent 65%);
+      top: -80px;
+      right: -60px;
+    }
+
+    .loyalty-card::after {
+      content: '';
+      position: absolute;
+      width: 160px;
+      height: 160px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(199,149,42,0.1) 0%, transparent 65%);
+      bottom: -50px;
+      left: -30px;
+    }
+
+    .card-logo {
+      font-family: 'Fraunces', serif;
+      font-size: 1.3rem;
+      font-weight: 900;
+      color: #fff;
+      position: relative;
+      z-index: 1;
+    }
+    .card-logo em { font-style: italic; color: var(--gold-light); }
+
+    .card-chip {
+      width: 36px;
+      height: 28px;
+      background: linear-gradient(135deg, #f5c542, #c7952a);
+      border-radius: 5px;
+      position: absolute;
+      top: 28px;
+      right: 28px;
+      z-index: 1;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 3px;
+      padding: 5px;
+    }
+    .card-chip div {
+      background: rgba(26,15,10,0.3);
+      border-radius: 2px;
+    }
+
+    .card-stars {
+      position: absolute;
+      bottom: 28px;
+      left: 28px;
+      right: 28px;
+      z-index: 1;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .card-stars-row {
+      display: flex;
+      gap: 6px;
+    }
+    .card-star {
+      width: 22px;
+      height: 22px;
+      border-radius: 50%;
+      border: 1.5px solid rgba(245,197,66,0.4);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.65rem;
+    }
+    .card-star.filled {
+      background: var(--gold);
+      border-color: var(--gold);
+    }
+    .card-label {
+      font-size: 0.6rem;
+      color: rgba(255,255,255,0.45);
+      font-weight: 600;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      line-height: 1.4;
+    }
+
+    /* Card info side */
+    .card-info-side {
+      max-width: 440px;
+    }
+
+    .section-eyebrow {
+      display: inline-block;
+      font-size: 0.7rem;
+      font-weight: 700;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: 14px;
+    }
+
+    .card-info-side h2 {
+      font-family: 'Fraunces', serif;
+      font-size: 2rem;
+      font-weight: 900;
+      color: var(--dark);
+      line-height: 1.15;
+      margin-bottom: 16px;
+      letter-spacing: -0.5px;
+    }
+
+    .card-info-side p {
+      font-size: 0.95rem;
+      color: var(--text-muted);
+      line-height: 1.7;
+      margin-bottom: 28px;
+    }
+
+    .benefits-list {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .benefit-row {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+    }
+
+    .benefit-icon {
+      width: 36px;
+      height: 36px;
+      border-radius: 10px;
+      background: rgba(227,6,19,0.08);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.85rem;
+      color: var(--gold);
+      flex-shrink: 0;
+    }
+
+    .benefit-text strong {
+      display: block;
+      font-size: 0.88rem;
+      font-weight: 700;
+      color: var(--dark);
+      margin-bottom: 2px;
+    }
+
+    .benefit-text span {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+    }
+
+    /* ── COMO FUNCIONA ── */
+    .how-section {
+      background: var(--dark);
+      padding: 80px 24px;
+    }
+
+    .section-title-center {
+      text-align: center;
+      margin-bottom: 56px;
+    }
+
+    .section-title-center h2 {
+      font-family: 'Fraunces', serif;
+      font-size: clamp(1.8rem, 4vw, 2.6rem);
+      font-weight: 900;
+      color: #fff;
+      margin-bottom: 12px;
+      letter-spacing: -0.5px;
+    }
+
+    .section-title-center p {
+      font-size: 0.95rem;
+      color: rgba(255,255,255,0.5);
+      max-width: 480px;
+      margin: 0 auto;
+      line-height: 1.7;
+    }
+
+    .steps-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 24px;
+      max-width: 960px;
+      margin: 0 auto;
+    }
+
+    .step-card {
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: var(--radius-lg);
+      padding: 32px 28px;
+      position: relative;
+      transition: border-color 0.2s, background 0.2s;
+    }
+    .step-card:hover {
+      border-color: rgba(199,149,42,0.3);
+      background: rgba(199,149,42,0.04);
+    }
+
+    .step-number {
+      font-family: 'Fraunces', serif;
+      font-size: 3.5rem;
+      font-weight: 900;
+      color: rgba(245,197,66,0.15);
+      line-height: 1;
+      margin-bottom: 16px;
+      letter-spacing: -2px;
+    }
+
+    .step-icon-wrap {
+      width: 44px;
+      height: 44px;
+      border-radius: 12px;
+      background: rgba(199,149,42,0.15);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1rem;
+      color: var(--gold-light);
+      margin-bottom: 16px;
+    }
+
+    .step-card h3 {
+      font-family: 'Fraunces', serif;
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: #fff;
+      margin-bottom: 8px;
+    }
+
+    .step-card p {
+      font-size: 0.85rem;
+      color: rgba(255,255,255,0.5);
+      line-height: 1.7;
+    }
+
+    /* ── NÍVEIS ── */
+    .levels-section {
+      padding: 80px 24px;
+      max-width: 1000px;
+      margin: 0 auto;
+    }
+
+    .levels-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 20px;
+    }
+
+    .level-card {
+      border-radius: var(--radius-lg);
+      padding: 32px 26px;
+      position: relative;
+      overflow: hidden;
+      transition: transform 0.2s;
+    }
+    .level-card:hover { transform: translateY(-4px); }
+
+    .level-card.bronze {
+      background: linear-gradient(135deg, #F7F9FF, #EEF2FF);
+      border: 2px solid #D6DCF5;
+    }
+    .level-card.prata {
+      background: linear-gradient(135deg, #FFF0F4, #F7F9FF);
+      border: 2px solid #C0C8E0;
+    }
+    .level-card.ouro {
+      background: linear-gradient(135deg, #F7F9FF, #EEF2FF);
+      border: 2px solid var(--gold);
+    }
+    .level-card.diamante {
+      background: linear-gradient(135deg, #001A66, #003399);
+      border: 2px solid rgba(255,77,87,0.45);
+    }
+
+    .level-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 0.7rem;
+      font-weight: 800;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      padding: 5px 12px;
+      border-radius: 100px;
+      margin-bottom: 20px;
+    }
+
+    .level-card.bronze .level-badge { background: rgba(227,6,19,0.10); color: #C4002A; }
+    .level-card.prata  .level-badge { background: rgba(0,51,153,0.10); color: #003399; }
+    .level-card.ouro   .level-badge { background: rgba(255,77,87,0.10); color: #E30613; }
+    .level-card.diamante .level-badge { background: rgba(245,197,66,0.12); color: var(--gold-light); }
+
+    .level-pontos {
+      font-family: 'Fraunces', serif;
+      font-size: 2.2rem;
+      font-weight: 900;
+      line-height: 1;
+      margin-bottom: 4px;
+    }
+
+    .level-card.bronze   .level-pontos { color: #003399; }
+    .level-card.prata    .level-pontos { color: #C4002A; }
+    .level-card.ouro     .level-pontos { color: #E30613; }
+    .level-card.diamante .level-pontos { color: var(--gold-light); }
+
+    .level-pontos-label {
+      font-size: 0.75rem;
+      font-weight: 600;
+      margin-bottom: 20px;
+    }
+    .level-card.diamante .level-pontos-label { color: rgba(255,255,255,0.5); }
+    .level-card:not(.diamante) .level-pontos-label { color: var(--text-muted); }
+
+    .level-perks {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .level-perks li {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 0.83rem;
+    }
+
+    .level-card:not(.diamante) .level-perks li { color: var(--text); }
+    .level-card.diamante .level-perks li { color: rgba(255,255,255,0.75); }
+
+    .perk-check {
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.6rem;
+      flex-shrink: 0;
+    }
+    .level-card.bronze   .perk-check { background: rgba(0,51,153,0.10); color: #003399; }
+    .level-card.prata    .perk-check { background: rgba(227,6,19,0.10); color: #C4002A; }
+    .level-card.ouro     .perk-check { background: rgba(255,77,87,0.10); color: #E30613; }
+    .level-card.diamante .perk-check { background: rgba(245,197,66,0.12); color: var(--gold-light); }
+
+    /* ── CTA FINAL ── */
+    .fid-cta {
+      background: linear-gradient(135deg, #E30613 0%, #FF4D57 100%);
+      padding: 80px 24px;
+      text-align: center;
+    }
+
+    .fid-cta h2 {
+      font-family: 'Fraunces', serif;
+      font-size: clamp(1.8rem, 4vw, 2.8rem);
+      font-weight: 900;
+      color: var(--dark);
+      margin-bottom: 14px;
+      letter-spacing: -0.5px;
+    }
+
+    .fid-cta p {
+      font-size: 1rem;
+      color: rgba(10,15,30,0.72);
+      max-width: 480px;
+      margin: 0 auto 34px;
+      line-height: 1.7;
+    }
+
+    .btn-cta-dark {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      background: var(--vinho, #003399);
+      color: #fff;
+      font-weight: 800;
+      font-size: 1rem;
+      padding: 15px 36px;
+      border-radius: 100px;
+      text-decoration: none;
+      transition: transform 0.2s, box-shadow 0.2s;
+      box-shadow: 0 6px 24px rgba(26,15,10,0.35);
+    }
+    .btn-cta-dark:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 12px 32px rgba(26,15,10,0.45);
+    }
+
+    /* ── FAQ ── */
+    .faq-section {
+      padding: 80px 24px;
+      max-width: 720px;
+      margin: 0 auto;
+    }
+
+    .faq-section .section-title-center h2 { color: var(--dark); }
+    .faq-section .section-title-center p  { color: var(--text-muted); }
+
+    .faq-list { display: flex; flex-direction: column; gap: 12px; }
+
+    .faq-item-fid {
+      border: 1.5px solid #D6DCF5;
+      border-radius: var(--radius);
+      overflow: hidden;
+      transition: border-color 0.2s;
+    }
+    .faq-item-fid.open { border-color: var(--gold); }
+
+    .faq-q {
+      width: 100%;
+      background: none;
+      border: none;
+      padding: 18px 22px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      cursor: pointer;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.92rem;
+      font-weight: 700;
+      color: var(--dark);
+      text-align: left;
+    }
+
+    .faq-q-icon {
+      width: 28px;
+      height: 28px;
+      border-radius: 8px;
+      background: rgba(227,6,19,0.08);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.8rem;
+      color: var(--gold);
+      flex-shrink: 0;
+      transition: transform 0.2s, background 0.2s;
+    }
+    .faq-item-fid.open .faq-q-icon {
+      background: var(--gold);
+      color: #fff;
+      transform: rotate(45deg);
+    }
+
+    .faq-a {
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height 0.35s ease, padding 0.35s;
+    }
+    .faq-item-fid.open .faq-a { max-height: 200px; }
+
+    .faq-a-inner {
+      padding: 0 22px 18px;
+      font-size: 0.87rem;
+      color: var(--text-muted);
+      line-height: 1.7;
+    }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 700px) {
+      .fid-card-section { flex-direction: column; align-items: center; text-align: center; gap: 40px; }
+      .loyalty-card { width: 300px; height: 178px; }
+      .benefits-list { align-items: flex-start; }
+    }
+  </style>
+</head>
+<body>
+    <script src="js/skeleton.js"></script>
+
+  <!-- navbar e footer injetados pelo components.js -->
+
+  <!-- ── HERO ── -->
+  <section class="fid-hero">
+    <div class="hero-deco-circle"></div>
+    <div class="fid-hero-inner">
+      <div class="hero-eyebrow">
+        <i class="fa-solid fa-star"></i>
+        Programa de Fidelidade
+      </div>
+      <h1>Cada compra te<br>deixa mais <em>premiado</em></h1>
+      <p>Acumule pontos toda vez que pedir no SnapBite e troque por lanches, combos e muito mais. Quanto mais você compra, mais exclusivo fica.</p>
+      <a href="Solicitarcartao.html" class="btn-pedir-cartao">
+        <i class="fa-solid fa-credit-card"></i>
+        Pedir meu cartão
+      </a>
+    </div>
+  </section>
+
+  <!-- ── CARTÃO VISUAL + BENEFÍCIOS ── -->
+  <section class="fid-card-section">
+
+    <!-- Card físico ilustrado -->
+    <div class="loyalty-card">
+      <div class="card-logo">Snap<em>Bite</em></div>
+      <div class="card-chip">
+        <div></div><div></div><div></div><div></div>
+      </div>
+      <div class="card-stars">
+        <div class="card-stars-row">
+          <div class="card-star filled"><i class="fa-solid fa-star" style="color:#fff;font-size:0.5rem"></i></div>
+          <div class="card-star filled"><i class="fa-solid fa-star" style="color:#fff;font-size:0.5rem"></i></div>
+          <div class="card-star filled"><i class="fa-solid fa-star" style="color:#fff;font-size:0.5rem"></i></div>
+          <div class="card-star"><i class="fa-solid fa-star" style="color:rgba(245,197,66,0.3);font-size:0.5rem"></i></div>
+          <div class="card-star"><i class="fa-solid fa-star" style="color:rgba(245,197,66,0.3);font-size:0.5rem"></i></div>
+        </div>
+        <div class="card-label">CARTÃO<br>FIDELIDADE</div>
+      </div>
+    </div>
+
+    <!-- Benefícios -->
+    <div class="card-info-side">
+      <span class="section-eyebrow">Por que ter o cartão?</span>
+      <h2>Vantagens reais a cada pedido</h2>
+      <p>O Cartão Fidelidade SnapBite foi criado pra recompensar quem não abre mão de um bom lanche no intervalo.</p>
+
+      <div class="benefits-list">
+        <div class="benefit-row">
+          <div class="benefit-icon"><i class="fa-solid fa-coins"></i></div>
+          <div class="benefit-text">
+            <strong>Pontos a cada compra</strong>
+            <span>Ganhe 1 ponto para cada R$ 1,00 gasto no cardápio.</span>
+          </div>
+        </div>
+        <div class="benefit-row">
+          <div class="benefit-icon"><i class="fa-solid fa-gift"></i></div>
+          <div class="benefit-text">
+            <strong>Resgates exclusivos</strong>
+            <span>Troque seus pontos por lanches, bebidas e sobremesas grátis.</span>
+          </div>
+        </div>
+        <div class="benefit-row">
+          <div class="benefit-icon"><i class="fa-solid fa-bolt"></i></div>
+          <div class="benefit-text">
+            <strong>Acesso antecipado</strong>
+            <span>Membros fidelidade são os primeiros a ver as promoções do dia.</span>
+          </div>
+        </div>
+        <div class="benefit-row">
+          <div class="benefit-icon"><i class="fa-solid fa-crown"></i></div>
+          <div class="benefit-text">
+            <strong>Níveis de recompensa</strong>
+            <span>Suba de Bronze até Diamante e desbloqueie benefícios crescentes.</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── COMO FUNCIONA ── -->
+  <section class="how-section">
+    <div class="section-title-center">
+      <h2>Como funciona?</h2>
+      <p>Simples assim — em 4 passos você já tá acumulando pontos e resgatando prêmios.</p>
+    </div>
+    <div class="steps-grid">
+      <div class="step-card">
+        <div class="step-number">01</div>
+        <div class="step-icon-wrap"><i class="fa-solid fa-credit-card"></i></div>
+        <h3>Solicite o cartão</h3>
+        <p>Preencha o formulário online em menos de 2 minutos e retire o cartão no balcão.</p>
+      </div>
+      <div class="step-card">
+        <div class="step-number">02</div>
+        <div class="step-icon-wrap"><i class="fa-solid fa-utensils"></i></div>
+        <h3>Peça seu lanche</h3>
+        <p>Em cada compra, apresente seu cartão no balcão ou informe seu CPF.</p>
+      </div>
+      <div class="step-card">
+        <div class="step-number">03</div>
+        <div class="step-icon-wrap"><i class="fa-solid fa-coins"></i></div>
+        <h3>Acumule pontos</h3>
+        <p>Cada real gasto vira 1 ponto. Combos e promoções têm pontos em dobro.</p>
+      </div>
+      <div class="step-card">
+        <div class="step-number">04</div>
+        <div class="step-icon-wrap"><i class="fa-solid fa-gift"></i></div>
+        <h3>Resgate prêmios</h3>
+        <p>Acumulou pontos? Troque por itens do cardápio direto no balcão.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── NÍVEIS ── -->
+  <section class="levels-section">
+    <div class="section-title-center" style="text-align:center;margin-bottom:48px;">
+      <span class="section-eyebrow" style="display:block;margin-bottom:10px;">Programa de Níveis</span>
+      <h2 style="font-family:'Fraunces',serif;font-size:clamp(1.8rem,4vw,2.6rem);font-weight:900;color:var(--dark);letter-spacing:-0.5px;margin-bottom:10px;">
+        Quanto mais você compra,<br>mais exclusivo você fica
+      </h2>
+      <p style="color:var(--text-muted);font-size:0.95rem;max-width:480px;margin:0 auto;line-height:1.7;">
+        Suba de nível automaticamente conforme acumula pontos no semestre.
+      </p>
+    </div>
+    <div class="levels-grid">
+
+      <div class="level-card bronze">
+        <div class="level-badge">🥉 Bronze</div>
+        <div class="level-pontos">0–99</div>
+        <div class="level-pontos-label">pontos</div>
+        <ul class="level-perks">
+          <li><span class="perk-check"><i class="fa-solid fa-check"></i></span> Cartão fidelidade</li>
+          <li><span class="perk-check"><i class="fa-solid fa-check"></i></span> 1 ponto por R$ 1,00</li>
+          <li><span class="perk-check"><i class="fa-solid fa-check"></i></span> Desconto de aniversário</li>
+        </ul>
+      </div>
+
+      <div class="level-card prata">
+        <div class="level-badge">🥈 Prata</div>
+        <div class="level-pontos">100–299</div>
+        <div class="level-pontos-label">pontos</div>
+        <ul class="level-perks">
+          <li><span class="perk-check"><i class="fa-solid fa-check"></i></span> Tudo do Bronze</li>
+          <li><span class="perk-check"><i class="fa-solid fa-check"></i></span> Pontos em dobro às 3as</li>
+          <li><span class="perk-check"><i class="fa-solid fa-check"></i></span> Acesso antecipado a promos</li>
+        </ul>
+      </div>
+
+      <div class="level-card ouro">
+        <div class="level-badge">🥇 Ouro</div>
+        <div class="level-pontos">300–599</div>
+        <div class="level-pontos-label">pontos</div>
+        <ul class="level-perks">
+          <li><span class="perk-check"><i class="fa-solid fa-check"></i></span> Tudo do Prata</li>
+          <li><span class="perk-check"><i class="fa-solid fa-check"></i></span> Bebida grátis no mês</li>
+          <li><span class="perk-check"><i class="fa-solid fa-check"></i></span> Fila prioritária no balcão</li>
+        </ul>
+      </div>
+
+      <div class="level-card diamante">
+        <div class="level-badge">💎 Diamante</div>
+        <div class="level-pontos">600+</div>
+        <div class="level-pontos-label">pontos</div>
+        <ul class="level-perks">
+          <li><span class="perk-check"><i class="fa-solid fa-check"></i></span> Tudo do Ouro</li>
+          <li><span class="perk-check"><i class="fa-solid fa-check"></i></span> Lanche mensal grátis</li>
+          <li><span class="perk-check"><i class="fa-solid fa-check"></i></span> Nome no Hall da Fama</li>
+        </ul>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ── CTA ── -->
+  <section class="fid-cta">
+    <h2>Pronto pra começar a acumular?</h2>
+    <p>Solicite agora o seu cartão fidelidade SnapBite e já saia acumulando pontos no próximo pedido.</p>
+    <a href="Solicitarcartao.html" class="btn-cta-dark">
+      <i class="fa-solid fa-arrow-right"></i>
+      Solicitar cartão agora
+    </a>
+  </section>
+
+  <!-- ── FAQ ── -->
+  <section class="faq-section">
+    <div class="section-title-center">
+      <h2>Perguntas frequentes</h2>
+      <p>Ficou com dúvida? A gente responde as mais comuns aqui.</p>
+    </div>
+
+    <div class="faq-list">
+      <div class="faq-item-fid">
+        <button class="faq-q" onclick="toggleFaqFid(this)">
+          <span>O cartão tem custo?</span>
+          <span class="faq-q-icon"><i class="fa-solid fa-plus"></i></span>
+        </button>
+        <div class="faq-a">
+          <div class="faq-a-inner">Não! O Cartão Fidelidade SnapBite é 100% gratuito para todos os alunos e funcionários do SENAI.</div>
+        </div>
+      </div>
+
+      <div class="faq-item-fid">
+        <button class="faq-q" onclick="toggleFaqFid(this)">
+          <span>Os pontos expiram?</span>
+          <span class="faq-q-icon"><i class="fa-solid fa-plus"></i></span>
+        </button>
+        <div class="faq-a">
+          <div class="faq-a-inner">Os pontos são válidos por 6 meses a partir da última compra. Enquanto você comprar regularmente, eles ficam ativos.</div>
+        </div>
+      </div>
+
+      <div class="faq-item-fid">
+        <button class="faq-q" onclick="toggleFaqFid(this)">
+          <span>Quanto tempo leva pra receber?</span>
+          <span class="faq-q-icon"><i class="fa-solid fa-plus"></i></span>
+        </button>
+        <div class="faq-a">
+          <div class="faq-a-inner">Após a solicitação, o cartão fica disponível para retirada no balcão da lanchonete no próximo dia útil.</div>
+        </div>
+      </div>
+
+      <div class="faq-item-fid">
+        <button class="faq-q" onclick="toggleFaqFid(this)">
+          <span>Perdi meu cartão. E agora?</span>
+          <span class="faq-q-icon"><i class="fa-solid fa-plus"></i></span>
+        </button>
+        <div class="faq-a">
+          <div class="faq-a-inner">Não se preocupe! Entre em contato pelo formulário na página de Contato e faremos o bloqueio e emissão de uma segunda via, mantendo todos os seus pontos.</div>
+        </div>
+      </div>
+
+      <div class="faq-item-fid">
+        <button class="faq-q" onclick="toggleFaqFid(this)">
+          <span>Posso usar o CPF no lugar do cartão?</span>
+          <span class="faq-q-icon"><i class="fa-solid fa-plus"></i></span>
+        </button>
+        <div class="faq-a">
+          <div class="faq-a-inner">Sim! Caso esqueça o cartão, basta informar seu CPF no balcão e os pontos serão registrados normalmente.</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <script src="js/components.js"></script>
+  <script src="js/const respostasIA = [.js"></script>
+  <script src="js/app.js"></script>
+<script type="module" src="backend/firebase-auth.js"></script>
+
+  <script>
+    function toggleFaqFid(btn) {
+      const item = btn.closest('.faq-item-fid');
+      const isOpen = item.classList.contains('open');
+      document.querySelectorAll('.faq-item-fid').forEach(i => i.classList.remove('open'));
+      if (!isOpen) item.classList.add('open');
+    }
+  </script>
+</body>
+</html>

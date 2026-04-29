@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Promoções | SnapBite</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🔥</text></svg>">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link rel="stylesheet" href="css/global.css"><link rel="stylesheet" href="css/pages.css">
+</head>
+<body>
+  <script src="js/skeleton.js"></script>
+  
+  <main>
+    <section class="promo-hero-dark">
+      <div class="promo-hero-inner">
+        <span class="eyebrow">Aproveite antes que acabe</span>
+        <h1>Promoções de hoje</h1>
+        <p>Ofertas especiais pra galera do SENAI. Válidas enquanto durar o estoque.</p>
+      </div>
+    </section>
+
+    <div class="promos-wrap">
+      <div class="promo-destaque">
+        <div class="promo-big">
+          <div>
+            <span class="tag tag-t">⏰ Oferta relâmpago</span>
+            <h2>Combo Estudante<br>com 26% off</h2>
+            <p>Só hoje! O combo mais pedido da lanchonete pelo menor preço da semana.</p>
+          </div>
+          <div class="countdown-row" id="promo-countdown">
+            <div class="cd-box"><div class="cd-n" id="cd-horas">06</div><div class="cd-l">horas</div></div>
+            <div class="cd-box"><div class="cd-n" id="cd-min">30</div><div class="cd-l">min</div></div>
+            <div class="cd-box"><div class="cd-n" id="cd-seg">00</div><div class="cd-l">seg</div></div>
+          </div>
+          <button class="btn-primary" onclick="adicionarAoCarrinho({id:'combo1',nome:'Combo Estudante',preco:18.50,emoji:'🍔',desc:'Burguer + Batata + Refri'})">Aproveitar · R$ 18,50</button>
+          <div class="bg-deco">🍔</div>
+        </div>
+        <div class="promo-side">
+          <div class="promo-mini">
+            <div><span class="tag tag-o" style="font-size:0.65rem">Novidade</span><h3>Suco + Wrap</h3><p>Combinação saudável e saborosa do dia.</p></div>
+            <button class="btn-secondary" onclick="adicionarAoCarrinho({id:'promo2',nome:'Wrap + Suco',preco:15.90,emoji:'🌮',desc:'Wrap + Suco Natural'})">R$ 15,90 <span style="text-decoration:line-through;opacity:0.5;font-size:0.8rem">R$ 18,00</span></button>
+          </div>
+          <div class="promo-mini">
+            <div><span class="tag tag-m" style="font-size:0.65rem">Manhã</span><h3>Café Completo</h3><p>Misto + Suco + Bolo. Só até as 10h!</p></div>
+            <button class="btn-secondary" onclick="adicionarAoCarrinho({id:'promo3',nome:'Café da Manhã',preco:12.00,emoji:'☕',desc:'Misto + Suco + Bolo'})">R$ 12,00 <span style="text-decoration:line-through;opacity:0.5;font-size:0.8rem">R$ 17,50</span></button>
+          </div>
+        </div>
+      </div>
+
+      <h2 class="promos-lista" style="font-family:'Playfair Display',serif;font-size:1.5rem;font-weight:700;margin-bottom:24px">Mais ofertas</h2>
+      <div class="promos-grid">
+        <div class="promo-card">
+          <div class="promo-pct">-30%</div>
+          <div class="promo-img">🍩</div>
+          <div class="promo-body">
+            <div class="promo-nome">Donuts 2x1</div>
+            <div class="promo-desc">Peça 2 donuts e leve 4. Sabores variados.</div>
+            <div class="promo-precos"><span class="p-old">R$ 15,00</span><span class="p-novo">R$ 7,50</span><span class="p-eco">−R$ 7,50</span></div>
+            <button class="btn-primary" style="width:100%;justify-content:center" onclick="adicionarAoCarrinho({id:'promo4',nome:'Donuts 2x1',preco:7.50,emoji:'🍩',desc:'4 donuts pelo preço de 2'})">Adicionar</button>
+          </div>
+        </div>
+        <div class="promo-card">
+          <div class="promo-pct">-20%</div>
+          <div class="promo-img">🥤</div>
+          <div class="promo-body">
+            <div class="promo-nome">Milk Shake do Dia</div>
+            <div class="promo-desc">Sabor surpresa do dia, sempre cremoso.</div>
+            <div class="promo-precos"><span class="p-old">R$ 9,90</span><span class="p-novo">R$ 7,90</span><span class="p-eco">−R$ 2,00</span></div>
+            <button class="btn-primary" style="width:100%;justify-content:center" onclick="adicionarAoCarrinho({id:'promo5',nome:'Milk Shake Surpresa',preco:7.90,emoji:'🥤',desc:'Sabor surpresa'})">Adicionar</button>
+          </div>
+        </div>
+        <div class="promo-card">
+          <div class="promo-img">⭐</div>
+          <div class="promo-body">
+            <div class="promo-nome">Cartão Fidelidade</div>
+            <div class="promo-desc">Compre 9 lanches e ganhe o 10° grátis. Pergunte no balcão.</div>
+            <div class="promo-precos"><span class="p-novo" style="font-size:1.1rem">Grátis 🎁</span></div>
+            <button class="btn-ghost" style="width:100%;justify-content:center" onclick="showToast('Solicite seu cartão no balcão! 🎁','info')">Saiba mais</button>
+          </div>
+        </div>
+      </div>
+
+      <div style="background:var(--vinho);border-radius:var(--radius-xl);padding:44px;text-align:center;margin-top:52px">
+        <h2 style="font-family:'Playfair Display',serif;font-size:1.8rem;color:#fff;font-weight:900;margin-bottom:10px">Tem cupom?</h2>
+        <p style="color:rgba(255,255,255,0.55);margin-bottom:24px">Insira no carrinho e economize ainda mais no seu pedido.</p>
+        <a href="carrinho.html"><button class="btn-primary">Ir para o carrinho →</button></a>
+      </div>
+    </div>
+  </main>
+  <script src="js/components.js"></script>
+  <script src="js/app.js"></script>
+  <script type="module" src="backend/firebase-auth.js"></script>
+
+</body>
+</html>

@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Contato | SnapBite</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>💌</text></svg>">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link rel="stylesheet" href="css/global.css">
+  <link rel="stylesheet" href="css/pages.css">
+  <style>
+    .suporte-section { background: var(--off-white); border-top: 2px solid var(--creme-esc); padding: 72px 0 80px; }
+    .suporte-inner { max-width: var(--max-w); margin: 0 auto; padding: 0 var(--gutter); }
+    .suporte-intro { text-align: center; margin-bottom: 48px; }
+    .suporte-intro h2 { font-family: 'Playfair Display', serif; font-size: clamp(1.8rem,3.5vw,2.6rem); font-weight: 900; color: var(--preto-q); margin: 8px 0 12px; }
+    .suporte-intro p { color: var(--cinza-q); max-width: 520px; margin: 0 auto; line-height: 1.7; }
+
+    #chat-inicio { max-width: 580px; margin: 0 auto; background: #fff; border: 1.5px solid var(--cinza-borda); border-radius: var(--radius-xl); padding: 40px; box-shadow: var(--sombra-m); text-align: center; }
+    #chat-inicio .chat-inicio-icon { font-size: 3.5rem; margin-bottom: 16px; }
+    #chat-inicio h3 { font-family: 'Playfair Display', serif; font-size: 1.6rem; font-weight: 900; color: var(--preto-q); margin-bottom: 10px; }
+    #chat-inicio p { color: var(--cinza-q); font-size: 0.94rem; line-height: 1.7; margin-bottom: 28px; }
+    .chat-inicio-form { display: flex; flex-direction: column; gap: 14px; text-align: left; }
+    .chat-inicio-form label { font-size: 0.78rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.8px; color: var(--oliva); display: block; margin-bottom: 5px; }
+    .chat-inicio-form input, .chat-inicio-form textarea, .chat-inicio-form select { width: 100%; padding: 11px 14px; border: 1.5px solid var(--cinza-borda); border-radius: var(--radius-sm); font-size: 0.9rem; font-family: inherit; background: var(--off-white); color: var(--preto-q); outline: none; transition: border-color var(--t); }
+    .chat-inicio-form input:focus, .chat-inicio-form textarea:focus, .chat-inicio-form select:focus { border-color: var(--mostarda); }
+    .chat-inicio-form textarea { resize: vertical; min-height: 90px; }
+
+    #chat-aguardando { display: none; max-width: 580px; margin: 0 auto; background: #fff; border: 1.5px solid var(--cinza-borda); border-radius: var(--radius-xl); padding: 48px 40px; box-shadow: var(--sombra-m); text-align: center; }
+    .aguardando-animacao { display: flex; gap: 8px; justify-content: center; margin-bottom: 24px; }
+    .aguardando-animacao span { width: 12px; height: 12px; border-radius: 50%; background: var(--mostarda); animation: bounceDot 1.2s infinite; }
+    .aguardando-animacao span:nth-child(2) { animation-delay: .2s; }
+    .aguardando-animacao span:nth-child(3) { animation-delay: .4s; }
+    @keyframes bounceDot { 0%,80%,100%{transform:scale(.7);opacity:.5} 40%{transform:scale(1);opacity:1} }
+    #chat-aguardando h3 { font-family: 'Playfair Display', serif; font-size: 1.4rem; font-weight: 900; color: var(--preto-q); margin-bottom: 10px; }
+    #chat-aguardando p { color: var(--cinza-q); font-size: .93rem; line-height: 1.7; }
+    #protocolo-exibido { display: inline-block; margin-top: 20px; background: var(--creme); border: 1.5px solid var(--creme-esc); border-radius: var(--radius-sm); padding: 10px 20px; font-family: 'DM Mono', monospace; font-size: 1rem; font-weight: 700; color: var(--vinho); letter-spacing: 2px; }
+
+    #chat-janela { display: none; max-width: 700px; margin: 0 auto; background: #fff; border: 1.5px solid var(--cinza-borda); border-radius: var(--radius-xl); overflow: hidden; box-shadow: var(--sombra-g); }
+    .chat-header { background: var(--preto-mid); padding: 18px 24px; display: flex; align-items: center; gap: 14px; border-bottom: 2px solid var(--mostarda); }
+    .chat-header-av { width: 42px; height: 42px; border-radius: 50%; background: var(--mostarda); display: flex; align-items: center; justify-content: center; font-size: 1.3rem; flex-shrink: 0; }
+    .chat-header-info { flex: 1; }
+    .chat-header-nome { font-weight: 700; color: var(--off-white); font-size: .97rem; }
+    .chat-header-status { display: flex; align-items: center; gap: 6px; font-size: .75rem; color: #9A8E80; margin-top: 2px; }
+    .chat-status-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--oliva-cl); animation: blink 1.8s infinite; }
+    .chat-protocolo { font-size: .7rem; color: #6A5E52; font-family: 'DM Mono', monospace; margin-left: auto; }
+    .chat-msgs { height: 380px; overflow-y: auto; padding: 20px; display: flex; flex-direction: column; gap: 12px; background: var(--off-white); }
+    .chat-msg { display: flex; gap: 10px; align-items: flex-end; animation: fadeInMsg .25s ease; }
+    @keyframes fadeInMsg { from{opacity:0;transform:translateY(8px)} to{opacity:1;transform:translateY(0)} }
+    .chat-msg.msg-cliente { flex-direction: row-reverse; }
+    .chat-msg-av { width: 34px; height: 34px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1rem; flex-shrink: 0; }
+    .msg-func .chat-msg-av { background: var(--mostarda); }
+    .msg-cliente .chat-msg-av { background: var(--creme-esc); }
+    .chat-msg-bubble { max-width: 72%; padding: 12px 16px; border-radius: 16px; font-size: .9rem; line-height: 1.6; box-shadow: var(--sombra-s); }
+    .msg-func .chat-msg-bubble { background: #fff; border: 1px solid var(--cinza-borda); border-bottom-left-radius: 4px; color: var(--preto-q); }
+    .msg-cliente .chat-msg-bubble { background: var(--mostarda); color: var(--preto-mid); font-weight: 500; border-bottom-right-radius: 4px; }
+    .chat-msg-hora { font-size: .68rem; color: var(--cinza-borda); margin-top: 4px; text-align: right; }
+    .msg-cliente .chat-msg-hora { text-align: left; }
+    .chat-msg-sistema { text-align: center; font-size: .75rem; color: var(--cinza-q); background: var(--creme-esc); border-radius: 99px; padding: 5px 14px; margin: 4px auto; max-width: 300px; }
+    .chat-typing { display: none; align-items: center; gap: 6px; font-size: .8rem; color: var(--cinza-q); padding: 8px 20px 4px; }
+    .typing-dots span { width: 6px; height: 6px; border-radius: 50%; background: var(--cinza-borda); display: inline-block; animation: bounceDot 1.2s infinite; }
+    .typing-dots span:nth-child(2) { animation-delay: .15s; }
+    .typing-dots span:nth-child(3) { animation-delay: .3s; }
+    .chat-input-area { padding: 16px 20px; border-top: 1.5px solid var(--creme-esc); display: flex; gap: 10px; background: #fff; }
+    .chat-input-area input { flex: 1; border: 1.5px solid var(--cinza-borda); border-radius: var(--radius-sm); padding: 12px 14px; font-size: .9rem; font-family: inherit; outline: none; background: var(--off-white); transition: border-color var(--t); }
+    .chat-input-area input:focus { border-color: var(--mostarda); }
+    .chat-input-area button { padding: 12px 20px; background: var(--mostarda); color: var(--preto-mid); border: none; border-radius: var(--radius-sm); font-weight: 700; font-size: .88rem; cursor: pointer; transition: background var(--t); }
+    .chat-input-area button:hover { background: var(--mostarda-cl); }
+    .chat-encerrado-aviso { padding: 14px 20px; background: var(--creme); border-top: 1.5px solid var(--creme-esc); text-align: center; font-size: .85rem; color: var(--cinza-q); }
+  </style>
+</head>
+<body>
+  <script src="js/skeleton.js"></script>
+  <main>
+    <div class="page-hero">
+      <div class="page-hero-inner">
+        <span class="eyebrow">Fala com a gente</span>
+        <h1>Contato</h1>
+        <p>Dúvida, sugestão ou elogio? Estamos aqui para ouvir.</p>
+      </div>
+    </div>
+
+    <div class="contato-wrap">
+      <div class="contato-info">
+        <span class="eyebrow">Como prefere?</span>
+        <h2>Escolha o canal que facilitar</h2>
+        <p>Tentamos responder em até 2 horas no horário de funcionamento. Nos finais de semana pode demorar um pouco mais.</p>
+        <div class="canais">
+          <div class="canal"><div class="canal-ic wpp">💬</div><div><div class="canal-titulo">WhatsApp</div><div class="canal-detalhe">(61) 3317-9989 · Resposta rápida</div></div></div>
+          <div class="canal"><div class="canal-ic mail">📧</div><div><div class="canal-titulo">E-mail</div><div class="canal-detalhe">snap@senaicni.com.br</div></div></div>
+          <div class="canal"><div class="canal-ic pin">📍</div><div><div class="canal-titulo">Onde estamos</div><div class="canal-detalhe">Rua General Castrioto, 460 - Barreto, Niterói - RJ, CEP 24110-160</div></div></div>
+        </div>
+        <div style="background:var(--creme);border:1.5px dashed var(--cinza-borda);border-radius:var(--radius);padding:24px;margin-top:24px;text-align:center">
+          <div style="font-size:2.5rem;margin-bottom:10px">📍</div>
+          <div style="font-weight:700;margin-bottom:4px">SENAI — Lanchonete</div>
+          <div style="font-size:0.85rem;color:var(--cinza-q);line-height:1.7">Rua do SENAI, 123 · Bloco Principal<br>Seg–Sex: 07:00–18:00 · Sáb: 08:00–14:00</div>
+        </div>
+      </div>
+      <div class="ct-form-box">
+        <h2>Enviar mensagem</h2>
+        <form id="form-contato">
+          <div class="form-row">
+            <div class="form-group"><label>Nome</label><input type="text" placeholder="Seu nome" required></div>
+            <div class="form-group"><label>Turma</label><input type="text" placeholder="Ex: TI 2025"></div>
+          </div>
+          <div class="form-group"><label>E-mail</label><input type="email" placeholder="seu@email.com" required></div>
+          <div class="form-group"><label>Assunto</label>
+            <select style="width:100%;padding:11px 14px;border:1.5px solid var(--cinza-borda);border-radius:var(--radius-sm);font-size:0.9rem;background:var(--off-white);outline:none;color:var(--preto-q)">
+              <option>Sugestão de lanche</option><option>Feedback / Elogio</option><option>Reclamação</option><option>Dúvida geral</option><option>Eventos / Encomendas</option><option>Outros</option>
+            </select>
+          </div>
+          <div class="form-group"><label>Mensagem</label><textarea rows="5" placeholder="Conta mais..." required style="width:100%;padding:11px 14px;border:1.5px solid var(--cinza-borda);border-radius:var(--radius-sm);font-size:0.9rem;background:var(--off-white);outline:none;resize:vertical;transition:border-color var(--t);color:var(--preto-q)"></textarea></div>
+          <button type="submit" class="btn-primary" style="width:100%;justify-content:center;margin-top:6px">Enviar mensagem</button>
+        </form>
+      </div>
+    </div>
+
+    <section class="faq-section">
+      <div class="faq-inner">
+        <span class="eyebrow">Perguntas frequentes</span>
+        <h2 class="section-title" style="margin-top:6px">FAQ</h2>
+        <p class="section-lead">As dúvidas mais comuns respondidas de forma direta.</p>
+        <div class="faq-list">
+          <details><summary>Como faço meu pedido online?</summary><p>Crie sua conta ou faça login, escolha os produtos no cardápio, adicione ao carrinho e finalize. Simples assim! Seu lanche estará pronto no intervalo.</p></details>
+          <details><summary>Posso pagar na hora?</summary><p>Por enquanto o pagamento é feito na retirada. Aceitamos dinheiro, PIX e cartão.</p></details>
+          <details><summary>Quanto tempo demora o preparo?</summary><p>Entre 10 e 20 minutos. Por isso peça antes do intervalo!</p></details>
+          <details><summary>Posso cancelar meu pedido?</summary><p>Sim, mas apenas antes do preparo. Manda mensagem no WhatsApp assim que fizer o pedido.</p></details>
+        </div>
+      </div>
+    </section>
+
+    <!-- ── ATENDIMENTO AO VIVO ── -->
+    <section class="suporte-section">
+      <div class="suporte-inner">
+        <div class="suporte-intro">
+          <span class="eyebrow">Atendimento ao vivo</span>
+          <h2>Fale com um funcionário agora</h2>
+          <p>Abra um chamado e converse diretamente com nossa equipe. Respondemos rapidinho!</p>
+        </div>
+
+        <!-- PASSO 1: Formulário -->
+        <div id="chat-inicio">
+          <div class="chat-inicio-icon">💬</div>
+          <h3>Iniciar atendimento</h3>
+          <p>Preencha e um funcionário da SnapBite entrará em contato assim que possível.</p>
+          <form class="chat-inicio-form" id="form-abrir-chamado">
+            <div>
+              <label for="ch-nome">Seu nome</label>
+              <input type="text" id="ch-nome" placeholder="Como devemos te chamar?" required>
+            </div>
+            <div>
+              <label for="ch-assunto">Qual é o assunto?</label>
+              <select id="ch-assunto">
+                <option value="Pedido / Pagamento">🛒 Pedido ou Pagamento</option>
+                <option value="Produto / Cardápio">🍔 Produto ou Cardápio</option>
+                <option value="Reclamação">⚠️ Reclamação</option>
+                <option value="Sugestão">💡 Sugestão</option>
+                <option value="Dúvida geral">❓ Dúvida geral</option>
+              </select>
+            </div>
+            <div>
+              <label for="ch-descricao">Descreva sua dúvida</label>
+              <textarea id="ch-descricao" placeholder="Explique brevemente o que aconteceu..." required></textarea>
+            </div>
+            <button type="submit" class="btn-primary" id="btn-iniciar-chat" style="width:100%;justify-content:center;">Iniciar atendimento →</button>
+          </form>
+        </div>
+
+        <!-- PASSO 2: Aguardando -->
+        <div id="chat-aguardando">
+          <div class="aguardando-animacao"><span></span><span></span><span></span></div>
+          <h3>Chamado aberto!</h3>
+          <p>Seu chamado foi registrado. Um funcionário vai te atender em instantes. Fique nessa página!</p>
+          <div id="protocolo-exibido">---</div>
+        </div>
+
+        <!-- PASSO 3: Chat ao vivo -->
+        <div id="chat-janela">
+          <div class="chat-header">
+            <div class="chat-header-av">🧑‍🍳</div>
+            <div class="chat-header-info">
+              <div class="chat-header-nome">Equipe SnapBite</div>
+              <div class="chat-header-status"><span class="chat-status-dot"></span>Online — respondendo agora</div>
+            </div>
+            <div class="chat-protocolo" id="chat-protocolo-label">#---</div>
+          </div>
+          <div class="chat-msgs" id="chat-msgs-cliente"></div>
+          <div id="chat-typing-cliente" class="chat-typing">
+            <div class="typing-dots"><span></span><span></span><span></span></div>
+            <span>Funcionário digitando...</span>
+          </div>
+          <div class="chat-input-area" id="chat-input-area-cliente">
+            <input type="text" id="chat-input-cliente" placeholder="Digite sua mensagem..." autocomplete="off">
+            <button id="btn-enviar-cliente">Enviar</button>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <script src="js/components.js"></script>
+  <script src="js/app.js"></script>
+  <script type="module" src="backend/firebase-auth.js"></script>
+  <script type="module">
+    import { initializeApp, getApps } from 'https://www.gstatic.com/firebasejs/11.0.2/firebase-app.js';
+    import { getFirestore, collection, addDoc, doc, onSnapshot, updateDoc, arrayUnion, serverTimestamp } from 'https://www.gstatic.com/firebasejs/11.0.2/firebase-firestore.js';
+
+    const firebaseConfig = { apiKey:"AIzaSyCPQuK79XDc8B5bgr8tVSUwcLkSHlVJU6c", authDomain:"snapbite-85943.firebaseapp.com", projectId:"snapbite-85943", storageBucket:"snapbite-85943.firebasestorage.app", messagingSenderId:"839470161933", appId:"1:839470161933:web:fc3fe935406a2406e13544" };
+    const app = getApps().length ? getApps()[0] : initializeApp(firebaseConfig);
+    const db  = getFirestore(app);
+
+    let chamadoId = null, msgCount = 0, unsubscribe = null;
+
+    const hora = () => new Date().toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'});
+    const gerarProtocolo = () => 'SB-' + Array.from({length:6},()=>'ABCDEFGHJKLMNPQRSTUVWXYZ23456789'[Math.floor(Math.random()*32)]).join('');
+
+    function msgUI(quem, texto, container) {
+      const d = document.createElement('div');
+      d.className = `chat-msg ${quem==='cliente'?'msg-cliente':'msg-func'}`;
+      d.innerHTML = `<div class="chat-msg-av">${quem==='cliente'?'🧑':'🧑‍🍳'}</div><div><div class="chat-msg-bubble">${texto}</div><div class="chat-msg-hora">${hora()}</div></div>`;
+      container.appendChild(d);
+      container.scrollTop = container.scrollHeight;
+    }
+
+    function sistemaUI(texto, container) {
+      const d = document.createElement('div');
+      d.className = 'chat-msg-sistema';
+      d.textContent = texto;
+      container.appendChild(d);
+      container.scrollTop = container.scrollHeight;
+    }
+
+    document.getElementById('form-abrir-chamado').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const nome = document.getElementById('ch-nome').value.trim();
+      const assunto = document.getElementById('ch-assunto').value;
+      const descricao = document.getElementById('ch-descricao').value.trim();
+      if (!nome || !descricao) return;
+
+      const btn = document.getElementById('btn-iniciar-chat');
+      btn.textContent = 'Abrindo chamado...'; btn.disabled = true;
+
+      try {
+        const protocolo = gerarProtocolo();
+        const ref = await addDoc(collection(db,'chamados'), {
+          protocolo, nomeCliente: nome, assunto, descricao,
+          status: 'aguardando', criadoEm: serverTimestamp(),
+          mensagens: [], typing: { funcionario: false }
+        });
+        chamadoId = ref.id;
+        document.getElementById('chat-inicio').style.display = 'none';
+        document.getElementById('chat-aguardando').style.display = 'block';
+        document.getElementById('protocolo-exibido').textContent = protocolo;
+        escutar(ref.id, protocolo, nome);
+      } catch(err) {
+        console.error(err);
+        btn.textContent = 'Iniciar atendimento →'; btn.disabled = false;
+        window.showToast?.('Erro ao abrir chamado. Tente novamente.','error');
+      }
+    });
+
+    function escutar(id, protocolo, nomeCliente) {
+      const ref = doc(db,'chamados',id);
+      const container = document.getElementById('chat-msgs-cliente');
+      unsubscribe = onSnapshot(ref, snap => {
+        if (!snap.exists()) return;
+        const data = snap.data();
+        const msgs = data.mensagens || [];
+
+        if (data.status === 'em_atendimento' && document.getElementById('chat-janela').style.display !== 'block') {
+          document.getElementById('chat-aguardando').style.display = 'none';
+          document.getElementById('chat-janela').style.display = 'block';
+          document.getElementById('chat-protocolo-label').textContent = '#' + protocolo;
+          sistemaUI(`Atendimento iniciado · ${hora()}`, container);
+          msgUI('func', `Olá, ${nomeCliente}! 👋 Vi seu chamado sobre <strong>${data.assunto}</strong>. Como posso te ajudar?`, container);
+        }
+
+        if (msgs.length > msgCount) {
+          msgs.slice(msgCount).forEach(m => { if (m.de !== 'cliente') msgUI('func', m.texto, container); });
+          msgCount = msgs.length;
+        }
+
+        const typing = document.getElementById('chat-typing-cliente');
+        typing.style.display = data.typing?.funcionario ? 'flex' : 'none';
+        if (data.typing?.funcionario) container.scrollTop = container.scrollHeight;
+
+        if (data.status === 'encerrado') {
+          document.getElementById('chat-input-area-cliente').style.display = 'none';
+          const enc = document.createElement('div');
+          enc.className = 'chat-encerrado-aviso';
+          enc.textContent = '✅ Atendimento encerrado. Obrigado por falar com a SnapBite!';
+          document.getElementById('chat-janela').appendChild(enc);
+          sistemaUI('Chamado encerrado', container);
+          if (unsubscribe) unsubscribe();
+        }
+      });
+    }
+
+    async function enviarCliente() {
+      const input = document.getElementById('chat-input-cliente');
+      const texto = input.value.trim();
+      if (!texto || !chamadoId) return;
+      msgUI('cliente', texto, document.getElementById('chat-msgs-cliente'));
+      input.value = '';
+      await updateDoc(doc(db,'chamados',chamadoId), { mensagens: arrayUnion({ de:'cliente', texto, hora: hora() }) });
+    }
+
+    document.getElementById('btn-enviar-cliente').addEventListener('click', enviarCliente);
+    document.getElementById('chat-input-cliente').addEventListener('keydown', e => { if (e.key==='Enter'&&!e.shiftKey){e.preventDefault();enviarCliente();} });
+  </script>
+</body>
+</html>
