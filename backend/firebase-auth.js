@@ -350,6 +350,8 @@ async function validarCodigoRedefinicaoSenha(oobCode) {
   }
 }
 
+const params = new URLSearchParams(window.location.search);
+const oobCodeUrl = params.get("oobCode");
 async function confirmarNovaSenha(oobCode, novaSenha) {
   try {
     await confirmPasswordReset(auth, oobCode, novaSenha);
