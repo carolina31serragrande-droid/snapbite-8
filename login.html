@@ -1021,13 +1021,21 @@
     btn.disabled = true;
     btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Entrando...';
 
-    const result = await window.loginComEmailSenha(email, senha);
-
-    if (result.ok) {
-      mostrarFeedback('Login realizado! Redirecionando...', 'success');
-      setTimeout(() => { window.location.href = 'index.html'; }, 1200);
-    } else {
-      mostrarFeedback(result.msg, 'error');
+    try {
+      if (typeof window.loginComEmailSenha !== 'function') {
+        throw new Error('Módulo de autenticação ainda não carregou. Recarregue a página.');
+      }
+      const result = await window.loginComEmailSenha(email, senha);
+      if (result.ok) {
+        mostrarFeedback('Login realizado! Redirecionando...', 'success');
+        setTimeout(() => { window.location.href = 'index.html'; }, 1200);
+      } else {
+        mostrarFeedback(result.msg, 'error');
+        btn.disabled = false;
+        btn.innerHTML = '<i class="fa-solid fa-arrow-right-to-bracket"></i> Entrar na conta';
+      }
+    } catch (err) {
+      mostrarFeedback(err.message || 'Erro inesperado. Tente novamente.', 'error');
       btn.disabled = false;
       btn.innerHTML = '<i class="fa-solid fa-arrow-right-to-bracket"></i> Entrar na conta';
     }
@@ -1060,13 +1068,21 @@
     btn.disabled = true;
     btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Criando conta...';
 
-    const result = await window.cadastrarComEmailSenha(nome, email, senha, telefone, true);
-
-    if (result.ok) {
-      mostrarFeedback('Conta criada com sucesso! Redirecionando...', 'success');
-      setTimeout(() => { window.location.href = 'index.html'; }, 1300);
-    } else {
-      mostrarFeedback(result.msg, 'error');
+    try {
+      if (typeof window.cadastrarComEmailSenha !== 'function') {
+        throw new Error('Módulo de autenticação ainda não carregou. Recarregue a página.');
+      }
+      const result = await window.cadastrarComEmailSenha(nome, email, senha, telefone, true);
+      if (result.ok) {
+        mostrarFeedback('Conta criada com sucesso! Redirecionando...', 'success');
+        setTimeout(() => { window.location.href = 'index.html'; }, 1300);
+      } else {
+        mostrarFeedback(result.msg, 'error');
+        btn.disabled = false;
+        btn.innerHTML = '<i class="fa-solid fa-user-plus"></i> Criar minha conta';
+      }
+    } catch (err) {
+      mostrarFeedback(err.message || 'Erro inesperado. Tente novamente.', 'error');
       btn.disabled = false;
       btn.innerHTML = '<i class="fa-solid fa-user-plus"></i> Criar minha conta';
     }
