@@ -274,82 +274,6 @@
     }
   </style>
 </head>
-  <script type="module">
-
-import {
-  initializeApp
-} from 'https://www.gstatic.com/firebasejs/11.0.2/firebase-app.js';
-
-import {
-  getAuth,
-  verifyPasswordResetCode,
-  confirmPasswordReset
-} from 'https://www.gstatic.com/firebasejs/11.0.2/firebase-auth.js';
-
-const firebaseConfig = {
-  apiKey: "AIzaSyCPQuK79XDc8B5bgr8tVSUwcLkSHlVJU6c",
-  authDomain: "snapbite-85943.firebaseapp.com",
-  projectId: "snapbite-85943",
-  storageBucket: "snapbite-85943.firebasestorage.app",
-  messagingSenderId: "839470161933",
-  appId: "1:839470161933:web:fc3fe935406a2406e13544"
-};
-
-const app = initializeApp(firebaseConfig);
-const auth = getAuth(app);
-
-const params = new URLSearchParams(window.location.search);
-const oobCode = params.get("oobCode");
-
-if (!oobCode) {
-  alert("Link inválido.");
-}
-
-try {
-  await verifyPasswordResetCode(auth, oobCode);
-} catch {
-  alert("Link expirado ou inválido.");
-}
-
-document
-.getElementById("new-password-form")
-.addEventListener("submit", async (e) => {
-
-  e.preventDefault();
-
-  const senha =
-    document.getElementById("new-password").value;
-
-  const confirmar =
-    document.getElementById("confirm-password").value;
-
-  if (senha !== confirmar) {
-    alert("As senhas não coincidem.");
-    return;
-  }
-
-  try {
-
-    await confirmPasswordReset(
-      auth,
-      oobCode,
-      senha
-    );
-
-    alert("Senha alterada com sucesso! 🚀");
-
-    window.location.href = "login.html";
-
-  } catch (err) {
-
-    console.error(err);
-    alert("Erro ao redefinir senha.");
-
-  }
-
-});
-
-</script>
 <body>
   <main class="shell">
     <section class="brand">
@@ -509,5 +433,81 @@ document
 
     iniciar();
   </script>
+  <script type="module">
+
+import {
+  initializeApp
+} from 'https://www.gstatic.com/firebasejs/11.0.2/firebase-app.js';
+
+import {
+  getAuth,
+  verifyPasswordResetCode,
+  confirmPasswordReset
+} from 'https://www.gstatic.com/firebasejs/11.0.2/firebase-auth.js';
+
+const firebaseConfig = {
+  apiKey: "AIzaSyCPQuK79XDc8B5bgr8tVSUwcLkSHlVJU6c",
+  authDomain: "snapbite-85943.firebaseapp.com",
+  projectId: "snapbite-85943",
+  storageBucket: "snapbite-85943.firebasestorage.app",
+  messagingSenderId: "839470161933",
+  appId: "1:839470161933:web:fc3fe935406a2406e13544"
+};
+
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+
+const params = new URLSearchParams(window.location.search);
+const oobCode = params.get("oobCode");
+
+if (!oobCode) {
+  alert("Link inválido.");
+}
+
+try {
+  await verifyPasswordResetCode(auth, oobCode);
+} catch {
+  alert("Link expirado ou inválido.");
+}
+
+document
+.getElementById("new-password-form")
+.addEventListener("submit", async (e) => {
+
+  e.preventDefault();
+
+  const senha =
+    document.getElementById("new-password").value;
+
+  const confirmar =
+    document.getElementById("confirm-password").value;
+
+  if (senha !== confirmar) {
+    alert("As senhas não coincidem.");
+    return;
+  }
+
+  try {
+
+    await confirmPasswordReset(
+      auth,
+      oobCode,
+      senha
+    );
+
+    alert("Senha alterada com sucesso! 🚀");
+
+    window.location.href = "login.html";
+
+  } catch (err) {
+
+    console.error(err);
+    alert("Erro ao redefinir senha.");
+
+  }
+
+});
+
+</script>
 </body>
 </html>
