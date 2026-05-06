@@ -315,7 +315,7 @@ async function recuperarSenha(email) {
 
     await sendPasswordResetEmail(auth, email, {
       url: urlRecuperacao,
-      handleCodeInApp: true,
+      handleCodeInApp: false,
     });
 
     return { ok: true };
