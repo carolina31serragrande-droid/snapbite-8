@@ -832,7 +832,7 @@
           </div>
 
           <div class="forgot-row">
-            <button type="button" class="forgot-link">Esqueci minha senha</button>
+            <button type="button" class="forgot-link" onclick="enviarRecuperacaoSenha()">Esqueci minha senha</button>
           </div>
 
           <button type="submit" class="btn-login-submit">
@@ -1006,7 +1006,7 @@
   }
 
   // ── FORMULÁRIO LOGIN ──
-  document.getElementById('form-login').addEventListener('submit', function(e) {
+  document.getElementById('form-login').addEventListener('submit', async function(e) {
     e.preventDefault();
 
     const email = document.getElementById('login-email').value.trim();
@@ -1017,24 +1017,24 @@
       return;
     }
 
-    // Integra com localStorage do App (igual ao sistema existente)
-    const perfis = JSON.parse(localStorage.getItem('snapbite_profiles') || '{}');
-    const usuarios = JSON.parse(localStorage.getItem('snapbite_users') || '[]');
+    const btn = this.querySelector('.btn-login-submit');
+    btn.disabled = true;
+    btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Entrando...';
 
-    const usuario = usuarios.find(u => u.email === email && u.senha === senha);
+    const result = await window.loginComEmailSenha(email, senha);
 
-    if (usuario) {
-      // Salva sessão
-      localStorage.setItem('snapbite_user', JSON.stringify(usuario));
+    if (result.ok) {
       mostrarFeedback('Login realizado! Redirecionando...', 'success');
       setTimeout(() => { window.location.href = 'index.html'; }, 1200);
     } else {
-      mostrarFeedback('E-mail ou senha incorretos.', 'error');
+      mostrarFeedback(result.msg, 'error');
+      btn.disabled = false;
+      btn.innerHTML = '<i class="fa-solid fa-arrow-right-to-bracket"></i> Entrar na conta';
     }
   });
 
   // ── FORMULÁRIO CADASTRO ──
-  document.getElementById('form-cadastro').addEventListener('submit', function(e) {
+  document.getElementById('form-cadastro').addEventListener('submit', async function(e) {
     e.preventDefault();
 
     const nome     = document.getElementById('cad-nome').value.trim();
@@ -1056,32 +1056,34 @@
       return;
     }
 
-    // Verifica se e-mail já existe
-    const usuarios = JSON.parse(localStorage.getItem('snapbite_users') || '[]');
-    if (usuarios.find(u => u.email === email)) {
-      mostrarFeedback('Este e-mail já está cadastrado.', 'error');
+    const btn = this.querySelector('.btn-login-submit');
+    btn.disabled = true;
+    btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Criando conta...';
+
+    const result = await window.cadastrarComEmailSenha(nome, email, senha, telefone, true);
+
+    if (result.ok) {
+      mostrarFeedback('Conta criada com sucesso! Redirecionando...', 'success');
+      setTimeout(() => { window.location.href = 'index.html'; }, 1300);
+    } else {
+      mostrarFeedback(result.msg, 'error');
+      btn.disabled = false;
+      btn.innerHTML = '<i class="fa-solid fa-user-plus"></i> Criar minha conta';
+    }
+  });
+
+
+  // ── RECUPERAR SENHA ──
+  async function enviarRecuperacaoSenha() {
+    const email = document.getElementById('login-email').value.trim();
+    if (!email) {
+      mostrarFeedback('Digite seu e-mail acima primeiro.', 'error');
       return;
     }
-
-    // Cria usuário
-    const novoUsuario = {
-      uid: 'local_' + Date.now(),
-      nome,
-      email,
-      senha,
-      telefone,
-      foto: '',
-      avatar: '',
-      createdAt: new Date().toISOString()
-    };
-
-    usuarios.push(novoUsuario);
-    localStorage.setItem('snapbite_users', JSON.stringify(usuarios));
-    localStorage.setItem('snapbite_user', JSON.stringify(novoUsuario));
-
-    mostrarFeedback('Conta criada com sucesso! Redirecionando...', 'success');
-    setTimeout(() => { window.location.href = 'index.html'; }, 1300);
-  });
+    const r = await window.recuperarSenha(email);
+    if (r.ok) mostrarFeedback('E-mail de recuperação enviado! Verifique sua caixa.', 'success');
+    else mostrarFeedback(r.msg, 'error');
+  }
 
   // ── MÁSCARA TELEFONE ──
   const tel = document.getElementById('cad-telefone');
