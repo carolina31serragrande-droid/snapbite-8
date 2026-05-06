@@ -313,11 +313,10 @@ async function recuperarSenha(email) {
   try {
     const urlRecuperacao = `${window.location.origin}${window.location.pathname.replace(/[^/]*$/, '')}recuperar-senha.html`;
 
-    await sendPasswordResetEmail(auth, email, {
-      url: urlRecuperacao,
-      handleCodeInApp: false,
-    });
-
+await sendPasswordResetEmail(auth, email, {
+  url: "https://carolina31serragrande-droid.github.io/snapbite-8/recuperar-senha.html",
+  handleCodeInApp: false
+});
     return { ok: true };
   } catch (err) {
     console.error('Erro ao enviar recuperação de senha:', err);
