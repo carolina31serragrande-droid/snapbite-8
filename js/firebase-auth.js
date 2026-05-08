@@ -9,7 +9,6 @@ import {
   confirmPasswordReset,
   verifyPasswordResetCode,
   updateProfile,
-  updateEmail,
   onAuthStateChanged,
   setPersistence,
   browserLocalPersistence,
@@ -82,15 +81,18 @@ function syncUsuarioFirebase(user) {
     localStorage.setItem('snapbite_profiles', JSON.stringify(perfis));
   }
 
+  const providerId = user.providerData?.[0]?.providerId || 'password';
+
   const usuario = {
     uid: user.uid,
     nome: perfilExistente.nome || user.displayName || 'Usuário SnapBite',
     email: email,
     foto: perfilExistente.foto || user.photoURL || '',
-    provider: user.providerData?.[0]?.providerId || 'firebase',
+    provider: providerId,
     telefone: extra?.telefone || '',
     aceitouTermos: !!extra?.aceitouTermos,
-    cadastroCompleto: !!(extra?.telefone && extra?.aceitouTermos)
+    // Não trava o acesso depois do login. Telefone vira dado extra, não bloqueio.
+    cadastroCompleto: true
   };
 
   localStorage.setItem('snapbite_user', JSON.stringify(usuario));
@@ -120,36 +122,35 @@ async function loginComGoogleReal() {
     const user    = result.user;
     const usuario = syncUsuarioFirebase(user);
 
-    if (!usuario.cadastroCompleto) {
-      // Preenche campos do modal de completar cadastro
-      const nomeEl  = document.getElementById('extra-nome');
-      const emailEl = document.getElementById('extra-email');
-      const telEl   = document.getElementById('extra-telefone');
-      const termEl  = document.getElementById('extra-termos');
+    window.closeModal?.('modal-login');
+    window.closeModal?.('modal-completar-cadastro');
+    window.showToast?.(`Bem-vindo(a), ${usuario.nome.split(' ')[0]}! 🎉`, 'success');
 
-      if (nomeEl)  nomeEl.value  = usuario.nome   || '';
-      if (emailEl) emailEl.value = usuario.email  || '';
-      if (telEl)   telEl.value   = usuario.telefone || '';
-      if (termEl)  termEl.checked = !!usuario.aceitouTermos;
-
-      abrirModalCompletarCadastro();
-    } else {
-      window.closeModal?.('modal-login');
-      window.showToast?.(`Bem-vindo(a), ${usuario.nome.split(' ')[0]}! 🎉`, 'success');
-
-      // Se tinha produto pendente, adiciona ao carrinho
-      if (window.App?.pendingProduct && typeof window.adicionarAoCarrinho === 'function') {
-        const produto = window.App.pendingProduct;
-        window.App.pendingProduct = null;
-        window.adicionarAoCarrinho(produto);
-      }
-
-      // Redireciona da welcome.html para o home
-      _redirecionarSeWelcome();
+    // Se tinha produto pendente, adiciona ao carrinho sem precisar recarregar
+    if (window.App?.pendingProduct && typeof window.adicionarAoCarrinho === 'function') {
+      const produto = window.App.pendingProduct;
+      window.App.pendingProduct = null;
+      window.adicionarAoCarrinho(produto);
     }
+
+    window.atualizarNavAuth?.();
+    window.dispatchEvent(new CustomEvent('snapbite:auth-ready', { detail: usuario }));
+
+    // Na tela de login, entra direto no site depois do Google.
+    if (window.location.pathname.endsWith('login.html') || window.location.pathname.endsWith('welcome.html')) {
+      window.location.href = 'index.html';
+      return;
+    }
+
+    _redirecionarSeWelcome();
   } catch (error) {
     console.error('Firebase Google Auth error:', error);
-    window.showToast?.('Não foi possível entrar com Google.', 'error');
+    const msgs = {
+      'auth/popup-closed-by-user': 'Login cancelado antes de concluir.',
+      'auth/cancelled-popup-request': 'Já existe uma janela de login aberta.',
+      'auth/account-exists-with-different-credential': 'Este e-mail já existe com outro método de login.',
+    };
+    window.showToast?.(msgs[error.code] || 'Não foi possível entrar com Google.', 'error');
   }
 }
 
@@ -267,7 +268,7 @@ async function loginComEmailSenha(email, senha) {
       'auth/user-not-found':   'E-mail não encontrado.',
       'auth/wrong-password':   'Senha incorreta.',
       'auth/invalid-email':    'E-mail inválido.',
-      'auth/invalid-credential': 'E-mail ou senha incorretos.',
+      'auth/invalid-credential': 'E-mail ou senha incorretos. Se essa conta foi criada pelo Google, use o botão “Continuar com Google”.',
       'auth/too-many-requests':'Muitas tentativas. Tente mais tarde.',
     };
     const msg = msgs[err.code] || 'Erro ao entrar. Tente novamente.';
@@ -299,7 +300,7 @@ async function cadastrarComEmailSenha(nome, email, senha, telefone, aceitouTermo
     return { ok: true };
   } catch (err) {
     const msgs = {
-      'auth/email-already-in-use': 'Este e-mail já está cadastrado.',
+      'auth/email-already-in-use': 'Este e-mail já está cadastrado. Tente entrar ou use “Continuar com Google”.',
       'auth/invalid-email':        'E-mail inválido.',
       'auth/weak-password':        'Senha muito fraca. Use ao menos 6 caracteres.',
     };
