@@ -9,6 +9,7 @@ import {
   confirmPasswordReset,
   verifyPasswordResetCode,
   updateProfile,
+  updateEmail,
   onAuthStateChanged,
   setPersistence,
   browserLocalPersistence,
