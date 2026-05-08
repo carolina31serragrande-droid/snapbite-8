@@ -1183,6 +1183,49 @@ btnEditarEmail?.addEventListener('click', () => {
   }
 });
 
+
+  // Segurança: código de dois fatores simples do SnapBite
+  const segForm = document.getElementById('seguranca-form');
+  const twoCodeEl = document.getElementById('two-factor-code');
+  const twoStatusEl = document.getElementById('two-factor-status');
+  const btnDesativar2FA = document.getElementById('btn-desativar-2fa');
+
+  function atualizarStatus2FA() {
+    const status = window.getTwoFactorStatus?.() || { enabled: false };
+    if (twoStatusEl) {
+      twoStatusEl.textContent = status.enabled
+        ? 'Status: ativado ✅'
+        : 'Status: desativado';
+      twoStatusEl.style.color = status.enabled ? '#15803d' : 'var(--texto-suave)';
+    }
+  }
+
+  atualizarStatus2FA();
+
+  segForm?.addEventListener('submit', (e) => {
+    e.preventDefault();
+    const codigo = twoCodeEl?.value || '';
+    const resultado = window.salvarTwoFactorCodigo?.(codigo);
+
+    if (resultado?.ok) {
+      showToast('Código de segurança ativado! 🔐', 'success');
+      if (twoCodeEl) twoCodeEl.value = '';
+      atualizarStatus2FA();
+    } else {
+      showToast(resultado?.msg || 'Não foi possível ativar o código.', 'warning');
+    }
+  });
+
+  btnDesativar2FA?.addEventListener('click', () => {
+    const resultado = window.desativarTwoFactor?.();
+    if (resultado?.ok) {
+      showToast('Código de segurança desativado.', 'info');
+      atualizarStatus2FA();
+    } else {
+      showToast(resultado?.msg || 'Não foi possível desativar.', 'warning');
+    }
+  });
+
 }
 
 function initScrollReveal() {
