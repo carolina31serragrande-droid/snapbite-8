@@ -2,7 +2,7 @@ import express from 'express';
 import cors from 'cors';
 import dotenv from 'dotenv';
 import { Resend } from 'resend';
-import { gerarHtmlEmailPedido } from './emailTemplate.js';
+import { gerarHtmlEmailPedido, gerarHtmlCodigoPerfil } from './emailTemplate.js';
 
 dotenv.config();
 
@@ -18,6 +18,7 @@ if (!process.env.EMAIL_FROM) {
 }
 
 const resend = new Resend(process.env.RESEND_API_KEY);
+const codigosPerfil = new Map();
 
 app.use(
   cors({
@@ -108,6 +109,76 @@ app.post('/api/enviar-email-pedido', async (req, res) => {
       erro: 'Erro interno no servidor.',
     });
   }
+});
+
+
+
+// ─────────────────────────────────────────────────────
+// Código por e-mail para alterações sensíveis do perfil
+// ─────────────────────────────────────────────────────
+app.post('/api/enviar-codigo-perfil', async (req, res) => {
+  try {
+    const { email, nome } = req.body;
+    const emailValido = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+    if (!email || !emailValido.test(email)) {
+      return res.status(400).json({ ok: false, erro: 'E-mail inválido.' });
+    }
+
+    const codigo = String(Math.floor(100000 + Math.random() * 900000));
+    const chave = String(email).toLowerCase();
+
+    codigosPerfil.set(chave, {
+      codigo,
+      expiraEm: Date.now() + 10 * 60 * 1000,
+      tentativas: 0,
+    });
+
+    const { data, error } = await resend.emails.send({
+      from: process.env.EMAIL_FROM,
+      to: [email],
+      subject: 'Seu código de segurança SnapBite',
+      html: gerarHtmlCodigoPerfil({ nomeCliente: nome || 'estudante', codigo }),
+    });
+
+    if (error) {
+      console.error('Erro Resend código perfil:', error);
+      return res.status(500).json({ ok: false, erro: 'Falha ao enviar o código.' });
+    }
+
+    return res.json({ ok: true, messageId: data?.id || null });
+  } catch (err) {
+    console.error('Erro ao enviar código perfil:', err);
+    return res.status(500).json({ ok: false, erro: 'Erro interno ao enviar código.' });
+  }
+});
+
+app.post('/api/verificar-codigo-perfil', (req, res) => {
+  const { email, codigo } = req.body;
+  const chave = String(email || '').toLowerCase();
+  const registro = codigosPerfil.get(chave);
+
+  if (!registro) {
+    return res.status(400).json({ ok: false, erro: 'Solicite um novo código.' });
+  }
+
+  if (Date.now() > registro.expiraEm) {
+    codigosPerfil.delete(chave);
+    return res.status(400).json({ ok: false, erro: 'Código expirado. Solicite outro.' });
+  }
+
+  registro.tentativas += 1;
+  if (registro.tentativas > 5) {
+    codigosPerfil.delete(chave);
+    return res.status(429).json({ ok: false, erro: 'Muitas tentativas. Solicite outro código.' });
+  }
+
+  if (String(codigo || '').trim() !== registro.codigo) {
+    return res.status(400).json({ ok: false, erro: 'Código incorreto.' });
+  }
+
+  codigosPerfil.delete(chave);
+  return res.json({ ok: true });
 });
 
 // ─────────────────────────────────────────────────────
