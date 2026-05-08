@@ -265,8 +265,8 @@ function initCadastroExtra() {
       window.adicionarAoCarrinho(produto);
     }
 
-    // Redireciona da welcome.html para o home
-    _redirecionarSeWelcome();
+    // Redireciona imediatamente após concluir cadastro
+    _redirecionarAposLogin();
   });
 }
 
@@ -292,6 +292,11 @@ onAuthStateChanged(auth, (user) => {
     if (usuario.cadastroCompleto) {
       window.closeModal?.('modal-login');
       window.closeModal?.('modal-completar-cadastro');
+
+      const path = window.location.pathname || '';
+      if (path.endsWith('login.html') || path.endsWith('/login')) {
+        _redirecionarAposLogin();
+      }
     }
   } else {
     localStorage.removeItem('snapbite_user');
@@ -371,11 +376,10 @@ async function recuperarSenha(email) {
   try {
     const urlRecuperacao = `${window.location.origin}${window.location.pathname.replace(/[^/]*$/, '')}recuperar-senha.html`;
 
-    await sendPasswordResetEmail(auth, email, {
-      url: urlRecuperacao,
-      handleCodeInApp: false,
-    });
-
+await sendPasswordResetEmail(auth, email, {
+  url: "https://carolina31serragrande-droid.github.io/snapbite-8/recuperar-senha.html",
+  handleCodeInApp: false
+});
     return { ok: true };
   } catch (err) {
     console.error('Erro ao enviar recuperação de senha:', err);
@@ -409,6 +413,8 @@ async function validarCodigoRedefinicaoSenha(oobCode) {
   }
 }
 
+const params = new URLSearchParams(window.location.search);
+const oobCodeUrl = params.get("oobCode");
 async function confirmarNovaSenha(oobCode, novaSenha) {
   try {
     await confirmPasswordReset(auth, oobCode, novaSenha);
@@ -507,6 +513,9 @@ window.alterarEmailFirebase = async (novoEmail) => {
     window.showToast?.('Erro ao atualizar e-mail.', 'error');
   }
 };
+
+window.snapbiteAuthReady = true;
+window.dispatchEvent(new CustomEvent('snapbite:auth-ready'));
 
 document.addEventListener('DOMContentLoaded', () => {
   initCadastroExtra();
