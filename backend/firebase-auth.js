@@ -15,6 +15,7 @@ import {
   signOut,
   sendEmailVerification,
   updateEmail,
+  updatePassword,
   EmailAuthProvider,
   linkWithCredential
 } from 'https://www.gstatic.com/firebasejs/11.0.2/firebase-auth.js';
@@ -187,6 +188,25 @@ function _redirecionarSeWelcome() {
   }
 }
 
+function _redirecionarAposLogin() {
+  const params = new URLSearchParams(window.location.search);
+  const redirect = params.get('redirect');
+  const destinoSeguro = redirect && !redirect.startsWith('http') && !redirect.includes('://')
+    ? redirect
+    : 'index.html';
+
+  // Garante que o App e o menu atualizem antes de sair da página.
+  window.atualizarNavAuth?.();
+  window.dispatchEvent(new CustomEvent('snapbite:auth-ok'));
+
+  const path = window.location.pathname || '';
+  const estaNoLogin = path.endsWith('login.html') || path.endsWith('/login') || path.includes('login');
+
+  if (estaNoLogin) {
+    window.location.replace(destinoSeguro);
+  }
+}
+
 // ─────────────────────────────────────────────────────
 // Completar cadastro (telefone + termos)
 // ─────────────────────────────────────────────────────
@@ -265,8 +285,8 @@ function initCadastroExtra() {
       window.adicionarAoCarrinho(produto);
     }
 
-    // Redireciona da welcome.html para o home
-    _redirecionarSeWelcome();
+    // Redireciona imediatamente após concluir cadastro
+    _redirecionarAposLogin();
   });
 }
 
@@ -292,6 +312,11 @@ onAuthStateChanged(auth, (user) => {
     if (usuario.cadastroCompleto) {
       window.closeModal?.('modal-login');
       window.closeModal?.('modal-completar-cadastro');
+
+      const path = window.location.pathname || '';
+      if (path.endsWith('login.html') || path.endsWith('/login')) {
+        _redirecionarAposLogin();
+      }
     }
   } else {
     localStorage.removeItem('snapbite_user');
@@ -412,7 +437,7 @@ const params = new URLSearchParams(window.location.search);
 const oobCodeUrl = params.get("oobCode");
 async function confirmarNovaSenha(oobCode, novaSenha) {
   try {
-    await confirmPasswordReset(auth, oobCode, novaSenha);
+    await confirmPasswordReset(auth, oobCodeUrl || oobCode, novaSenha);
     return { ok: true };
   } catch (err) {
     console.error('Erro ao confirmar nova senha:', err);
@@ -479,6 +504,46 @@ async function exigirTwoFactorSeAtivo(usuario) {
   return { ok: false, msg: 'Código de segurança incorreto.' };
 }
 
+
+// ─────────────────────────────────────────────────────
+// Alterações sensíveis do perfil após código por e-mail
+// ─────────────────────────────────────────────────────
+async function atualizarContaFirebasePerfil({ nome, email, senha }) {
+  const user = auth.currentUser;
+
+  if (!user) {
+    return { ok: false, msg: 'Entre novamente na conta para alterar o perfil.' };
+  }
+
+  try {
+    if (nome && nome.trim() && nome.trim() !== user.displayName) {
+      await updateProfile(user, { displayName: nome.trim() });
+    }
+
+    const emailLimpo = (email || '').trim().toLowerCase();
+    if (emailLimpo && emailLimpo !== (user.email || '').toLowerCase()) {
+      await updateEmail(user, emailLimpo);
+    }
+
+    if (senha && senha.length >= 6) {
+      await updatePassword(user, senha);
+    }
+
+    syncUsuarioFirebase(auth.currentUser);
+    return { ok: true };
+  } catch (err) {
+    console.error('Erro ao atualizar dados sensíveis:', err);
+    const msgs = {
+      'auth/requires-recent-login': 'Por segurança, saia e entre novamente na conta antes de alterar e-mail ou senha.',
+      'auth/email-already-in-use': 'Este e-mail já está sendo usado por outra conta.',
+      'auth/invalid-email': 'E-mail inválido.',
+      'auth/weak-password': 'Senha fraca. Use pelo menos 6 caracteres.',
+      'auth/provider-already-linked': 'Esse login já está vinculado.'
+    };
+    return { ok: false, msg: msgs[err.code] || 'Não foi possível alterar os dados da conta.' };
+  }
+}
+
 // ─────────────────────────────────────────────────────
 // Expõe globalmente para os botões do HTML chamarem
 window.loginComGoogleReal      = loginComGoogleReal;
@@ -491,6 +556,7 @@ window.confirmarNovaSenha      = confirmarNovaSenha;
 window.getTwoFactorStatus      = getTwoFactorStatus;
 window.salvarTwoFactorCodigo   = salvarTwoFactorCodigo;
 window.desativarTwoFactor      = desativarTwoFactor;
+window.atualizarContaFirebasePerfil = atualizarContaFirebasePerfil;
 
 window.alterarEmailFirebase = async (novoEmail) => {
   const user = auth.currentUser;
@@ -508,6 +574,9 @@ window.alterarEmailFirebase = async (novoEmail) => {
     window.showToast?.('Erro ao atualizar e-mail.', 'error');
   }
 };
+
+window.snapbiteAuthReady = true;
+window.dispatchEvent(new CustomEvent('snapbite:auth-ready'));
 
 document.addEventListener('DOMContentLoaded', () => {
   initCadastroExtra();
