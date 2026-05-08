@@ -199,3 +199,57 @@ export function gerarHtmlEmailRecuperacaoSenha({ nomeCliente = 'estudante', rese
     </html>
   `;
 }
+
+
+export function gerarHtmlCodigoPerfil({ nomeCliente = 'estudante', codigo }) {
+  return `
+    <!DOCTYPE html>
+    <html lang="pt-BR">
+      <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Código de segurança - SnapBite</title>
+      </head>
+      <body style="margin:0;padding:0;background:#EEF2FF;font-family:Arial,Helvetica,sans-serif;color:#0A0F1E;">
+        <table width="100%" cellpadding="0" cellspacing="0" style="background:#EEF2FF;padding:32px 16px;">
+          <tr>
+            <td align="center">
+              <table width="100%" cellpadding="0" cellspacing="0" style="max-width:620px;background:#ffffff;border-radius:22px;overflow:hidden;border:1px solid #D6DCF5;box-shadow:0 18px 50px rgba(0,51,153,.12);">
+                <tr>
+                  <td style="background:linear-gradient(135deg,#003399,#E30613);padding:30px 26px;text-align:center;">
+                    <div style="font-size:30px;font-weight:900;color:#fff;">SnapBite 🔐</div>
+                    <div style="font-size:14px;color:#fff;margin-top:8px;opacity:.9;">Código de segurança do perfil</div>
+                  </td>
+                </tr>
+                <tr>
+                  <td style="padding:34px 30px;">
+                    <p style="margin:0 0 14px;font-size:16px;line-height:1.7;color:#5C6680;">
+                      Olá, <strong style="color:#0A0F1E;">${escapeHtml(nomeCliente)}</strong>!
+                    </p>
+                    <p style="margin:0 0 22px;font-size:16px;line-height:1.7;color:#5C6680;">
+                      Use o código abaixo para confirmar alterações no seu perfil SnapBite.
+                    </p>
+                    <div style="background:#F7F9FF;border:2px dashed #003399;border-radius:18px;padding:24px;text-align:center;margin-bottom:22px;">
+                      <div style="font-size:13px;font-weight:800;color:#5C6680;text-transform:uppercase;letter-spacing:1px;margin-bottom:8px;">Seu código</div>
+                      <div style="font-size:42px;font-weight:900;letter-spacing:8px;color:#E30613;">${escapeHtml(codigo)}</div>
+                    </div>
+                    <div style="background:#FFF5F5;border-left:5px solid #E30613;padding:16px 18px;border-radius:12px;">
+                      <p style="margin:0;font-size:14px;line-height:1.7;color:#7F1D1D;">
+                        Se não foi você, ignore essa mensagem! Nunca compartilhe esse código com outras pessoas.
+                      </p>
+                    </div>
+                  </td>
+                </tr>
+                <tr>
+                  <td style="background:#001A66;padding:18px 22px;text-align:center;">
+                    <div style="font-size:12px;color:#D6DCF5;">© SnapBite • Segurança da conta</div>
+                  </td>
+                </tr>
+              </table>
+            </td>
+          </tr>
+        </table>
+      </body>
+    </html>
+  `;
+}
