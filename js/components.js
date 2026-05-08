@@ -760,12 +760,12 @@ document.body.insertAdjacentHTML('afterbegin', `
   <div class="modal-box">
     <button class="modal-close" data-modal="modal-completar-cadastro" type="button">✕</button>
     <h2>Complete seu cadastro</h2>
-    <p class="modal-sub">Só falta confirmar seu telefone e aceitar os termos.</p>
+    <p class="modal-sub">Para usar Google e e-mail/senha na mesma conta, crie seu nome, senha do site e confirme os termos.</p>
 
     <form id="form-completar-cadastro">
       <div class="form-group">
         <label for="extra-nome">Nome</label>
-        <input type="text" id="extra-nome" readonly>
+        <input type="text" id="extra-nome" placeholder="Seu nome" required>
       </div>
 
       <div class="form-group">
@@ -776,6 +776,16 @@ document.body.insertAdjacentHTML('afterbegin', `
       <div class="form-group">
         <label for="extra-telefone">Telefone</label>
         <input type="tel" id="extra-telefone" placeholder="(11) 99999-9999" required>
+      </div>
+
+      <div class="form-group">
+        <label for="extra-senha">Senha do site</label>
+        <input type="password" id="extra-senha" placeholder="Crie uma senha" minlength="6" autocomplete="new-password">
+      </div>
+
+      <div class="form-group">
+        <label for="extra-senha-confirmar">Confirmar senha</label>
+        <input type="password" id="extra-senha-confirmar" placeholder="Repita a senha" minlength="6" autocomplete="new-password">
       </div>
 
       <div class="form-group" style="display:flex;gap:10px;align-items:flex-start;">
