@@ -14,7 +14,9 @@ import {
   browserLocalPersistence,
   signOut,
   sendEmailVerification,
-  updateEmail
+  updateEmail,
+  EmailAuthProvider,
+  linkWithCredential
 } from 'https://www.gstatic.com/firebasejs/11.0.2/firebase-auth.js';
 
 // ─────────────────────────────────────────────────────
@@ -81,18 +83,17 @@ function syncUsuarioFirebase(user) {
     localStorage.setItem('snapbite_profiles', JSON.stringify(perfis));
   }
 
-  const providerId = user.providerData?.[0]?.providerId || 'password';
-
   const usuario = {
     uid: user.uid,
     nome: perfilExistente.nome || user.displayName || 'Usuário SnapBite',
     email: email,
     foto: perfilExistente.foto || user.photoURL || '',
-    provider: providerId,
+    provider: user.providerData?.[0]?.providerId || 'firebase',
     telefone: extra?.telefone || '',
     aceitouTermos: !!extra?.aceitouTermos,
-    // Não trava o acesso depois do login. Telefone vira dado extra, não bloqueio.
-    cadastroCompleto: true
+    senhaCriada: user.providerData?.some(p => p.providerId === 'password') || !!extra?.senhaCriada,
+    twoFactorEnabled: !!extra?.twoFactorEnabled,
+    cadastroCompleto: !!(extra?.telefone && extra?.aceitouTermos && (user.providerData?.some(p => p.providerId === 'password') || extra?.senhaCriada))
   };
 
   localStorage.setItem('snapbite_user', JSON.stringify(usuario));
@@ -122,35 +123,52 @@ async function loginComGoogleReal() {
     const user    = result.user;
     const usuario = syncUsuarioFirebase(user);
 
+    if (!usuario.cadastroCompleto) {
+      // Com Google, o cliente ainda precisa criar nome/senha do site.
+      const nomeEl  = document.getElementById('extra-nome');
+      const emailEl = document.getElementById('extra-email');
+      const telEl   = document.getElementById('extra-telefone');
+      const termEl  = document.getElementById('extra-termos');
+      const senhaEl = document.getElementById('extra-senha');
+      const senha2El = document.getElementById('extra-senha-confirmar');
+
+      if (nomeEl)  {
+        nomeEl.readOnly = false;
+        nomeEl.value  = usuario.nome || '';
+      }
+      if (emailEl) emailEl.value = usuario.email  || '';
+      if (telEl)   telEl.value   = usuario.telefone || '';
+      if (termEl)  termEl.checked = !!usuario.aceitouTermos;
+      if (senhaEl) senhaEl.value = '';
+      if (senha2El) senha2El.value = '';
+
+      abrirModalCompletarCadastro();
+      return { ok: false, precisaCompletar: true };
+    }
+
     window.closeModal?.('modal-login');
-    window.closeModal?.('modal-completar-cadastro');
+    const twoFA = await exigirTwoFactorSeAtivo(usuario);
+    if (!twoFA.ok) return twoFA;
+
     window.showToast?.(`Bem-vindo(a), ${usuario.nome.split(' ')[0]}! 🎉`, 'success');
 
-    // Se tinha produto pendente, adiciona ao carrinho sem precisar recarregar
     if (window.App?.pendingProduct && typeof window.adicionarAoCarrinho === 'function') {
       const produto = window.App.pendingProduct;
       window.App.pendingProduct = null;
       window.adicionarAoCarrinho(produto);
     }
 
-    window.atualizarNavAuth?.();
-    window.dispatchEvent(new CustomEvent('snapbite:auth-ready', { detail: usuario }));
-
-    // Na tela de login, entra direto no site depois do Google.
-    if (window.location.pathname.endsWith('login.html') || window.location.pathname.endsWith('welcome.html')) {
-      window.location.href = 'index.html';
-      return;
-    }
-
-    _redirecionarSeWelcome();
+    _redirecionarAposLogin();
+    return { ok: true };
   } catch (error) {
     console.error('Firebase Google Auth error:', error);
     const msgs = {
-      'auth/popup-closed-by-user': 'Login cancelado antes de concluir.',
-      'auth/cancelled-popup-request': 'Já existe uma janela de login aberta.',
-      'auth/account-exists-with-different-credential': 'Este e-mail já existe com outro método de login.',
+      'auth/account-exists-with-different-credential': 'Esse e-mail já existe. Entre com e-mail e senha primeiro e depois use o Google na mesma conta.',
+      'auth/popup-closed-by-user': 'Login cancelado.',
+      'auth/popup-blocked': 'O navegador bloqueou a janela do Google. Permita pop-ups para continuar.'
     };
     window.showToast?.(msgs[error.code] || 'Não foi possível entrar com Google.', 'error');
+    return { ok: false, msg: msgs[error.code] || 'Não foi possível entrar com Google.' };
   }
 }
 
@@ -176,7 +194,7 @@ function initCadastroExtra() {
   const form = document.getElementById('form-completar-cadastro');
   if (!form) return;
 
-  form.addEventListener('submit', (e) => {
+  form.addEventListener('submit', async (e) => {
     e.preventDefault();
 
     const currentUser = auth.currentUser;
@@ -185,21 +203,58 @@ function initCadastroExtra() {
       return;
     }
 
+    const nome = document.getElementById('extra-nome')?.value.trim();
     const telefone    = document.getElementById('extra-telefone')?.value.trim();
+    const senha = document.getElementById('extra-senha')?.value || '';
+    const senhaConfirmar = document.getElementById('extra-senha-confirmar')?.value || '';
     const aceitouTermos = document.getElementById('extra-termos')?.checked;
 
+    if (!nome || nome.length < 2) {
+      window.showToast?.('Digite seu nome.', 'warning');
+      return;
+    }
     if (!telefone) {
       window.showToast?.('Digite seu telefone.', 'warning');
       return;
+    }
+    if (!currentUser.providerData?.some(p => p.providerId === 'password')) {
+      if (senha.length < 6) {
+        window.showToast?.('Crie uma senha com pelo menos 6 caracteres.', 'warning');
+        return;
+      }
+      if (senha !== senhaConfirmar) {
+        window.showToast?.('As senhas não coincidem.', 'warning');
+        return;
+      }
     }
     if (!aceitouTermos) {
       window.showToast?.('Você precisa aceitar os termos.', 'warning');
       return;
     }
 
-    salvarCadastroExtra(currentUser.uid, { telefone, aceitouTermos: true });
+    try {
+      await updateProfile(currentUser, { displayName: nome });
 
-    const usuario = syncUsuarioFirebase(currentUser);
+      if (!currentUser.providerData?.some(p => p.providerId === 'password')) {
+        const credencialSenha = EmailAuthProvider.credential(currentUser.email, senha);
+        await linkWithCredential(currentUser, credencialSenha);
+      }
+
+      salvarCadastroExtra(currentUser.uid, { telefone, aceitouTermos: true, senhaCriada: true });
+    } catch (err) {
+      console.error('Erro ao concluir cadastro Google:', err);
+      const msgs = {
+        'auth/provider-already-linked': 'Essa conta já possui senha cadastrada.',
+        'auth/email-already-in-use': 'Esse e-mail já está cadastrado em outra conta.',
+        'auth/credential-already-in-use': 'Esse e-mail já está vinculado a outra conta.',
+        'auth/weak-password': 'Senha muito fraca. Use pelo menos 6 caracteres.',
+        'auth/requires-recent-login': 'Entre novamente com Google e tente concluir o cadastro.'
+      };
+      window.showToast?.(msgs[err.code] || 'Erro ao concluir cadastro.', 'error');
+      return;
+    }
+
+    const usuario = syncUsuarioFirebase(auth.currentUser);
 
     window.closeModal?.('modal-completar-cadastro');
     window.showToast?.(`Conta concluída, ${usuario.nome.split(' ')[0]}! ✅`, 'success');
@@ -261,14 +316,14 @@ async function loginComEmailSenha(email, senha) {
       window.adicionarAoCarrinho(produto);
     }
 
-    _redirecionarSeWelcome();
+    _redirecionarAposLogin();
     return { ok: true };
   } catch (err) {
     const msgs = {
       'auth/user-not-found':   'E-mail não encontrado.',
       'auth/wrong-password':   'Senha incorreta.',
       'auth/invalid-email':    'E-mail inválido.',
-      'auth/invalid-credential': 'E-mail ou senha incorretos. Se essa conta foi criada pelo Google, use o botão “Continuar com Google”.',
+      'auth/invalid-credential': 'E-mail ou senha incorretos.',
       'auth/too-many-requests':'Muitas tentativas. Tente mais tarde.',
     };
     const msg = msgs[err.code] || 'Erro ao entrar. Tente novamente.';
@@ -296,11 +351,11 @@ async function cadastrarComEmailSenha(nome, email, senha, telefone, aceitouTermo
     const usuario = syncUsuarioFirebase(user);
 
     window.showToast?.(`Conta criada! Bem-vindo(a), ${nome.split(' ')[0]}! ✅`, 'success');
-    _redirecionarSeWelcome();
+    _redirecionarAposLogin();
     return { ok: true };
   } catch (err) {
     const msgs = {
-      'auth/email-already-in-use': 'Este e-mail já está cadastrado. Tente entrar ou use “Continuar com Google”.',
+      'auth/email-already-in-use': 'Este e-mail já está cadastrado.',
       'auth/invalid-email':        'E-mail inválido.',
       'auth/weak-password':        'Senha muito fraca. Use ao menos 6 caracteres.',
     };
@@ -370,6 +425,60 @@ async function confirmarNovaSenha(oobCode, novaSenha) {
   }
 }
 
+
+// ─────────────────────────────────────────────────────
+// Código de segurança extra do perfil (2FA simples do app)
+// ─────────────────────────────────────────────────────
+function _getTwoFactorStore() {
+  return JSON.parse(localStorage.getItem('snapbite_two_factor') || '{}');
+}
+
+function _getTwoFactorKey(usuario = JSON.parse(localStorage.getItem('snapbite_user') || 'null')) {
+  return usuario?.uid || usuario?.email || auth.currentUser?.uid || auth.currentUser?.email || null;
+}
+
+function getTwoFactorStatus() {
+  const key = _getTwoFactorKey();
+  const store = _getTwoFactorStore();
+  return key ? (store[key] || { enabled: false }) : { enabled: false };
+}
+
+function salvarTwoFactorCodigo(codigo) {
+  const key = _getTwoFactorKey();
+  if (!key) return { ok: false, msg: 'Entre na conta para configurar.' };
+  const limpo = String(codigo || '').replace(/\D/g, '');
+  if (limpo.length !== 6) return { ok: false, msg: 'O código precisa ter 6 números.' };
+  const store = _getTwoFactorStore();
+  store[key] = { enabled: true, code: limpo };
+  localStorage.setItem('snapbite_two_factor', JSON.stringify(store));
+  return { ok: true };
+}
+
+function desativarTwoFactor() {
+  const key = _getTwoFactorKey();
+  if (!key) return { ok: false, msg: 'Entre na conta para configurar.' };
+  const store = _getTwoFactorStore();
+  delete store[key];
+  localStorage.setItem('snapbite_two_factor', JSON.stringify(store));
+  return { ok: true };
+}
+
+async function exigirTwoFactorSeAtivo(usuario) {
+  const key = _getTwoFactorKey(usuario);
+  const store = _getTwoFactorStore();
+  const cfg = key ? store[key] : null;
+  if (!cfg?.enabled) return { ok: true };
+
+  const digitado = prompt('Digite seu código de segurança SnapBite de 6 números:');
+  if (String(digitado || '').replace(/\D/g, '') === cfg.code) {
+    return { ok: true };
+  }
+
+  await signOut(auth).catch(console.error);
+  localStorage.removeItem('snapbite_user');
+  return { ok: false, msg: 'Código de segurança incorreto.' };
+}
+
 // ─────────────────────────────────────────────────────
 // Expõe globalmente para os botões do HTML chamarem
 window.loginComGoogleReal      = loginComGoogleReal;
@@ -379,6 +488,9 @@ window.cadastrarComEmailSenha  = cadastrarComEmailSenha;
 window.recuperarSenha          = recuperarSenha;
 window.validarCodigoRedefinicaoSenha = validarCodigoRedefinicaoSenha;
 window.confirmarNovaSenha      = confirmarNovaSenha;
+window.getTwoFactorStatus      = getTwoFactorStatus;
+window.salvarTwoFactorCodigo   = salvarTwoFactorCodigo;
+window.desativarTwoFactor      = desativarTwoFactor;
 
 window.alterarEmailFirebase = async (novoEmail) => {
   const user = auth.currentUser;
