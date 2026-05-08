@@ -1083,8 +1083,22 @@ function initPerfilPage() {
   const descEl = document.getElementById('perfil-descricao');
   const expEl = document.getElementById('perfil-experiencia');
   const fotoEl = document.getElementById('perfil-foto');
+  const senhaEl = document.getElementById('perfil-nova-senha');
+  const codigoEl = document.getElementById('perfil-codigo-email');
+  const statusCodigoEl = document.getElementById('perfil-codigo-status');
+  const btnEnviarCodigo = document.getElementById('btn-enviar-codigo-perfil');
+  const btnVerificarCodigo = document.getElementById('btn-verificar-codigo-perfil');
   const previewEl = document.getElementById('perfil-preview');
   const iniciaisEl = document.getElementById('perfil-iniciais');
+
+  const API_BASE = 'https://snapbite-pxn6.onrender.com';
+  let codigoPerfilVerificado = false;
+
+  function setStatusCodigo(msg, ok = false) {
+    if (!statusCodigoEl) return;
+    statusCodigoEl.textContent = msg;
+    statusCodigoEl.style.color = ok ? '#15803d' : '#b91c1c';
+  }
 
   let perfil = getPerfilUsuario();
 
@@ -1134,20 +1148,45 @@ function initPerfilPage() {
     reader.readAsDataURL(file);
   });
 
-  form.addEventListener('submit', (e) => {
+  form.addEventListener('submit', async (e) => {
     e.preventDefault();
 
     const nome = nomeEl.value.trim();
+    const novoEmail = (emailEl.value || '').trim().toLowerCase();
+    const novaSenha = senhaEl?.value || '';
+    const novaFoto = previewEl.dataset.foto || perfil.foto || '';
 
     if (nome.length < 2) {
       showToast('Digite um nome válido.', 'warning');
       return;
     }
 
+    if (!codigoPerfilVerificado) {
+      showToast('Verifique o código enviado ao e-mail antes de salvar alterações.', 'warning');
+      setStatusCodigo('Solicite e verifique o código antes de salvar.', false);
+      return;
+    }
+
+    if (novaSenha && novaSenha.length < 6) {
+      showToast('A nova senha precisa ter pelo menos 6 caracteres.', 'warning');
+      return;
+    }
+
+    const resultadoAuth = await window.atualizarContaFirebasePerfil?.({
+      nome,
+      email: novoEmail,
+      senha: novaSenha
+    });
+
+    if (resultadoAuth && !resultadoAuth.ok) {
+      showToast(resultadoAuth.msg || 'Não foi possível atualizar os dados da conta.', 'error');
+      return;
+    }
+
     const dados = {
       nome,
-      email: App.usuario.email || '',
-      foto: previewEl.dataset.foto || perfil.foto || '',
+      email: novoEmail || App.usuario.email || '',
+      foto: novaFoto,
       descricao: descEl.value.trim(),
       experiencia: expEl.value.trim(),
     };
@@ -1161,11 +1200,80 @@ function initPerfilPage() {
 
     localStorage.setItem('snapbite_user', JSON.stringify(App.usuario));
 
+    if (senhaEl) senhaEl.value = '';
+    codigoPerfilVerificado = false;
+    if (codigoEl) codigoEl.value = '';
+    setStatusCodigo('Alteração salva. Peça outro código para alterar novamente.', true);
+
     atualizarNavAuth();
-    showToast('Perfil salvo com sucesso! ✅', 'success');
+    showToast('Perfil salvo com segurança! ✅', 'success');
 
     perfil = getPerfilUsuario();
     atualizarPreview(perfil.foto, perfil.nome);
+  });
+
+
+  btnEnviarCodigo?.addEventListener('click', async () => {
+    const emailAtual = App.usuario?.email;
+    if (!emailAtual) {
+      showToast('Não encontrei o e-mail da sua conta.', 'error');
+      return;
+    }
+
+    btnEnviarCodigo.disabled = true;
+    btnEnviarCodigo.textContent = 'Enviando...';
+
+    try {
+      const resp = await fetch(`${API_BASE}/api/enviar-codigo-perfil`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email: emailAtual, nome: App.usuario?.nome || 'Usuário SnapBite' })
+      });
+      const dados = await resp.json();
+
+      if (!resp.ok || !dados.ok) throw new Error(dados.erro || 'Falha ao enviar código.');
+
+      codigoPerfilVerificado = false;
+      setStatusCodigo(`Código enviado para ${emailAtual}.`, true);
+      showToast('Código enviado ao seu e-mail! 📩', 'success');
+    } catch (err) {
+      console.error(err);
+      setStatusCodigo('Não foi possível enviar o código. Confira se o backend está atualizado no Render.', false);
+      showToast('Erro ao enviar código de segurança.', 'error');
+    } finally {
+      btnEnviarCodigo.disabled = false;
+      btnEnviarCodigo.textContent = 'Enviar código';
+    }
+  });
+
+  btnVerificarCodigo?.addEventListener('click', async () => {
+    const emailAtual = App.usuario?.email;
+    const codigo = (codigoEl?.value || '').trim();
+
+    if (!codigo || codigo.length !== 6) {
+      showToast('Digite o código de 6 números.', 'warning');
+      return;
+    }
+
+    try {
+      const resp = await fetch(`${API_BASE}/api/verificar-codigo-perfil`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email: emailAtual, codigo })
+      });
+      const dados = await resp.json();
+
+      if (!resp.ok || !dados.ok) throw new Error(dados.erro || 'Código inválido.');
+
+      codigoPerfilVerificado = true;
+      setStatusCodigo('Código verificado. Agora você pode salvar as alterações.', true);
+      showToast('Código confirmado! 🔐', 'success');
+    } catch (err) {
+      console.error(err);
+      codigoPerfilVerificado = false;
+      setStatusCodigo(err.message || 'Código inválido ou expirado.', false);
+      showToast('Código inválido ou expirado.', 'error');
+    }
   });
 
   const btnEditarEmail = document.getElementById('btn-editar-email');
