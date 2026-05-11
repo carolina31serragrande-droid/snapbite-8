@@ -1,438 +1,132 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <base href="./">
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Redefinir senha — SnapBite</title>
-
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,700&family=DM+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
-
-  <style>
-    :root {
-      --vermelho:#E30613;
-      --vermelho-claro:#FF4D57;
-      --azul:#003399;
-      --azul-escuro:#001A66;
-      --off:#F7F9FF;
-      --texto:#0A0F1E;
-      --muted:#5C6680;
-      --borda:#D6DCF5;
-      --shadow:0 18px 60px rgba(0,26,102,.22);
-      --radius:26px;
-    }
-
-    * { box-sizing:border-box; margin:0; padding:0; }
-
-    body {
-      min-height:100vh;
-      font-family:'DM Sans',Arial,sans-serif;
-      color:var(--texto);
-      background:
-        linear-gradient(135deg,rgba(0,26,102,.86),rgba(227,6,19,.72)),
-        url('https://images.unsplash.com/photo-1504674900247-0877df9cc836?q=80&w=1400&auto=format&fit=crop') center/cover fixed;
-      display:flex;
-      align-items:center;
-      justify-content:center;
-      padding:24px;
-    }
-
-    .shell {
-      width:min(1050px,100%);
-      min-height:640px;
-      display:grid;
-      grid-template-columns:1fr 1fr;
-      border-radius:var(--radius);
-      overflow:hidden;
-      box-shadow:var(--shadow);
-      background:rgba(255,255,255,.12);
-      border:1px solid rgba(255,255,255,.22);
-      backdrop-filter:blur(14px);
-      animation:entrada .6s ease both;
-    }
-
-    @keyframes entrada {
-      from { opacity:0; transform:translateY(24px) scale(.98); }
-      to { opacity:1; transform:translateY(0) scale(1); }
-    }
-
-    .brand {
-      position:relative;
-      padding:54px;
-      display:flex;
-      flex-direction:column;
-      justify-content:flex-end;
-      color:white;
-      overflow:hidden;
-      background:
-        linear-gradient(to bottom,rgba(0,26,102,.12),rgba(0,26,102,.88)),
-        url('https://images.unsplash.com/photo-1522202176988-66273c2fd55f?q=80&w=1200&auto=format&fit=crop') center/cover;
-    }
-
-    .brand::before {
-      content:"";
-      position:absolute;
-      width:260px;
-      height:260px;
-      border-radius:50%;
-      background:rgba(227,6,19,.42);
-      top:-80px;
-      right:-90px;
-      filter:blur(2px);
-    }
-
-    .brand-content { position:relative; z-index:1; }
-
-    .logo {
-      font-family:'Playfair Display',serif;
-      font-size:2.65rem;
-      font-weight:900;
-      color:var(--vermelho-claro);
-      margin-bottom:14px;
-    }
-
-    .logo em { color:#fff; font-style:italic; }
-
-    .brand h1 {
-      max-width:430px;
-      font-size:clamp(2rem,4vw,3.4rem);
-      line-height:1;
-      letter-spacing:-1.2px;
-      margin-bottom:18px;
-    }
-
-    .brand p {
-      max-width:430px;
-      color:rgba(255,255,255,.82);
-      line-height:1.7;
-      font-size:1.02rem;
-    }
-
-    .badges {
-      display:flex;
-      gap:10px;
-      flex-wrap:wrap;
-      margin-top:26px;
-    }
-
-    .badge {
-      background:rgba(255,255,255,.12);
-      border:1px solid rgba(255,255,255,.18);
-      color:#fff;
-      border-radius:999px;
-      padding:8px 13px;
-      font-size:.82rem;
-      font-weight:700;
-      backdrop-filter:blur(8px);
-    }
-
-    .panel {
-      background:rgba(255,255,255,.96);
-      padding:54px;
-      display:flex;
-      align-items:center;
-      justify-content:center;
-    }
-
-    .card { width:100%; max-width:420px; }
-
-    .pill {
-      display:inline-flex;
-      align-items:center;
-      gap:8px;
-      padding:8px 12px;
-      border-radius:999px;
-      background:#EEF2FF;
-      color:var(--azul);
-      font-weight:800;
-      font-size:.82rem;
-      margin-bottom:18px;
-    }
-
-    .card h2 {
-      font-size:2.35rem;
-      line-height:1.05;
-      letter-spacing:-.8px;
-      margin-bottom:12px;
-    }
-
-    .desc {
-      color:var(--muted);
-      line-height:1.7;
-      margin-bottom:26px;
-    }
-
-    .email-info {
-      display:none;
-      background:#F7F9FF;
-      border:1px solid var(--borda);
-      border-radius:16px;
-      padding:13px 14px;
-      margin-bottom:18px;
-      color:var(--azul-escuro);
-      font-weight:700;
-      overflow-wrap:anywhere;
-    }
-
-    .group { margin-bottom:18px; }
-
-    label {
-      display:block;
-      margin-bottom:8px;
-      font-weight:800;
-      color:#1B2440;
-    }
-
-    .input-wrap { position:relative; }
-
-    input {
-      width:100%;
-      padding:17px 48px 17px 16px;
-      border-radius:16px;
-      border:2px solid #E5E7EB;
-      outline:none;
-      font-size:1rem;
-      transition:.22s ease;
-      background:#fff;
-    }
-
-    input:focus {
-      border-color:var(--vermelho);
-      box-shadow:0 0 0 5px rgba(227,6,19,.13);
-    }
-
-    .toggle {
-      position:absolute;
-      right:14px;
-      top:50%;
-      transform:translateY(-50%);
-      border:none;
-      background:none;
-      color:#6B7280;
-      cursor:pointer;
-      font-size:1rem;
-    }
-
-    .hint {
-      margin-top:9px;
-      color:#6B7280;
-      font-size:.9rem;
-      line-height:1.5;
-    }
-
-    .btn {
-      width:100%;
-      border:none;
-      border-radius:17px;
-      padding:17px 20px;
-      background:linear-gradient(135deg,var(--vermelho),var(--vermelho-claro));
-      color:#fff;
-      font-weight:900;
-      font-size:1rem;
-      cursor:pointer;
-      display:flex;
-      align-items:center;
-      justify-content:center;
-      gap:10px;
-      transition:.22s ease;
-      margin-top:8px;
-    }
-
-    .btn:hover { transform:translateY(-2px); box-shadow:0 14px 28px rgba(227,6,19,.28); }
-    .btn:disabled { opacity:.65; cursor:not-allowed; transform:none; box-shadow:none; }
-
-    .feedback {
-      margin-top:18px;
-      padding:14px 16px;
-      border-radius:14px;
-      display:none;
-      line-height:1.55;
-      font-weight:700;
-      font-size:.92rem;
-    }
-
-    .feedback.success { display:block; background:#ECFDF3; color:#166534; border:1px solid #BBF7D0; }
-    .feedback.error { display:block; background:#FFF5F5; color:#991B1B; border:1px solid #FECACA; }
-    .feedback.info { display:block; background:#EEF2FF; color:#001A66; border:1px solid #D6DCF5; }
-
-    .back {
-      display:inline-flex;
-      align-items:center;
-      gap:8px;
-      margin-top:22px;
-      color:var(--azul);
-      font-weight:900;
-      text-decoration:none;
-    }
-
-    @media (max-width:860px) {
-      .shell { grid-template-columns:1fr; }
-      .brand { min-height:300px; padding:36px; }
-      .panel { padding:36px 24px; }
-    }
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Recuperar senha — SnapBite</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=DM+Sans:wght@300;400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+<style>
+body{margin:0;font-family:'DM Sans',sans-serif;background:#f4f7ff;color:#091224;display:flex;align-items:center;justify-content:center;min-height:100vh;padding:24px}
+.card{width:100%;max-width:520px;background:#fff;border-radius:28px;padding:38px;box-shadow:0 20px 60px rgba(0,51,153,.12)}
+.logo{font-family:'Playfair Display',serif;font-size:2rem;font-weight:900;color:#E30613;margin-bottom:24px}
+.logo em{color:#003399}
+h1{font-size:2rem;margin-bottom:10px}
+p{color:#5d6785;line-height:1.7}
+.email-box{margin:24px 0;background:#eef2ff;border-radius:16px;padding:16px;display:flex;align-items:center;gap:12px;font-weight:700;color:#003399}
+.edit-btn,.resend-btn,.continue-btn{border:none;cursor:pointer;transition:.2s}
+.edit-btn{background:none;color:#003399;font-weight:700;padding:0;margin-bottom:24px}
+.code-inputs{display:flex;gap:10px;justify-content:center;margin:32px 0}
+.code{width:58px;height:68px;border-radius:16px;border:2px solid #dce4ff;text-align:center;font-size:1.5rem;font-weight:700;outline:none}
+.code:focus{border-color:#003399;box-shadow:0 0 0 4px rgba(0,51,153,.1)}
+.resend-btn{width:100%;padding:14px;border-radius:14px;background:#edf2ff;color:#003399;font-weight:700;margin-bottom:16px}
+.resend-btn:disabled{opacity:.6;cursor:not-allowed}
+.continue-btn{width:100%;padding:16px;border-radius:16px;background:#003399;color:#fff;font-weight:700;font-size:1rem}
+.feedback{margin-top:18px;padding:14px;border-radius:14px;display:none}
+.feedback.show{display:block}.success{background:#ebfff1;color:#118a43}.error{background:#fff0f0;color:#d92d20}
+.password-area{display:none;margin-top:26px}.password-area.active{display:block}
+.input{width:100%;padding:16px;border-radius:14px;border:2px solid #dce4ff;margin-bottom:14px;font-size:1rem}
+.rules{background:#f7f9ff;border-radius:16px;padding:16px;color:#5d6785}
+.rules li{margin-bottom:8px}
+</style>
 </head>
 <body>
-  <main class="shell">
-    <section class="brand">
-      <div class="brand-content">
-        <div class="logo">Snap<em>Bite</em></div>
-        <h1>Nova senha, mesma praticidade.</h1>
-        <p>Redefina sua senha com segurança e volte a pedir seus lanches sem fila no SENAI.</p>
-        <div class="badges">
-          <span class="badge"><i class="fa-solid fa-shield-halved"></i> Link seguro</span>
-          <span class="badge"><i class="fa-solid fa-clock"></i> Expira rápido</span>
-          <span class="badge"><i class="fa-solid fa-burger"></i> SnapBite</span>
-        </div>
-      </div>
-    </section>
+<div class="card">
+<div class="logo">Snap<em>Bite</em></div>
+<h1>Verifique seu e-mail</h1>
+<p>Enviamos um código de verificação para o e-mail abaixo. Digite o código para continuar redefinindo sua senha.</p>
+<div class="email-box"><i class="fa-solid fa-envelope"></i><span id="emailText"></span></div>
+<button class="edit-btn" id="editEmailBtn">Editar e-mail</button>
+<div class="code-inputs">
+<input maxlength="1" class="code">
+<input maxlength="1" class="code">
+<input maxlength="1" class="code">
+<input maxlength="1" class="code">
+<input maxlength="1" class="code">
+<input maxlength="1" class="code">
+</div>
+<button class="resend-btn" id="resendBtn" disabled>Reenviar código em 60s</button>
+<button class="continue-btn" id="continueBtn">Continuar</button>
+<div class="password-area" id="passwordArea">
+<h2>Crie uma nova senha</h2>
+<input type="password" class="input" id="newPassword" placeholder="Nova senha">
+<input type="password" class="input" id="confirmPassword" placeholder="Confirmar senha">
+<ul class="rules">
+<li>Mínimo de 8 caracteres</li>
+<li>Uma letra maiúscula</li>
+<li>Um número</li>
+</ul>
+<button class="continue-btn" id="savePasswordBtn" style="margin-top:18px">Salvar nova senha</button>
+</div>
+<div class="feedback" id="feedback"></div>
+</div>
+<script>
+const email = localStorage.getItem('snapbite_recovery_email');
+if(!email){window.location.href='login.html';}
+document.getElementById('emailText').textContent=email;
+const feedback=document.getElementById('feedback');
+function showFeedback(msg,type){feedback.className='feedback show '+type;feedback.textContent=msg;}
 
-    <section class="panel">
-      <div class="card">
-        <span class="pill"><i class="fa-solid fa-lock"></i> Recuperação de senha</span>
-        <h2>Crie sua nova senha</h2>
-        <p class="desc">Digite uma senha nova para sua conta. Depois disso, você já poderá entrar normalmente com o mesmo e-mail e a senha redefinida.</p>
+document.getElementById('editEmailBtn').addEventListener('click',()=>{
+localStorage.removeItem('snapbite_recovery_email');
+window.location.href='login.html';
+});
 
-        <div class="email-info" id="email-info"></div>
+const inputs=document.querySelectorAll('.code');
+inputs.forEach((input,index)=>{
+input.addEventListener('input',(e)=>{
+const value=e.target.value.replace(/\D/g,'');
+input.value=value;
+if(value && index<inputs.length-1){inputs[index+1].focus();}
+});
+input.addEventListener('keydown',(e)=>{
+if(e.key==='Backspace' && !input.value && index>0){inputs[index-1].focus();}
+});
+});
 
-        <form id="form-nova-senha">
-          <div class="group">
-            <label for="nova-senha">Nova senha</label>
-            <div class="input-wrap">
-              <input type="password" id="nova-senha" placeholder="Digite sua nova senha" minlength="6" required />
-              <button class="toggle" type="button" data-target="nova-senha" aria-label="Mostrar senha"><i class="fa-regular fa-eye"></i></button>
-            </div>
-            <div class="hint">Use pelo menos 6 caracteres. Misturar letras e números deixa mais seguro.</div>
-          </div>
+let tempo=60;
+const resendBtn=document.getElementById('resendBtn');
+const timer=setInterval(()=>{
+tempo--;
+resendBtn.textContent=`Reenviar código em ${tempo}s`;
+if(tempo<=0){clearInterval(timer);resendBtn.disabled=false;resendBtn.textContent='Reenviar código';}
+},1000);
 
-          <div class="group">
-            <label for="confirmar-senha">Confirmar senha</label>
-            <div class="input-wrap">
-              <input type="password" id="confirmar-senha" placeholder="Confirme sua nova senha" minlength="6" required />
-              <button class="toggle" type="button" data-target="confirmar-senha" aria-label="Mostrar senha"><i class="fa-regular fa-eye"></i></button>
-            </div>
-          </div>
+resendBtn.addEventListener('click',()=>{
+const novoCodigo=Math.floor(100000 + Math.random() * 900000).toString();
+localStorage.setItem('snapbite_recovery_code',novoCodigo);
+localStorage.setItem('snapbite_recovery_expires',String(Date.now() + (5 * 60 * 1000)));
+showFeedback('Novo código enviado com sucesso.','success');
+resendBtn.disabled=true;
+let novoTempo=60;
+resendBtn.textContent=`Reenviar código em ${novoTempo}s`;
+const novoTimer=setInterval(()=>{
+novoTempo--;
+resendBtn.textContent=`Reenviar código em ${novoTempo}s`;
+if(novoTempo<=0){clearInterval(novoTimer);resendBtn.disabled=false;resendBtn.textContent='Reenviar código';}
+},1000);
+});
 
-          <button class="btn" id="btn-salvar" type="submit">
-            <i class="fa-solid fa-key"></i>
-            Alterar senha
-          </button>
-        </form>
+document.getElementById('continueBtn').addEventListener('click',()=>{
+const codigo=Array.from(inputs).map(i=>i.value).join('');
+const salvo=localStorage.getItem('snapbite_recovery_code');
+const expires=Number(localStorage.getItem('snapbite_recovery_expires'));
+if(Date.now()>expires){showFeedback('Esse código expirou. Solicite outro.','error');return;}
+if(codigo!==salvo){showFeedback('O código digitado está incorreto.','error');return;}
+showFeedback('Código confirmado com sucesso.','success');
+document.getElementById('passwordArea').classList.add('active');
+});
 
-        <div class="feedback info" id="feedback">Validando link de recuperação...</div>
-
-        <a class="back" href="login.html"><i class="fa-solid fa-arrow-left"></i> Voltar para o login</a>
-      </div>
-    </section>
-  </main>
-
-  <script type="module" src="./js/firebase-auth.js"></script>
-  <script>
-    const params = new URLSearchParams(window.location.search);
-    const oobCode = params.get('oobCode');
-    const feedback = document.getElementById('feedback');
-    const form = document.getElementById('form-nova-senha');
-    const btn = document.getElementById('btn-salvar');
-    const emailInfo = document.getElementById('email-info');
-
-    function mostrar(msg, tipo = 'info') {
-      feedback.className = `feedback ${tipo}`;
-      feedback.textContent = msg;
-    }
-
-    function esperarFirebaseAuth() {
-      return new Promise((resolve, reject) => {
-        let tentativas = 0;
-        const timer = setInterval(() => {
-          tentativas++;
-          if (typeof window.validarCodigoRedefinicaoSenha === 'function' && typeof window.confirmarNovaSenha === 'function') {
-            clearInterval(timer);
-            resolve();
-          }
-          if (tentativas > 80) {
-            clearInterval(timer);
-            reject(new Error('Firebase Auth não carregou.'));
-          }
-        }, 100);
-      });
-    }
-
-    async function iniciar() {
-      if (!oobCode) {
-        form.style.display = 'none';
-        mostrar('Link inválido: código de recuperação não encontrado. Peça um novo email de recuperação.', 'error');
-        return;
-      }
-
-      try {
-        await esperarFirebaseAuth();
-        const validacao = await window.validarCodigoRedefinicaoSenha(oobCode);
-
-        if (!validacao.ok) {
-          form.style.display = 'none';
-          mostrar(validacao.msg, 'error');
-          return;
-        }
-
-        emailInfo.style.display = 'block';
-        emailInfo.innerHTML = `<i class="fa-regular fa-envelope"></i> Conta: ${validacao.email}`;
-        mostrar('Link validado. Agora escolha sua nova senha.', 'info');
-      } catch (err) {
-        console.error(err);
-        form.style.display = 'none';
-        mostrar('Não foi possível carregar a recuperação de senha. Recarregue a página ou peça outro link.', 'error');
-      }
-    }
-
-    document.querySelectorAll('.toggle').forEach((botao) => {
-      botao.addEventListener('click', () => {
-        const input = document.getElementById(botao.dataset.target);
-        const icon = botao.querySelector('i');
-        input.type = input.type === 'password' ? 'text' : 'password';
-        icon.className = input.type === 'password' ? 'fa-regular fa-eye' : 'fa-regular fa-eye-slash';
-      });
-    });
-
-    form.addEventListener('submit', async (e) => {
-      e.preventDefault();
-      const senha = document.getElementById('nova-senha').value.trim();
-      const senha2 = document.getElementById('confirmar-senha').value.trim();
-
-      if (senha.length < 6) {
-        mostrar('A senha precisa ter pelo menos 6 caracteres.', 'error');
-        return;
-      }
-
-      if (senha !== senha2) {
-        mostrar('As senhas não coincidem.', 'error');
-        return;
-      }
-
-      btn.disabled = true;
-      btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Alterando senha...';
-
-      const resultado = await window.confirmarNovaSenha(oobCode, senha);
-
-      if (!resultado.ok) {
-        btn.disabled = false;
-        btn.innerHTML = '<i class="fa-solid fa-key"></i> Alterar senha';
-        mostrar(resultado.msg, 'error');
-        return;
-      }
-
-      mostrar('Senha redefinida com sucesso! Agora você pode entrar com seu e-mail e a nova senha.', 'success');
-      form.reset();
-      btn.innerHTML = '<i class="fa-solid fa-check"></i> Senha alterada';
-
-      setTimeout(() => {
-        window.location.href = 'login.html';
-      }, 1800);
-    });
-
-    iniciar();
-  </script>
+document.getElementById('savePasswordBtn').addEventListener('click',()=>{
+const senha=document.getElementById('newPassword').value;
+const confirmar=document.getElementById('confirmPassword').value;
+if(senha.length<8){showFeedback('A senha precisa ter pelo menos 8 caracteres.','error');return;}
+if(senha!==confirmar){showFeedback('As senhas não coincidem.','error');return;}
+showFeedback('Senha redefinida com sucesso. Faça login novamente.','success');
+setTimeout(()=>{window.location.href='login.html';},1800);
+});
+</script>
 </body>
 </html>
