@@ -12,6 +12,7 @@ import {
   onAuthStateChanged,
   setPersistence,
   browserLocalPersistence,
+  browserSessionPersistence,
   signOut,
   sendEmailVerification,
   updateEmail,
@@ -20,19 +21,6 @@ import {
   linkWithCredential
 } from 'https://www.gstatic.com/firebasejs/11.0.2/firebase-auth.js';
 
-// ─────────────────────────────────────────────────────
-//  🔑  SUBSTITUA os valores abaixo pelas credenciais
-//  do seu projeto Firebase real (console.firebase.google.com)
-//
-//  PASSOS para ativar o Google Login:
-//  1. Acesse https://console.firebase.google.com
-//  2. Selecione (ou crie) seu projeto
-//  3. Authentication → Sign-in method → Ative "Google"
-//  4. Authentication → Settings → Authorized domains →
-//     adicione o domínio do seu site (ex: seliga.jovem)
-//  5. Copie as credenciais do projeto (Project settings → General)
-//     e cole no objeto abaixo.
-// ─────────────────────────────────────────────────────
 const firebaseConfig = {
   apiKey:            "AIzaSyCPQuK79XDc8B5bgr8tVSUwcLkSHlVJU6c",
   authDomain:        "snapbite-85943.firebaseapp.com",
@@ -47,12 +35,15 @@ const app      = initializeApp(firebaseConfig);
 const auth     = getAuth(app);
 const provider = new GoogleAuthProvider();
 
-// Persistência local: login sobrevive a fechar o browser
-setPersistence(auth, browserLocalPersistence).catch(console.error);
+// ─────────────────────────────────────────────────────
+// PERSISTÊNCIA:
+//   "lembrar" marcado → browserLocalPersistence  (sobrevive ao fechar)
+//   padrão            → browserSessionPersistence (some ao fechar o navegador)
+// ─────────────────────────────────────────────────────
+const lembrarLogin = localStorage.getItem('snapbite_lembrar') === '1';
+setPersistence(auth, lembrarLogin ? browserLocalPersistence : browserSessionPersistence)
+  .catch(console.error);
 
-// ─────────────────────────────────────────────────────
-// Helpers: dados extras (telefone, termos) no localStorage
-// ─────────────────────────────────────────────────────
 function getCadastroExtra(uid) {
   const extras = JSON.parse(localStorage.getItem('snapbite_auth_extras') || '{}');
   return extras[uid] || null;
@@ -64,19 +55,15 @@ function salvarCadastroExtra(uid, dados) {
   localStorage.setItem('snapbite_auth_extras', JSON.stringify(extras));
 }
 
-// ─────────────────────────────────────────────────────
-// Sincroniza usuário Firebase → App.usuario + localStorage
-// ─────────────────────────────────────────────────────
 function syncUsuarioFirebase(user) {
   if (!user) return null;
 
   const extra = getCadastroExtra(user.uid);
-
   const email = (user.email || '').toLowerCase();
   const perfis = JSON.parse(localStorage.getItem('snapbite_profiles') || '{}');
 
-  const perfilPorUid = perfis[user.uid] || null;
-  const perfilPorEmail = perfis[email] || null;
+  const perfilPorUid   = perfis[user.uid] || null;
+  const perfilPorEmail = perfis[email]     || null;
   const perfilExistente = perfilPorUid || perfilPorEmail || {};
 
   if (perfilPorEmail && !perfilPorUid) {
@@ -85,64 +72,45 @@ function syncUsuarioFirebase(user) {
   }
 
   const usuario = {
-    uid: user.uid,
-    nome: perfilExistente.nome || user.displayName || 'Usuário SnapBite',
-    email: email,
-    foto: perfilExistente.foto || user.photoURL || '',
-    provider: user.providerData?.[0]?.providerId || 'firebase',
-    telefone: extra?.telefone || '',
-    aceitouTermos: !!extra?.aceitouTermos,
-    senhaCriada: user.providerData?.some(p => p.providerId === 'password') || !!extra?.senhaCriada,
+    uid:              user.uid,
+    nome:             perfilExistente.nome || user.displayName || 'Usuário SnapBite',
+    email:            email,
+    foto:             perfilExistente.foto || user.photoURL || '',
+    provider:         user.providerData?.[0]?.providerId || 'firebase',
+    telefone:         extra?.telefone || '',
+    aceitouTermos:    !!extra?.aceitouTermos,
+    senhaCriada:      user.providerData?.some(p => p.providerId === 'password') || !!extra?.senhaCriada,
     twoFactorEnabled: !!extra?.twoFactorEnabled,
-    cadastroCompleto: !!(extra?.telefone && extra?.aceitouTermos && (user.providerData?.some(p => p.providerId === 'password') || extra?.senhaCriada))
+    cadastroCompleto: !!(extra?.telefone && extra?.aceitouTermos &&
+                        (user.providerData?.some(p => p.providerId === 'password') || extra?.senhaCriada))
   };
 
   localStorage.setItem('snapbite_user', JSON.stringify(usuario));
-
   if (window.App) window.App.usuario = usuario;
-
   window.atualizarNavAuth?.();
   window.dispatchEvent(new CustomEvent('snapbite:login', { detail: usuario }));
-
   return usuario;
 }
 
-// ─────────────────────────────────────────────────────
-// Abre modal para completar cadastro (telefone + termos)
-// ─────────────────────────────────────────────────────
 function abrirModalCompletarCadastro() {
   window.closeModal?.('modal-login');
   window.openModal?.('modal-completar-cadastro');
 }
 
-// ─────────────────────────────────────────────────────
-// Login com Google (popup)
-// ─────────────────────────────────────────────────────
 async function loginComGoogleReal() {
   try {
     const result  = await signInWithPopup(auth, provider);
-    const user    = result.user;
-    const usuario = syncUsuarioFirebase(user);
+    const usuario = syncUsuarioFirebase(result.user);
 
     if (!usuario.cadastroCompleto) {
-      // Com Google, o cliente ainda precisa criar nome/senha do site.
-      const nomeEl  = document.getElementById('extra-nome');
-      const emailEl = document.getElementById('extra-email');
-      const telEl   = document.getElementById('extra-telefone');
-      const termEl  = document.getElementById('extra-termos');
-      const senhaEl = document.getElementById('extra-senha');
-      const senha2El = document.getElementById('extra-senha-confirmar');
-
-      if (nomeEl)  {
-        nomeEl.readOnly = false;
-        nomeEl.value  = usuario.nome || '';
-      }
-      if (emailEl) emailEl.value = usuario.email  || '';
-      if (telEl)   telEl.value   = usuario.telefone || '';
-      if (termEl)  termEl.checked = !!usuario.aceitouTermos;
-      if (senhaEl) senhaEl.value = '';
-      if (senha2El) senha2El.value = '';
-
+      const set = (id, val) => { const el = document.getElementById(id); if (el) el.value = val; };
+      set('extra-nome', usuario.nome || '');
+      set('extra-email', usuario.email || '');
+      set('extra-telefone', usuario.telefone || '');
+      const termEl = document.getElementById('extra-termos');
+      if (termEl) termEl.checked = !!usuario.aceitouTermos;
+      const nomeEl = document.getElementById('extra-nome');
+      if (nomeEl) nomeEl.readOnly = false;
       abrirModalCompletarCadastro();
       return { ok: false, precisaCompletar: true };
     }
@@ -152,167 +120,107 @@ async function loginComGoogleReal() {
     if (!twoFA.ok) return twoFA;
 
     window.showToast?.(`Bem-vindo(a), ${usuario.nome.split(' ')[0]}! 🎉`, 'success');
-
     if (window.App?.pendingProduct && typeof window.adicionarAoCarrinho === 'function') {
-      const produto = window.App.pendingProduct;
+      const p = window.App.pendingProduct;
       window.App.pendingProduct = null;
-      window.adicionarAoCarrinho(produto);
+      window.adicionarAoCarrinho(p);
     }
-
     _redirecionarAposLogin();
     return { ok: true };
   } catch (error) {
-    console.error('Firebase Google Auth error:', error);
     const msgs = {
-      'auth/account-exists-with-different-credential': 'Esse e-mail já existe. Entre com e-mail e senha primeiro e depois use o Google na mesma conta.',
+      'auth/account-exists-with-different-credential': 'Esse e-mail já existe. Entre com e-mail e senha primeiro.',
       'auth/popup-closed-by-user': 'Login cancelado.',
-      'auth/popup-blocked': 'O navegador bloqueou a janela do Google. Permita pop-ups para continuar.'
+      'auth/popup-blocked': 'O navegador bloqueou a janela do Google. Permita pop-ups.'
     };
     window.showToast?.(msgs[error.code] || 'Não foi possível entrar com Google.', 'error');
     return { ok: false, msg: msgs[error.code] || 'Não foi possível entrar com Google.' };
   }
 }
 
-// ─────────────────────────────────────────────────────
-// Se o usuário estiver na welcome.html, redireciona
-// ─────────────────────────────────────────────────────
-function _redirecionarSeWelcome() {
-  if (window.location.pathname.endsWith('welcome.html') ||
-      window.location.pathname === '/' ||
-      window.location.pathname === '') {
-
-    const usuario = JSON.parse(localStorage.getItem('snapbite_user') || 'null');
-    if (usuario?.cadastroCompleto) {
-      window.location.replace('index.html');
-    }
-  }
-}
-
 function _redirecionarAposLogin() {
   const params = new URLSearchParams(window.location.search);
   const redirect = params.get('redirect');
-  const destinoSeguro = redirect && !redirect.startsWith('http') && !redirect.includes('://')
-    ? redirect
-    : 'index.html';
+  const destino = redirect && !redirect.startsWith('http') && !redirect.includes('://')
+    ? redirect : 'index.html';
 
-  // Garante que o App e o menu atualizem antes de sair da página.
   window.atualizarNavAuth?.();
   window.dispatchEvent(new CustomEvent('snapbite:auth-ok'));
 
   const path = window.location.pathname || '';
-  const estaNoLogin = path.endsWith('login.html') || path.endsWith('/login') || path.includes('login');
-
-  if (estaNoLogin) {
-    window.location.replace(destinoSeguro);
+  if (path.endsWith('login.html') || path.endsWith('/login') || path.includes('login')) {
+    window.location.replace(destino);
   }
 }
 
-// ─────────────────────────────────────────────────────
-// Completar cadastro (telefone + termos)
-// ─────────────────────────────────────────────────────
 function initCadastroExtra() {
   const form = document.getElementById('form-completar-cadastro');
   if (!form) return;
 
   form.addEventListener('submit', async (e) => {
     e.preventDefault();
-
     const currentUser = auth.currentUser;
-    if (!currentUser) {
-      window.showToast?.('Sessão não encontrada. Tente entrar novamente.', 'error');
-      return;
-    }
+    if (!currentUser) { window.showToast?.('Sessão não encontrada. Tente novamente.', 'error'); return; }
 
-    const nome = document.getElementById('extra-nome')?.value.trim();
-    const telefone    = document.getElementById('extra-telefone')?.value.trim();
-    const senha = document.getElementById('extra-senha')?.value || '';
-    const senhaConfirmar = document.getElementById('extra-senha-confirmar')?.value || '';
+    const nome          = document.getElementById('extra-nome')?.value.trim();
+    const telefone      = document.getElementById('extra-telefone')?.value.trim();
+    const senha         = document.getElementById('extra-senha')?.value || '';
+    const senhaConf     = document.getElementById('extra-senha-confirmar')?.value || '';
     const aceitouTermos = document.getElementById('extra-termos')?.checked;
 
-    if (!nome || nome.length < 2) {
-      window.showToast?.('Digite seu nome.', 'warning');
-      return;
-    }
-    if (!telefone) {
-      window.showToast?.('Digite seu telefone.', 'warning');
-      return;
-    }
+    if (!nome || nome.length < 2) { window.showToast?.('Digite seu nome.', 'warning'); return; }
+    if (!telefone) { window.showToast?.('Digite seu telefone.', 'warning'); return; }
     if (!currentUser.providerData?.some(p => p.providerId === 'password')) {
-      if (senha.length < 6) {
-        window.showToast?.('Crie uma senha com pelo menos 6 caracteres.', 'warning');
-        return;
-      }
-      if (senha !== senhaConfirmar) {
-        window.showToast?.('As senhas não coincidem.', 'warning');
-        return;
-      }
+      if (senha.length < 6) { window.showToast?.('Senha com mínimo 6 caracteres.', 'warning'); return; }
+      if (senha !== senhaConf) { window.showToast?.('As senhas não coincidem.', 'warning'); return; }
     }
-    if (!aceitouTermos) {
-      window.showToast?.('Você precisa aceitar os termos.', 'warning');
-      return;
-    }
+    if (!aceitouTermos) { window.showToast?.('Aceite os termos para continuar.', 'warning'); return; }
 
     try {
       await updateProfile(currentUser, { displayName: nome });
-
       if (!currentUser.providerData?.some(p => p.providerId === 'password')) {
-        const credencialSenha = EmailAuthProvider.credential(currentUser.email, senha);
-        await linkWithCredential(currentUser, credencialSenha);
+        await linkWithCredential(currentUser, EmailAuthProvider.credential(currentUser.email, senha));
       }
-
       salvarCadastroExtra(currentUser.uid, { telefone, aceitouTermos: true, senhaCriada: true });
     } catch (err) {
-      console.error('Erro ao concluir cadastro Google:', err);
       const msgs = {
-        'auth/provider-already-linked': 'Essa conta já possui senha cadastrada.',
-        'auth/email-already-in-use': 'Esse e-mail já está cadastrado em outra conta.',
-        'auth/credential-already-in-use': 'Esse e-mail já está vinculado a outra conta.',
-        'auth/weak-password': 'Senha muito fraca. Use pelo menos 6 caracteres.',
-        'auth/requires-recent-login': 'Entre novamente com Google e tente concluir o cadastro.'
+        'auth/provider-already-linked': 'Essa conta já possui senha.',
+        'auth/email-already-in-use': 'E-mail já cadastrado em outra conta.',
+        'auth/weak-password': 'Senha muito fraca.',
+        'auth/requires-recent-login': 'Entre novamente com Google e tente de novo.'
       };
       window.showToast?.(msgs[err.code] || 'Erro ao concluir cadastro.', 'error');
       return;
     }
 
     const usuario = syncUsuarioFirebase(auth.currentUser);
-
     window.closeModal?.('modal-completar-cadastro');
     window.showToast?.(`Conta concluída, ${usuario.nome.split(' ')[0]}! ✅`, 'success');
-
     if (window.App?.pendingProduct && typeof window.adicionarAoCarrinho === 'function') {
-      const produto = window.App.pendingProduct;
+      const p = window.App.pendingProduct;
       window.App.pendingProduct = null;
-      window.adicionarAoCarrinho(produto);
+      window.adicionarAoCarrinho(p);
     }
-
-    // Redireciona imediatamente após concluir cadastro
     _redirecionarAposLogin();
   });
 }
 
-// ─────────────────────────────────────────────────────
-// Logout
-// ─────────────────────────────────────────────────────
 function logoutFirebaseReal() {
+  // Limpa "lembrar" ao sair manualmente
+  localStorage.removeItem('snapbite_lembrar');
   signOut(auth).catch(console.error);
   localStorage.removeItem('snapbite_user');
-
   if (window.App) window.App.usuario = null;
-
   window.atualizarNavAuth?.();
   window.showToast?.('Você saiu da conta.', 'info');
 }
 
-// ─────────────────────────────────────────────────────
-// Observer de estado de autenticação
-// ─────────────────────────────────────────────────────
 onAuthStateChanged(auth, (user) => {
   if (user) {
     const usuario = syncUsuarioFirebase(user);
     if (usuario.cadastroCompleto) {
       window.closeModal?.('modal-login');
       window.closeModal?.('modal-completar-cadastro');
-
       const path = window.location.pathname || '';
       if (path.endsWith('login.html') || path.endsWith('/login')) {
         _redirecionarAposLogin();
@@ -325,56 +233,42 @@ onAuthStateChanged(auth, (user) => {
   }
 });
 
-// ─────────────────────────────────────────────────────
-// Login com e-mail + senha (Firebase)
-// ─────────────────────────────────────────────────────
-async function loginComEmailSenha(email, senha) {
+// loginComEmailSenha aceita 3º argumento: lembrar (bool)
+async function loginComEmailSenha(email, senha, lembrar = false) {
   try {
+    await setPersistence(auth, lembrar ? browserLocalPersistence : browserSessionPersistence);
+    if (lembrar) localStorage.setItem('snapbite_lembrar', '1');
+    else         localStorage.removeItem('snapbite_lembrar');
+
     const result  = await signInWithEmailAndPassword(auth, email, senha);
     const usuario = syncUsuarioFirebase(result.user);
-
     window.showToast?.(`Bem-vindo(a), ${usuario.nome.split(' ')[0]}! 🎉`, 'success');
-
     if (window.App?.pendingProduct && typeof window.adicionarAoCarrinho === 'function') {
-      const produto = window.App.pendingProduct;
+      const p = window.App.pendingProduct;
       window.App.pendingProduct = null;
-      window.adicionarAoCarrinho(produto);
+      window.adicionarAoCarrinho(p);
     }
-
     _redirecionarAposLogin();
     return { ok: true };
   } catch (err) {
     const msgs = {
-      'auth/user-not-found':   'E-mail não encontrado.',
-      'auth/wrong-password':   'Senha incorreta.',
-      'auth/invalid-email':    'E-mail inválido.',
+      'auth/user-not-found':     'E-mail não encontrado.',
+      'auth/wrong-password':     'Senha incorreta.',
+      'auth/invalid-email':      'E-mail inválido.',
       'auth/invalid-credential': 'E-mail ou senha incorretos.',
-      'auth/too-many-requests':'Muitas tentativas. Tente mais tarde.',
+      'auth/too-many-requests':  'Muitas tentativas. Tente mais tarde.',
     };
-    const msg = msgs[err.code] || 'Erro ao entrar. Tente novamente.';
-    return { ok: false, msg };
+    return { ok: false, msg: msgs[err.code] || 'Erro ao entrar. Tente novamente.' };
   }
 }
 
-// ─────────────────────────────────────────────────────
-// Cadastro com e-mail + senha (Firebase)
-// ─────────────────────────────────────────────────────
 async function cadastrarComEmailSenha(nome, email, senha, telefone, aceitouTermos) {
   try {
     const result = await createUserWithEmailAndPassword(auth, email, senha);
-    const user   = result.user;
-
-    // Salva nome no perfil Firebase
-    await updateProfile(user, { displayName: nome });
-
-
-    await sendEmailVerification(user);
-
-    // Salva extras locais (telefone + termos)
-    salvarCadastroExtra(user.uid, { telefone, aceitouTermos });
-
-    const usuario = syncUsuarioFirebase(user);
-
+    await updateProfile(result.user, { displayName: nome });
+    await sendEmailVerification(result.user);
+    salvarCadastroExtra(result.user.uid, { telefone, aceitouTermos });
+    const usuario = syncUsuarioFirebase(result.user);
     window.showToast?.(`Conta criada! Bem-vindo(a), ${nome.split(' ')[0]}! ✅`, 'success');
     _redirecionarAposLogin();
     return { ok: true };
@@ -384,200 +278,181 @@ async function cadastrarComEmailSenha(nome, email, senha, telefone, aceitouTermo
       'auth/invalid-email':        'E-mail inválido.',
       'auth/weak-password':        'Senha muito fraca. Use ao menos 6 caracteres.',
     };
-    const msg = msgs[err.code] || 'Erro ao criar conta. Tente novamente.';
-    return { ok: false, msg };
+    return { ok: false, msg: msgs[err.code] || 'Erro ao criar conta. Tente novamente.' };
   }
 }
 
 // ─────────────────────────────────────────────────────
-// Recuperar senha por e-mail
+// RECUPERAR SENHA com rate limiting progressivo
+//
+//   1ª vez → envia imediatamente
+//   2ª vez → espera 60s  (1 min)
+//   3ª vez → espera 90s  (1 min 30s)
+//   4ª vez → espera 240s (4 min) — LIMITE MÁXIMO
+//   5ª+    → "Tente novamente mais tarde" (bloqueado)
+//
+//  Estado em sessionStorage → limpa ao fechar o browser
 // ─────────────────────────────────────────────────────
-async function recuperarSenha(email) {
-  try {
-    const urlRecuperacao = `${window.location.origin}${window.location.pathname.replace(/[^/]*$/, '')}recuperar-senha.html`;
+const RESET_KEY      = 'snapbite_reset_rate';
+const RESET_DELAYS   = [60_000, 90_000, 240_000]; // ms: após 1ª, 2ª, 3ª tentativa
+const RESET_MAX      = 4;
 
-await sendPasswordResetEmail(auth, email, {
-  url: "https://carolina31serragrande-droid.github.io/snapbite-8/recuperar-senha.html",
-  handleCodeInApp: false
-});
+function _getRR() { try { return JSON.parse(sessionStorage.getItem(RESET_KEY) || '{}'); } catch { return {}; } }
+function _setRR(d) { sessionStorage.setItem(RESET_KEY, JSON.stringify(d)); }
+
+function checkResetRate() {
+  const d = _getRR(); const agora = Date.now();
+  const tries = d.tries || 0; const freeAt = d.freeAt || 0;
+
+  if (tries >= RESET_MAX) {
+    if (agora < freeAt) return { allowed: false, waitMs: freeAt - agora, bloqueado: true };
+    _setRR({}); return { allowed: true, waitMs: 0, bloqueado: false };
+  }
+  if (agora < freeAt) return { allowed: false, waitMs: freeAt - agora, bloqueado: false };
+  return { allowed: true, waitMs: 0, bloqueado: false };
+}
+
+function registerResetAttempt() {
+  const d = _getRR(); const tries = (d.tries || 0) + 1; const agora = Date.now();
+  if (tries >= RESET_MAX) { _setRR({ tries, freeAt: agora + 240_000 }); return; }
+  const delay = RESET_DELAYS[Math.min(tries - 1, RESET_DELAYS.length - 1)];
+  _setRR({ tries, freeAt: agora + delay });
+}
+
+async function recuperarSenha(email) {
+  const rate = checkResetRate();
+  if (!rate.allowed) {
+    if (rate.bloqueado) return { ok: false, msg: 'Muitas tentativas. Tente novamente mais tarde.' };
+    const seg = Math.ceil(rate.waitMs / 1000);
+    const min = Math.floor(seg / 60); const s = seg % 60;
+    const txt = min > 0 ? `Aguarde ${min}min${s > 0 ? ' ' + s + 's' : ''} antes de solicitar novamente.`
+                        : `Aguarde ${s}s antes de solicitar novamente.`;
+    return { ok: false, msg: txt, waitMs: rate.waitMs };
+  }
+  try {
+    await sendPasswordResetEmail(auth, email, {
+      url: 'https://carolina31serragrande-droid.github.io/snapbite-8/recuperar-senha.html',
+      handleCodeInApp: false
+    });
+    registerResetAttempt();
     return { ok: true };
   } catch (err) {
-    console.error('Erro ao enviar recuperação de senha:', err);
     const msgs = {
-      'auth/user-not-found': 'Nenhuma conta com este e-mail.',
-      'auth/invalid-email':  'E-mail inválido.',
-      'auth/missing-email': 'Digite um e-mail válido.',
-      'auth/too-many-requests': 'Muitas tentativas. Aguarde um pouco e tente novamente.',
+      'auth/user-not-found':    'Nenhuma conta com este e-mail.',
+      'auth/invalid-email':     'E-mail inválido.',
+      'auth/missing-email':     'Digite um e-mail válido.',
+      'auth/too-many-requests': 'Muitas tentativas. Aguarde e tente novamente.',
     };
-    const msg = msgs[err.code] || 'Erro ao enviar e-mail. Tente novamente.';
-    return { ok: false, msg };
+    return { ok: false, msg: msgs[err.code] || 'Erro ao enviar e-mail. Tente novamente.' };
   }
 }
 
-// ─────────────────────────────────────────────────────
-// Confirmar troca real da senha pelo link do Firebase
-// ─────────────────────────────────────────────────────
+// Expõe status do rate limit para o botão no login.html
+window.getResetRateStatus = () => {
+  const d = _getRR(); const agora = Date.now();
+  return {
+    tries: d.tries || 0, freeAt: d.freeAt || 0,
+    waitMs: Math.max(0, (d.freeAt || 0) - agora),
+    bloqueado: (d.tries || 0) >= RESET_MAX && agora < (d.freeAt || 0),
+    max: RESET_MAX
+  };
+};
+
 async function validarCodigoRedefinicaoSenha(oobCode) {
   try {
     const email = await verifyPasswordResetCode(auth, oobCode);
     return { ok: true, email };
   } catch (err) {
-    console.error('Link de redefinição inválido:', err);
     const msgs = {
       'auth/expired-action-code': 'Este link expirou. Peça uma nova recuperação de senha.',
       'auth/invalid-action-code': 'Este link é inválido ou já foi utilizado.',
-      'auth/user-disabled': 'Esta conta foi desativada.',
-      'auth/user-not-found': 'Conta não encontrada.',
+      'auth/user-disabled':       'Esta conta foi desativada.',
+      'auth/user-not-found':      'Conta não encontrada.',
     };
     return { ok: false, msg: msgs[err.code] || 'Link inválido ou expirado.' };
   }
 }
 
-const params = new URLSearchParams(window.location.search);
-const oobCodeUrl = params.get("oobCode");
+const _oobCodeUrl = new URLSearchParams(window.location.search).get('oobCode');
 async function confirmarNovaSenha(oobCode, novaSenha) {
   try {
-    await confirmPasswordReset(auth, oobCodeUrl || oobCode, novaSenha);
+    await confirmPasswordReset(auth, _oobCodeUrl || oobCode, novaSenha);
     return { ok: true };
   } catch (err) {
-    console.error('Erro ao confirmar nova senha:', err);
     const msgs = {
       'auth/expired-action-code': 'Este link expirou. Peça uma nova recuperação de senha.',
       'auth/invalid-action-code': 'Este link é inválido ou já foi utilizado.',
-      'auth/weak-password': 'Senha muito fraca. Use pelo menos 6 caracteres.',
+      'auth/weak-password':       'Senha muito fraca. Use pelo menos 6 caracteres.',
     };
     return { ok: false, msg: msgs[err.code] || 'Erro ao redefinir senha. Tente novamente.' };
   }
 }
 
-
-// ─────────────────────────────────────────────────────
-// Código de segurança extra do perfil (2FA simples do app)
-// ─────────────────────────────────────────────────────
-function _getTwoFactorStore() {
-  return JSON.parse(localStorage.getItem('snapbite_two_factor') || '{}');
+function _getTwoFactorStore() { return JSON.parse(localStorage.getItem('snapbite_two_factor') || '{}'); }
+function _getTwoFactorKey(u = JSON.parse(localStorage.getItem('snapbite_user') || 'null')) {
+  return u?.uid || u?.email || auth.currentUser?.uid || auth.currentUser?.email || null;
 }
-
-function _getTwoFactorKey(usuario = JSON.parse(localStorage.getItem('snapbite_user') || 'null')) {
-  return usuario?.uid || usuario?.email || auth.currentUser?.uid || auth.currentUser?.email || null;
-}
-
-function getTwoFactorStatus() {
-  const key = _getTwoFactorKey();
-  const store = _getTwoFactorStore();
-  return key ? (store[key] || { enabled: false }) : { enabled: false };
-}
-
+function getTwoFactorStatus() { const k = _getTwoFactorKey(); return k ? (_getTwoFactorStore()[k] || { enabled: false }) : { enabled: false }; }
 function salvarTwoFactorCodigo(codigo) {
-  const key = _getTwoFactorKey();
-  if (!key) return { ok: false, msg: 'Entre na conta para configurar.' };
-  const limpo = String(codigo || '').replace(/\D/g, '');
-  if (limpo.length !== 6) return { ok: false, msg: 'O código precisa ter 6 números.' };
-  const store = _getTwoFactorStore();
-  store[key] = { enabled: true, code: limpo };
-  localStorage.setItem('snapbite_two_factor', JSON.stringify(store));
-  return { ok: true };
+  const k = _getTwoFactorKey(); if (!k) return { ok: false, msg: 'Entre na conta para configurar.' };
+  const l = String(codigo || '').replace(/\D/g, ''); if (l.length !== 6) return { ok: false, msg: 'Código precisa ter 6 números.' };
+  const s = _getTwoFactorStore(); s[k] = { enabled: true, code: l };
+  localStorage.setItem('snapbite_two_factor', JSON.stringify(s)); return { ok: true };
 }
-
 function desativarTwoFactor() {
-  const key = _getTwoFactorKey();
-  if (!key) return { ok: false, msg: 'Entre na conta para configurar.' };
-  const store = _getTwoFactorStore();
-  delete store[key];
-  localStorage.setItem('snapbite_two_factor', JSON.stringify(store));
-  return { ok: true };
+  const k = _getTwoFactorKey(); if (!k) return { ok: false, msg: 'Entre na conta.' };
+  const s = _getTwoFactorStore(); delete s[k];
+  localStorage.setItem('snapbite_two_factor', JSON.stringify(s)); return { ok: true };
 }
-
 async function exigirTwoFactorSeAtivo(usuario) {
-  const key = _getTwoFactorKey(usuario);
-  const store = _getTwoFactorStore();
-  const cfg = key ? store[key] : null;
+  const cfg = _getTwoFactorStore()[_getTwoFactorKey(usuario)];
   if (!cfg?.enabled) return { ok: true };
-
-  const digitado = prompt('Digite seu código de segurança SnapBite de 6 números:');
-  if (String(digitado || '').replace(/\D/g, '') === cfg.code) {
-    return { ok: true };
-  }
-
+  const d = prompt('Digite seu código de segurança SnapBite de 6 números:');
+  if (String(d || '').replace(/\D/g, '') === cfg.code) return { ok: true };
   await signOut(auth).catch(console.error);
   localStorage.removeItem('snapbite_user');
   return { ok: false, msg: 'Código de segurança incorreto.' };
 }
 
-
-// ─────────────────────────────────────────────────────
-// Alterações sensíveis do perfil após código por e-mail
-// ─────────────────────────────────────────────────────
 async function atualizarContaFirebasePerfil({ nome, email, senha }) {
   const user = auth.currentUser;
-
-  if (!user) {
-    return { ok: false, msg: 'Entre novamente na conta para alterar o perfil.' };
-  }
-
+  if (!user) return { ok: false, msg: 'Entre novamente na conta para alterar o perfil.' };
   try {
-    if (nome && nome.trim() && nome.trim() !== user.displayName) {
-      await updateProfile(user, { displayName: nome.trim() });
-    }
-
-    const emailLimpo = (email || '').trim().toLowerCase();
-    if (emailLimpo && emailLimpo !== (user.email || '').toLowerCase()) {
-      await updateEmail(user, emailLimpo);
-    }
-
-    if (senha && senha.length >= 6) {
-      await updatePassword(user, senha);
-    }
-
+    if (nome?.trim() && nome.trim() !== user.displayName) await updateProfile(user, { displayName: nome.trim() });
+    const el = (email || '').trim().toLowerCase();
+    if (el && el !== (user.email || '').toLowerCase()) await updateEmail(user, el);
+    if (senha && senha.length >= 6) await updatePassword(user, senha);
     syncUsuarioFirebase(auth.currentUser);
     return { ok: true };
   } catch (err) {
-    console.error('Erro ao atualizar dados sensíveis:', err);
     const msgs = {
-      'auth/requires-recent-login': 'Por segurança, saia e entre novamente na conta antes de alterar e-mail ou senha.',
-      'auth/email-already-in-use': 'Este e-mail já está sendo usado por outra conta.',
-      'auth/invalid-email': 'E-mail inválido.',
-      'auth/weak-password': 'Senha fraca. Use pelo menos 6 caracteres.',
-      'auth/provider-already-linked': 'Esse login já está vinculado.'
+      'auth/requires-recent-login': 'Por segurança, saia e entre novamente antes de alterar e-mail ou senha.',
+      'auth/email-already-in-use':  'Este e-mail já está sendo usado.',
+      'auth/invalid-email':         'E-mail inválido.',
+      'auth/weak-password':         'Senha fraca. Use pelo menos 6 caracteres.',
     };
-    return { ok: false, msg: msgs[err.code] || 'Não foi possível alterar os dados da conta.' };
+    return { ok: false, msg: msgs[err.code] || 'Não foi possível alterar os dados.' };
   }
 }
 
-// ─────────────────────────────────────────────────────
-// Expõe globalmente para os botões do HTML chamarem
-window.loginComGoogleReal      = loginComGoogleReal;
-window.logoutFirebaseReal      = logoutFirebaseReal;
-window.loginComEmailSenha      = loginComEmailSenha;
-window.cadastrarComEmailSenha  = cadastrarComEmailSenha;
-window.recuperarSenha          = recuperarSenha;
+window.loginComGoogleReal           = loginComGoogleReal;
+window.logoutFirebaseReal           = logoutFirebaseReal;
+window.loginComEmailSenha           = loginComEmailSenha;
+window.cadastrarComEmailSenha       = cadastrarComEmailSenha;
+window.recuperarSenha               = recuperarSenha;
 window.validarCodigoRedefinicaoSenha = validarCodigoRedefinicaoSenha;
-window.confirmarNovaSenha      = confirmarNovaSenha;
-window.getTwoFactorStatus      = getTwoFactorStatus;
-window.salvarTwoFactorCodigo   = salvarTwoFactorCodigo;
-window.desativarTwoFactor      = desativarTwoFactor;
+window.confirmarNovaSenha           = confirmarNovaSenha;
+window.getTwoFactorStatus           = getTwoFactorStatus;
+window.salvarTwoFactorCodigo        = salvarTwoFactorCodigo;
+window.desativarTwoFactor           = desativarTwoFactor;
 window.atualizarContaFirebasePerfil = atualizarContaFirebasePerfil;
-
 window.alterarEmailFirebase = async (novoEmail) => {
-  const user = auth.currentUser;
-
-  if (!user) {
-    window.showToast?.('Usuário não encontrado.', 'error');
-    return;
-  }
-
-  try {
-    await updateEmail(user, novoEmail);
-    window.showToast?.('E-mail atualizado com sucesso! 📩', 'success');
-  } catch (err) {
-    console.error(err);
-    window.showToast?.('Erro ao atualizar e-mail.', 'error');
-  }
+  const u = auth.currentUser;
+  if (!u) { window.showToast?.('Usuário não encontrado.', 'error'); return; }
+  try { await updateEmail(u, novoEmail); window.showToast?.('E-mail atualizado! 📩', 'success'); }
+  catch { window.showToast?.('Erro ao atualizar e-mail.', 'error'); }
 };
 
 window.snapbiteAuthReady = true;
 window.dispatchEvent(new CustomEvent('snapbite:auth-ready'));
-
-document.addEventListener('DOMContentLoaded', () => {
-  initCadastroExtra();
-});
+document.addEventListener('DOMContentLoaded', () => { initCadastroExtra(); });
