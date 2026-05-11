@@ -348,10 +348,7 @@ async function recuperarSenha(email) {
     return { ok: false, msg: txt, waitMs: rate.waitMs };
   }
   try {
-    await sendPasswordResetEmail(auth, email, {
-      url: 'https://carolina31serragrande-droid.github.io/snapbite-8/',
-      handleCodeInApp: false
-    });
+await sendPasswordResetEmail(auth, email);
     registerResetAttempt();
     return { ok: true };
   } catch (err) {
