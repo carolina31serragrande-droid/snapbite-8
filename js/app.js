@@ -545,22 +545,27 @@ async function fazerLogin(tipo, dados = {}) {
 }
 
 function logout() {
-  if (App.usuario?.provider === 'google' && typeof window.logoutFirebaseReal === 'function') {
-    window.logoutFirebaseReal();
-    return;
-  }
-
   App.carrinho = [];
   atualizarBadgeCarrinho();
-  
+
   if (document.getElementById('carrinho-lista')) {
     renderizarCarrinho();
   }
 
+  // Sempre usa o logout do Firebase para garantir que a sessão seja encerrada
+  // (evita o bug de login persistindo após recarregar a página)
+  if (typeof window.logoutFirebaseReal === 'function') {
+    window.logoutFirebaseReal();
+    return;
+  }
+
+  // Fallback caso Firebase ainda não tenha carregado
   App.usuario = null;
   localStorage.removeItem('snapbite_user');
+  localStorage.removeItem('snapbite_lembrar');
   atualizarNavAuth();
   showToast('Você saiu da conta.', 'info');
+  window.location.href = 'login.html';
 }
 
 function redefinirSenha(email, novaSenha) {
@@ -1238,7 +1243,12 @@ function initPerfilPage() {
       showToast('Código enviado ao seu e-mail! 📩', 'success');
     } catch (err) {
       console.error(err);
-      setStatusCodigo('Não foi possível enviar o código. Confira se o backend está atualizado no Render.', false);
+      // Verifica se é erro de rede (backend offline) ou erro do servidor
+      const isNetworkError = err instanceof TypeError && err.message.includes('fetch');
+      const msg = isNetworkError
+        ? 'Servidor offline. Aguarde alguns segundos e tente novamente (o Render pode estar iniciando).'
+        : 'Não foi possível enviar o código. Tente novamente em instantes.';
+      setStatusCodigo(msg, false);
       showToast('Erro ao enviar código de segurança.', 'error');
     } finally {
       btnEnviarCodigo.disabled = false;
