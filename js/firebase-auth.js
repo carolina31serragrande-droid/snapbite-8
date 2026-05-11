@@ -205,17 +205,35 @@ function initCadastroExtra() {
   });
 }
 
+// Flag para evitar que onAuthStateChanged re-logue após logout intencional
+let _fazendoLogout = false;
+
 function logoutFirebaseReal() {
-  // Limpa "lembrar" ao sair manualmente
+  _fazendoLogout = true;
+  // Limpa "lembrar" e TODOS os dados de sessão ao sair
   localStorage.removeItem('snapbite_lembrar');
-  signOut(auth).catch(console.error);
   localStorage.removeItem('snapbite_user');
   if (window.App) window.App.usuario = null;
   window.atualizarNavAuth?.();
   window.showToast?.('Você saiu da conta.', 'info');
+  // Faz signOut do Firebase e redireciona para login
+  signOut(auth).then(() => {
+    _fazendoLogout = false;
+    // Se não estiver na página de login, redireciona
+    const path = window.location.pathname || '';
+    if (!path.endsWith('login.html') && !path.endsWith('/login')) {
+      window.location.href = 'login.html';
+    }
+  }).catch(err => {
+    _fazendoLogout = false;
+    console.error('Erro ao fazer logout:', err);
+  });
 }
 
 onAuthStateChanged(auth, (user) => {
+  // Ignora eventos de auth durante logout intencional
+  if (_fazendoLogout) return;
+
   if (user) {
     const usuario = syncUsuarioFirebase(user);
     if (usuario.cadastroCompleto) {
@@ -255,7 +273,7 @@ async function loginComEmailSenha(email, senha, lembrar = false) {
       'auth/user-not-found':     'E-mail não encontrado.',
       'auth/wrong-password':     'Senha incorreta.',
       'auth/invalid-email':      'E-mail inválido.',
-      'auth/invalid-credential': 'E-mail ou senha incorretos.',
+      'auth/invalid-credential': 'E-mail ou senha incorretos. Se você entrou com Google antes, use o botão "Entrar com Google".',
       'auth/too-many-requests':  'Muitas tentativas. Tente mais tarde.',
     };
     return { ok: false, msg: msgs[err.code] || 'Erro ao entrar. Tente novamente.' };
@@ -373,10 +391,12 @@ async function validarCodigoRedefinicaoSenha(oobCode) {
   }
 }
 
-const _oobCodeUrl = new URLSearchParams(window.location.search).get('oobCode');
 async function confirmarNovaSenha(oobCode, novaSenha) {
+  // Usa sempre o oobCode passado como parâmetro (lido pela página recuperar-senha.html)
+  // _oobCodeUrl era capturado no top-level do módulo, podendo causar conflitos
+  const codigoFinal = oobCode || new URLSearchParams(window.location.search).get('oobCode');
   try {
-    await confirmPasswordReset(auth, _oobCodeUrl || oobCode, novaSenha);
+    await confirmPasswordReset(auth, codigoFinal, novaSenha);
     return { ok: true };
   } catch (err) {
     const msgs = {
