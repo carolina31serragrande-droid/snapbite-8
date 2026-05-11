@@ -831,6 +831,14 @@
             </div>
           </div>
 
+
+          <div class="check-row" style="margin-bottom:4px;">
+            <input type="checkbox" id="login-lembrar">
+            <label for="login-lembrar" style="font-size:.85rem;color:var(--cinza-q);">
+              Lembrar de mim neste dispositivo
+            </label>
+          </div>
+
           <div class="forgot-row">
             <button type="button" class="forgot-link" onclick="enviarRecuperacaoSenha()">Esqueci minha senha</button>
           </div>
@@ -1025,7 +1033,8 @@
       if (typeof window.loginComEmailSenha !== 'function') {
         throw new Error('Módulo de autenticação ainda não carregou. Recarregue a página.');
       }
-      const result = await window.loginComEmailSenha(email, senha);
+      const lembrar = document.getElementById('login-lembrar')?.checked || false;
+      const result = await window.loginComEmailSenha(email, senha, lembrar);
       if (result.ok) {
         mostrarFeedback('Login realizado! Redirecionando...', 'success');
         setTimeout(() => { window.location.href = 'index.html'; }, 1200);
@@ -1089,16 +1098,38 @@
   });
 
 
-  // ── RECUPERAR SENHA ──
+  // ── RECUPERAR SENHA com rate limiting ──
+  let _resetTimer = null;
+  function _atualizarBtnEsqueci() {
+    const btn = document.querySelector('.forgot-link');
+    if (!btn || typeof window.getResetRateStatus !== 'function') return;
+    const s = window.getResetRateStatus();
+    if (s.waitMs > 0) {
+      const seg = Math.ceil(s.waitMs / 1000);
+      const min = Math.floor(seg/60); const ss = seg%60;
+      const txt = min > 0 ? `${min}m ${ss}s` : `${ss}s`;
+      btn.textContent = s.bloqueado ? 'Tente novamente mais tarde' : `Aguarde ${txt}`;
+      btn.disabled = true; btn.style.opacity = '.5'; btn.style.cursor = 'not-allowed';
+    } else {
+      btn.textContent = 'Esqueci minha senha';
+      btn.disabled = false; btn.style.opacity = ''; btn.style.cursor = '';
+    }
+  }
+  setInterval(_atualizarBtnEsqueci, 1000);
+  // Aguarda auth carregar antes de consultar o rate status
+  window.addEventListener('snapbite:auth-ready', _atualizarBtnEsqueci);
+
   async function enviarRecuperacaoSenha() {
     const email = document.getElementById('login-email').value.trim();
-    if (!email) {
-      mostrarFeedback('Digite seu e-mail acima primeiro.', 'error');
-      return;
-    }
+    if (!email) { mostrarFeedback('Digite seu e-mail acima primeiro.', 'error'); return; }
     const r = await window.recuperarSenha(email);
-    if (r.ok) mostrarFeedback('E-mail de recuperação enviado! Verifique sua caixa.', 'success');
-    else mostrarFeedback(r.msg, 'error');
+    if (r.ok) {
+      mostrarFeedback('E-mail de recuperação enviado! Verifique sua caixa.', 'success');
+      _atualizarBtnEsqueci();
+    } else {
+      mostrarFeedback(r.msg, 'error');
+      _atualizarBtnEsqueci();
+    }
   }
 
   // ── MÁSCARA TELEFONE ──
