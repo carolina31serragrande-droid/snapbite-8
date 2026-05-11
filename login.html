@@ -840,7 +840,7 @@
           </div>
 
           <div class="forgot-row">
-            <button type="button" class="forgot-link" onclick="enviarRecuperacaoSenha()">Esqueci minha senha</button>
+            <button type="button" class="forgot-link" onclick="abrirRecuperacaoSenha()">Esqueci minha senha</button>
           </div>
 
           <button type="submit" class="btn-login-submit">
@@ -1119,17 +1119,21 @@
   // Aguarda auth carregar antes de consultar o rate status
   window.addEventListener('snapbite:auth-ready', _atualizarBtnEsqueci);
 
-  async function enviarRecuperacaoSenha() {
+  function abrirRecuperacaoSenha() {
     const email = document.getElementById('login-email').value.trim();
-    if (!email) { mostrarFeedback('Digite seu e-mail acima primeiro.', 'error'); return; }
-    const r = await window.recuperarSenha(email);
-    if (r.ok) {
-      mostrarFeedback('E-mail de recuperação enviado! Verifique sua caixa.', 'success');
-      _atualizarBtnEsqueci();
-    } else {
-      mostrarFeedback(r.msg, 'error');
-      _atualizarBtnEsqueci();
+
+    if (!email) {
+      mostrarFeedback('Digite seu e-mail acima primeiro.', 'error');
+      return;
     }
+
+    const codigo = Math.floor(100000 + Math.random() * 900000).toString();
+
+    localStorage.setItem('snapbite_recovery_email', email);
+    localStorage.setItem('snapbite_recovery_code', codigo);
+    localStorage.setItem('snapbite_recovery_expires', String(Date.now() + (5 * 60 * 1000)));
+
+    window.location.href = 'recuperar-senha.html';
   }
 
   // ── MÁSCARA TELEFONE ──
