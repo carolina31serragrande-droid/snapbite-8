@@ -349,7 +349,7 @@ async function recuperarSenha(email) {
   }
   try {
     await sendPasswordResetEmail(auth, email, {
-      url: 'https://carolina31serragrande-droid.github.io/snapbite-8/recuperar-senha.html',
+      url: 'https://carolina31serragrande-droid.github.io/snapbite-8/',
       handleCodeInApp: false
     });
     registerResetAttempt();
