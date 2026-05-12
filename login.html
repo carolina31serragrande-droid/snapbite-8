@@ -1119,7 +1119,7 @@
   // Aguarda auth carregar antes de consultar o rate status
   window.addEventListener('snapbite:auth-ready', _atualizarBtnEsqueci);
 
-  function abrirRecuperacaoSenha() {
+  async function abrirRecuperacaoSenha() {
     const email = document.getElementById('login-email').value.trim();
 
     if (!email) {
@@ -1127,11 +1127,21 @@
       return;
     }
 
-    const codigo = Math.floor(100000 + Math.random() * 900000).toString();
+    const btn = document.querySelector('.forgot-link');
+    const textoOriginal = btn.textContent;
+    btn.disabled = true;
+    btn.textContent = 'Enviando…';
+
+    const resultado = await window.recuperarSenha(email);
+
+    if (!resultado.ok) {
+      mostrarFeedback(resultado.msg || 'Não foi possível enviar o e-mail. Verifique o endereço.', 'error');
+      btn.disabled = false;
+      btn.textContent = textoOriginal;
+      return;
+    }
 
     localStorage.setItem('snapbite_recovery_email', email);
-    localStorage.setItem('snapbite_recovery_code', codigo);
-    localStorage.setItem('snapbite_recovery_expires', String(Date.now() + (5 * 60 * 1000)));
 
     window.location.href = 'recuperar-senha.html';
   }
