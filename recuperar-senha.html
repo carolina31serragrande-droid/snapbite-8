@@ -123,7 +123,7 @@ p{color:#5d6785;line-height:1.7}
 
   function showState(id) {
     ['state-loading','state-invalid','state-sent','state-newpass','state-success'].forEach(s => {
-      document.getElementById(s).style.display = s === id ? '' : 'none';
+      document.getElementById(s).style.display = s === id ? 'block' : 'none';
     });
   }
 
